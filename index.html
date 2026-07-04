@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>英検1級 単語学習アプリ iPhone対応版</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f7fb;color:#172033}.wrap{max-width:1040px;margin:0 auto;padding:24px}header{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:18px}h1{margin:0;font-size:32px}.sub{color:#667085;margin:6px 0 0}.panel{background:#fff;border:1px solid #d9e1ef;border-radius:20px;padding:20px;box-shadow:0 10px 28px rgba(22,34,66,.08);margin-bottom:16px}.actions{display:flex;gap:10px;flex-wrap:wrap}button{border:0;border-radius:12px;padding:11px 16px;font-weight:700;cursor:pointer;background:#e8edfb;color:#1f367f}button.primary{background:#2947a9;color:#fff}button.danger{background:#fff0ee;color:#a32929;border:1px solid #f3c6c0}button.choice{display:block;width:100%;text-align:left;background:#fff;border:1px solid #d9e1ef;color:#172033;margin:8px 0}.choice.selected{background:#edf2ff;border-color:#2947a9}.choice.correct{background:#eaf7f1;border-color:#0f7b50;color:#0f7b50}.choice.wrong{background:#fff0ee;border-color:#b42318;color:#b42318}.tabs{display:flex;gap:8px;margin-bottom:16px}.tab.active{background:#172033;color:#fff}.hidden{display:none}.q{border-top:1px solid #e4e9f2;padding-top:16px;margin-top:16px}.q:first-child{border-top:0;padding-top:0;margin-top:0}.sentence{font-size:18px;line-height:1.65}.muted{color:#667085}.explain{display:none;color:#667085;border-top:1px dashed #d9e1ef;padding-top:10px;margin-top:10px}.explain.show{display:block}.stats{display:flex;gap:12px;flex-wrap:wrap}.stat{background:#f0f3fb;border-radius:14px;padding:10px 14px;min-width:120px}.stat b{font-size:22px}.flash{min-height:280px;display:grid;place-items:center;text-align:center;cursor:pointer}.flash h2{font-size:44px;margin:4px}.wordgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.word{border:1px solid #d9e1ef;border-radius:16px;padding:14px;background:#fff}input{padding:11px 14px;border:1px solid #d9e1ef;border-radius:12px;width:min(380px,100%)}@media(max-width:720px){header{display:block}.actions{margin-top:14px}.stats{display:grid}.wrap{padding:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div><h1>英検1級 単語学習アプリ</h1><p class="sub">10問の空欄補充4択クイズ＋当日単語のフラッシュカード（iPhone Safari対応）</p></div>
+  <div class="actions">
+    <button id="createBtn" class="primary" type="button">今日の10問を作成</button>
+    <button id="resetBtn" type="button">今日の10問を再生成</button>
+    <button id="clearBtn" class="danger" type="button">履歴リセット</button>
+  </div>
+</header>
+<section class="panel">
+  <div class="stats">
+    <div class="stat"><div class="muted">Score</div><b id="score">0/10</b></div>
+    <div class="stat"><div class="muted">Study days</div><b id="days">0</b></div>
+    <div class="stat"><div class="muted">Known cards</div><b id="known">0</b></div>
+  </div>
+  <p id="status" class="muted" style="margin:12px 0 0">「今日の10問を作成」を押してください。</p>
+</section>
+<nav class="tabs">
+  <button class="tab active" type="button" data-tab="quiz">Quiz</button>
+  <button class="tab" type="button" data-tab="cards">Flashcards</button>
+  <button class="tab" type="button" data-tab="words">Word List</button>
+</nav>
+<section id="quiz" class="panel tabPanel"><div id="quizBox"></div><div class="actions" style="margin-top:16px"><button id="gradeBtn" class="primary" type="button">採点する</button><button id="answerBtn" type="button">解説を表示</button></div></section>
+<section id="cards" class="panel tabPanel hidden"><div id="flash" class="flash"><div><p class="muted">WORD</p><h2 id="cardWord">---</h2><p id="cardPron"></p><p class="muted">クリックで意味を表示</p></div></div><div class="actions" style="justify-content:center"><button id="prevBtn" type="button">前へ</button><button id="knownBtn" class="primary" type="button">覚えた</button><button id="nextBtn" type="button">次へ</button></div><p id="counter" class="muted" style="text-align:center"></p></section>
+<section id="words" class="panel tabPanel hidden"><input id="search" type="search" placeholder="単語・意味で検索"><div id="wordBox" class="wordgrid" style="margin-top:14px"></div></section>
+</div>
+<script>
+(function(){
+'use strict';
+var WORDS=[
+{w:'aberration',p:'/ˌæbəˈreɪʃən/',m:'逸脱、異常',j:'通常期待される状態から外れたもの。',s:'The sudden decline in sales was dismissed as a temporary ____ rather than a long-term trend.',o:['aberration','allegiance','reverence','deference'],e:'temporary aberration で「一時的な異常・例外」。'},
+{w:'acrimonious',p:'/ˌækrɪˈmoʊniəs/',m:'辛辣な、とげとげしい',j:'議論・関係などが険悪で攻撃的な様子。',s:'The negotiations became increasingly ____ after both sides refused to compromise.',o:['acrimonious','affluent','pliable','benign'],e:'refused to compromise なので「険悪な」が自然。'},
+{w:'anomaly',p:'/əˈnɑːməli/',m:'異例、例外的事象',j:'規則・傾向から外れるもの。',s:'Researchers noticed an ____ in the data that could not be explained by the current model.',o:['anomaly','edict','overture','conduit'],e:'data/model と結びつき「説明できない異常値」。'},
+{w:'assuage',p:'/əˈsweɪdʒ/',m:'和らげる、鎮める',j:'不安・怒り・痛みなどを軽減する。',s:'The mayor tried to ____ public fears by releasing detailed safety information.',o:['assuage','exacerbate','deplete','repudiate'],e:'assuage public fears で「不安を和らげる」。'},
+{w:'austere',p:'/ɔːˈstɪr/',m:'質素な、厳格な',j:'装飾が少ない、規律が厳しい。',s:'The monastery was known for its ____ lifestyle and simple architecture.',o:['austere','lavish','erratic','flagrant'],e:'monastery, simple architecture から「質素な」。'},
+{w:'belligerent',p:'/bəˈlɪdʒərənt/',m:'好戦的な、攻撃的な',j:'敵対的で争いを起こしやすい態度。',s:'His ____ tone made a calm discussion almost impossible.',o:['belligerent','conciliatory','lucid','frugal'],e:'calm discussion impossible なので攻撃的な tone。'},
+{w:'bolster',p:'/ˈboʊlstər/',m:'強化する、支える',j:'制度・主張・信頼などを補強する。',s:'The new evidence helped ____ the prosecution’s argument.',o:['bolster','undermine','curtail','squander'],e:'evidence が argument を「強める」。'},
+{w:'capricious',p:'/kəˈprɪʃəs/',m:'気まぐれな、予測不能な',j:'急に考えや行動が変わる。',s:'Investors were unsettled by the CEO’s ____ decision-making.',o:['capricious','methodical','staunch','innate'],e:'unsettled by decision-making なので「気まぐれな」。'},
+{w:'censure',p:'/ˈsenʃər/',m:'厳しく非難する',j:'公式・強い調子で批判する。',s:'The committee voted to ____ the official for violating ethics rules.',o:['censure','commend','emulate','appease'],e:'ethics rules 違反に対して「非難する」。'},
+{w:'concede',p:'/kənˈsiːd/',m:'認める、譲歩する',j:'不本意ながら事実・敗北・要求を認める。',s:'Although she defended the policy, she had to ____ that implementation had been poor.',o:['concede','reiterate','obfuscate','prescribe'],e:'不備を「認める」が合う。'},
+{w:'dearth',p:'/dɜːrθ/',m:'不足、欠乏',j:'必要なものが十分にないこと。',s:'A ____ of qualified engineers delayed the infrastructure project.',o:['dearth','surfeit','bevy','torrent'],e:'project delay の原因なので engineers の不足。'},
+{w:'deleterious',p:'/ˌdeləˈtɪriəs/',m:'有害な',j:'健康・社会・制度などに悪影響を及ぼす。',s:'Prolonged sleep deprivation has ____ effects on cognitive performance.',o:['deleterious','salutary','negligible','impartial'],e:'sleep deprivation の effects は「有害な」。'},
+{w:'disparage',p:'/dɪˈspærɪdʒ/',m:'けなす、見くびる',j:'価値を低く言う。',s:'The candidate was criticized for trying to ____ his opponent’s achievements.',o:['disparage','validate','magnify','champion'],e:'opponent’s achievements を「けなす」。'},
+{w:'elicit',p:'/iˈlɪsɪt/',m:'引き出す',j:'反応・情報・答えを相手から引き出す。',s:'The documentary managed to ____ sympathy from viewers.',o:['elicit','suppress','allocate','forfeit'],e:'elicit sympathy で「同情を引き出す」。'},
+{w:'emulate',p:'/ˈemjuleɪt/',m:'見習う、まねる',j:'優れた人・方法を手本として追随する。',s:'Younger firms attempted to ____ the company’s successful subscription model.',o:['emulate','deride','impede','nullify'],e:'successful model を「見習う・模倣する」。'},
+{w:'ephemeral',p:'/ɪˈfemərəl/',m:'短命の、束の間の',j:'長く続かない。',s:'The popularity of many online trends is surprisingly ____.',o:['ephemeral','perpetual','onerous','coherent'],e:'online trends の人気は「一時的」。'},
+{w:'exacerbate',p:'/ɪɡˈzæsərbeɪt/',m:'悪化させる',j:'問題・病状・対立をさらに悪くする。',s:'Rising fuel prices may ____ inflationary pressure across the economy.',o:['exacerbate','mitigate','rectify','endorse'],e:'fuel prices が inflationary pressure を悪化させる。'},
+{w:'fastidious',p:'/fæˈstɪdiəs/',m:'非常に几帳面な、好みのうるさい',j:'細部や品質に過度に注意する。',s:'The editor was so ____ that even minor punctuation errors bothered her.',o:['fastidious','indifferent','boisterous','destitute'],e:'minor errors bothered her なので細部にうるさい。'},
+{w:'galvanize',p:'/ˈɡælvənaɪz/',m:'奮起させる、活性化する',j:'人々を刺激して行動させる。',s:'The crisis helped ____ citizens into volunteering for relief efforts.',o:['galvanize','dissuade','alienate','encumber'],e:'galvanize A into doing で「Aを奮起させて〜させる」。'},
+{w:'intransigent',p:'/ɪnˈtrænzɪdʒənt/',m:'妥協しない、強硬な',j:'立場を変えず譲歩しない。',s:'The talks collapsed because both parties remained ____.',o:['intransigent','amenable','candid','sporadic'],e:'talks collapsed なので「妥協しない」。'},
+{w:'laconic',p:'/ləˈkɑːnɪk/',m:'簡潔な、口数の少ない',j:'少ない言葉で表現する。',s:'His ____ reply consisted of only two words: “Not approved.”',o:['laconic','verbose','haphazard','opulent'],e:'only two words が手がかり。'},
+{w:'mitigate',p:'/ˈmɪtɪɡeɪt/',m:'軽減する、緩和する',j:'被害・リスク・悪影響を小さくする。',s:'The city planted trees to ____ the impact of extreme heat.',o:['mitigate','intensify','derail','provoke'],e:'impact of heat を軽減する。'},
+{w:'obdurate',p:'/ˈɑːbdərət/',m:'頑固な、強情な',j:'説得されても考えを変えない。',s:'Despite overwhelming evidence, he remained ____ in his denial.',o:['obdurate','receptive','tentative','affable'],e:'evidence があっても denial なので「頑固な」。'},
+{w:'perfunctory',p:'/pərˈfʌŋktəri/',m:'おざなりの、形式的な',j:'最低限だけ行い、熱意や注意がない。',s:'The manager gave a ____ apology that satisfied no one.',o:['perfunctory','heartfelt','meticulous','resilient'],e:'satisfied no one なので形式的で誠意のない謝罪。'},
+{w:'pragmatic',p:'/præɡˈmætɪk/',m:'実用的な、現実的な',j:'理論より実効性を重視する。',s:'Rather than pursue an ideal solution, the team chose a ____ approach.',o:['pragmatic','dogmatic','ornate','reckless'],e:'ideal solution ではなく現実的 approach。'},
+{w:'proliferate',p:'/prəˈlɪfəreɪt/',m:'急増する、拡散する',j:'数が急に増える。',s:'Misinformation can ____ rapidly on social media platforms.',o:['proliferate','wane','stagnate','abstain'],e:'misinformation が social media で急速に拡散する。'},
+{w:'recalcitrant',p:'/rɪˈkælsɪtrənt/',m:'反抗的な、手に負えない',j:'指示や権威に従わない。',s:'The teacher struggled to manage a ____ student who ignored every instruction.',o:['recalcitrant','docile','eloquent','judicious'],e:'ignored every instruction なので反抗的。'},
+{w:'scrupulous',p:'/ˈskruːpjələs/',m:'良心的な、几帳面な',j:'道徳的・手続き的に非常に慎重。',s:'A ____ auditor checks every figure before signing the report.',o:['scrupulous','negligent','frivolous','vague'],e:'auditor が every figure を確認するので几帳面。'},
+{w:'tenuous',p:'/ˈtenjuəs/',m:'根拠の薄い、弱い',j:'論理・関係・証拠が弱い。',s:'The link between the two incidents remains ____ at best.',o:['tenuous','conclusive','robust','explicit'],e:'at best と link から「弱い・根拠が薄い」。'},
+{w:'ubiquitous',p:'/juːˈbɪkwɪtəs/',m:'至る所にある、遍在する',j:'どこでも見られる。',s:'Smartphones have become ____ in modern urban life.',o:['ubiquitous','obsolete','scarce','arcane'],e:'modern urban life の smartphones は至る所にある。'}
+];
+var KEY='eiken1_vocab_app_v2';
+function localDateKey(){var d=new Date();var y=d.getFullYear();var m=('0'+(d.getMonth()+1)).slice(-2);var day=('0'+d.getDate()).slice(-2);return y+'-'+m+'-'+day;}
+var today=localDateKey();
+var state={sets:{},answers:{},scores:{},known:{},days:[]};
+var todayWords=[]; var graded=false; var card=0; var back=false;
+function $(id){return document.getElementById(id)}
+function load(){try{var s=JSON.parse(localStorage.getItem(KEY)||'{}');state={sets:s.sets||{},answers:s.answers||{},scores:s.scores||{},known:s.known||{},days:s.days||[]}}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
+function shuffle(a){var r=a.slice();for(var i=r.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=r[i];r[i]=r[j];r[j]=t}return r}
+function createSet(force){if(!force && state.sets[today]){todayWords=state.sets[today].map(function(i){return WORDS[i]});}else{state.sets[today]=shuffle(WORDS.map(function(_,i){return i})).slice(0,10);state.answers[today]={};delete state.scores[today];todayWords=state.sets[today].map(function(i){return WORDS[i]});graded=false;card=0;back=false;save();}renderAll();$('status').textContent=today+' の10問を表示中です。'}
+function ensureSet(){if(todayWords.length===0)createSet(false)}
+function stats(){ $('score').textContent=(state.scores[today]!==undefined?state.scores[today]:0)+'/10'; $('days').textContent=state.days.length; $('known').textContent=Object.keys(state.known).filter(function(k){return state.known[k]}).length; }
+function quiz(){var box=$('quizBox');box.innerHTML=''; if(todayWords.length===0){box.innerHTML='<p class="muted">上の「今日の10問を作成」を押してください。</p>';return;} todayWords.forEach(function(x,i){var div=document.createElement('div');div.className='q';var html='<div class="muted">Question '+(i+1)+' / '+x.m+'</div><p class="sentence">'+x.s.replace('____','<b>____</b>')+'</p>';x.o.forEach(function(o){var cls='choice';if(state.answers[today]&&state.answers[today][i]===o)cls+=' selected';html+='<button type="button" class="'+cls+'" data-q="'+i+'" data-a="'+o+'">'+o+'</button>';});html+='<div class="explain"><b>'+x.w+'</b> '+x.p+'：'+x.e+'<br>'+x.j+'</div>';div.innerHTML=html;box.appendChild(div);}); Array.prototype.forEach.call(document.querySelectorAll('.choice'),function(b){b.onclick=function(){if(graded)return;state.answers[today]=state.answers[today]||{};state.answers[today][this.getAttribute('data-q')]=this.getAttribute('data-a');save();quiz();};}); if(graded)apply();}
+function apply(){Array.prototype.forEach.call(document.querySelectorAll('.q'),function(div,i){var correct=todayWords[i].w;var chosen=state.answers[today]&&state.answers[today][i];Array.prototype.forEach.call(div.querySelectorAll('.choice'),function(b){var a=b.getAttribute('data-a');if(a===correct)b.className+=' correct';if(a===chosen&&a!==correct)b.className+=' wrong';b.disabled=true;});div.querySelector('.explain').className+=' show';});}
+function markDay(){if(state.days.indexOf(today)<0)state.days.push(today)}
+function grade(){ensureSet();var sc=0;todayWords.forEach(function(x,i){if(state.answers[today]&&state.answers[today][i]===x.w)sc++;});state.scores[today]=sc;graded=true;markDay();save();stats();apply();$('status').textContent='採点しました：'+sc+'/10';}
+function showAns(){ensureSet();graded=true;if(state.scores[today]===undefined)state.scores[today]=0;markDay();save();stats();apply();$('status').textContent='解説を表示しました。';}
+function flash(){var f=$('flash');if(todayWords.length===0){$('cardWord').textContent='---';$('cardPron').textContent='';$('counter').textContent='';return;}var x=todayWords[card]; if(back){f.innerHTML='<div><p class="muted">MEANING</p><h2>'+x.m+'</h2><p>'+x.s.replace('____','<b>'+x.w+'</b>')+'</p><p class="muted">'+x.j+'</p></div>';}else{f.innerHTML='<div><p class="muted">WORD</p><h2>'+x.w+'</h2><p>'+x.p+'</p><p class="muted">クリックで意味を表示</p></div>';}$('knownBtn').textContent=state.known[x.w]?'覚えた ✓':'覚えた';$('counter').textContent=(card+1)+' / '+todayWords.length;}
+function wordlist(){var box=$('wordBox');box.innerHTML='';if(todayWords.length===0){box.innerHTML='<p class="muted">まだ単語セットがありません。</p>';return;}var q=($('search').value||'').toLowerCase();todayWords.filter(function(x){return (x.w+x.m+x.j).toLowerCase().indexOf(q)>=0}).forEach(function(x){var d=document.createElement('div');d.className='word';d.innerHTML='<h3>'+x.w+(state.known[x.w]?' ✓':'')+'</h3><p class="muted">'+x.p+' / '+x.m+'</p><p>'+x.s.replace('____','<b>'+x.w+'</b>')+'</p>';box.appendChild(d);});}
+function renderAll(){stats();quiz();flash();wordlist();}
+function onTap(el,fn){ if(!el) return; el.onclick=function(ev){ if(ev){ev.preventDefault();} fn(ev); return false; }; el.addEventListener('touchend', function(ev){ ev.preventDefault(); fn(ev); }, false); }
+function bind(){
+onTap($('createBtn'),function(){createSet(false)});
+onTap($('resetBtn'),function(){createSet(true)});
+onTap($('clearBtn'),function(){if(confirm('全履歴を削除しますか？')){try{localStorage.removeItem(KEY)}catch(e){}load();todayWords=[];graded=false;renderAll();$('status').textContent='履歴をリセットしました。';}});
+onTap($('gradeBtn'),grade);onTap($('answerBtn'),showAns);
+onTap($('flash'),function(){ensureSet();back=!back;flash();});
+onTap($('prevBtn'),function(){ensureSet();card=(card+todayWords.length-1)%todayWords.length;back=false;flash();});
+onTap($('nextBtn'),function(){ensureSet();card=(card+1)%todayWords.length;back=false;flash();});
+onTap($('knownBtn'),function(){ensureSet();var w=todayWords[card].w;state.known[w]=!state.known[w];save();stats();flash();wordlist();});
+$('search').oninput=wordlist;
+Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(t){onTap(t,function(){Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(x){x.classList.remove('active')});Array.prototype.forEach.call(document.querySelectorAll('.tabPanel'),function(x){x.classList.add('hidden')});t.classList.add('active');$(t.getAttribute('data-tab')).classList.remove('hidden');});});
+}
+function init(){load();bind(); if(state.sets[today]){todayWords=state.sets[today].map(function(i){return WORDS[i]});$('status').textContent=today+' の10問を表示中です。';} else {createSet(false);} renderAll();}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded', init, false);}else{init();}
+})();
+</script>
+</body>
+</html>
