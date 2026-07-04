@@ -2,42 +2,37 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>英検1級 単語学習アプリ iPhone対応版</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#172033">
+<title>英検1級 単語学習アプリ</title>
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f7fb;color:#172033}.wrap{max-width:1040px;margin:0 auto;padding:24px}header{display:flex;justify-content:space-between;gap:16px;align-items:center;margin-bottom:18px}h1{margin:0;font-size:32px}.sub{color:#667085;margin:6px 0 0}.panel{background:#fff;border:1px solid #d9e1ef;border-radius:20px;padding:20px;box-shadow:0 10px 28px rgba(22,34,66,.08);margin-bottom:16px}.actions{display:flex;gap:10px;flex-wrap:wrap}button{border:0;border-radius:12px;padding:11px 16px;font-weight:700;cursor:pointer;background:#e8edfb;color:#1f367f}button.primary{background:#2947a9;color:#fff}button.danger{background:#fff0ee;color:#a32929;border:1px solid #f3c6c0}button.choice{display:block;width:100%;text-align:left;background:#fff;border:1px solid #d9e1ef;color:#172033;margin:8px 0}.choice.selected{background:#edf2ff;border-color:#2947a9}.choice.correct{background:#eaf7f1;border-color:#0f7b50;color:#0f7b50}.choice.wrong{background:#fff0ee;border-color:#b42318;color:#b42318}.tabs{display:flex;gap:8px;margin-bottom:16px}.tab.active{background:#172033;color:#fff}.hidden{display:none}.q{border-top:1px solid #e4e9f2;padding-top:16px;margin-top:16px}.q:first-child{border-top:0;padding-top:0;margin-top:0}.sentence{font-size:18px;line-height:1.65}.muted{color:#667085}.explain{display:none;color:#667085;border-top:1px dashed #d9e1ef;padding-top:10px;margin-top:10px}.explain.show{display:block}.stats{display:flex;gap:12px;flex-wrap:wrap}.stat{background:#f0f3fb;border-radius:14px;padding:10px 14px;min-width:120px}.stat b{font-size:22px}.flash{min-height:280px;display:grid;place-items:center;text-align:center;cursor:pointer}.flash h2{font-size:44px;margin:4px}.wordgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.word{border:1px solid #d9e1ef;border-radius:16px;padding:14px;background:#fff}input{padding:11px 14px;border:1px solid #d9e1ef;border-radius:12px;width:min(380px,100%)}@media(max-width:720px){header{display:block}.actions{margin-top:14px}.stats{display:grid}.wrap{padding:16px}}
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;background:linear-gradient(180deg,#f3f6fb 0,#eef2f8 100%);color:#172033}.wrap{max-width:1080px;margin:0 auto;padding:24px 16px 48px}header{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px}h1{font-size:30px;margin:0 0 6px}.sub{margin:0;color:#667085;line-height:1.6}.actions{display:flex;gap:10px;flex-wrap:wrap}button{appearance:none;border:0;border-radius:14px;padding:12px 16px;font-weight:800;cursor:pointer;background:#e8eefb;color:#1e3478;font-size:15px}button.primary{background:#2947a9;color:#fff}button.danger{background:#fff1ef;color:#a32929;border:1px solid #f4c7c1}button.ghost{background:#fff;border:1px solid #d9e1ef;color:#172033}button:disabled{opacity:.55;cursor:not-allowed}.panel{background:#fff;border:1px solid #d9e1ef;border-radius:22px;padding:20px;box-shadow:0 12px 30px rgba(22,34,66,.08);margin-bottom:16px}.stats{display:grid;grid-template-columns:repeat(4,minmax(130px,1fr));gap:12px}.stat{background:#f0f3fb;border-radius:16px;padding:12px 14px}.stat span{display:block;color:#667085;font-size:13px}.stat b{font-size:24px}.tabs{display:flex;gap:8px;margin:12px 0 16px;position:sticky;top:0;background:#eef2f8;padding:8px 0;z-index:2}.tab.active{background:#172033;color:#fff}.hidden{display:none!important}.q{border-top:1px solid #e4e9f2;padding-top:18px;margin-top:18px}.q:first-child{border-top:0;padding-top:0;margin-top:0}.meta{color:#667085;margin-bottom:8px}.sentence{font-size:18px;line-height:1.75;margin:8px 0 12px}.choice{display:block;width:100%;text-align:left;background:#fff;border:1px solid #d9e1ef;color:#172033;margin:8px 0;padding:13px 16px}.choice.selected{background:#edf2ff;border-color:#2947a9}.choice.correct{background:#e9f7f0;border-color:#0f7b50;color:#0f7b50}.choice.wrong{background:#fff0ee;border-color:#b42318;color:#b42318}.explain{display:none;border-left:4px solid #d9e1ef;padding:10px 12px;background:#f8fafc;color:#475467;border-radius:10px;margin-top:10px;line-height:1.6}.explain.show{display:block}.flash{min-height:310px;display:grid;place-items:center;text-align:center;cursor:pointer;user-select:none;border:1px solid #e4e9f2;border-radius:20px;background:linear-gradient(180deg,#fff,#f8fafc)}.flash h2{font-size:44px;margin:4px}.flash .meaning{font-size:22px;font-weight:800;margin:12px}.progress{height:10px;background:#e8eefb;border-radius:999px;overflow:hidden;margin-top:12px}.bar{height:100%;background:#2947a9;width:0}.wordgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}.word{border:1px solid #d9e1ef;border-radius:16px;padding:14px;background:#fff}.word b{font-size:18px}input,textarea{width:100%;max-width:460px;padding:12px 14px;border:1px solid #d9e1ef;border-radius:14px;font-size:16px}.small{font-size:13px;color:#667085}.pill{display:inline-block;border-radius:999px;background:#edf2ff;color:#1e3478;font-size:12px;font-weight:800;padding:4px 8px;margin-right:6px}.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:#172033;color:#fff;padding:12px 16px;border-radius:999px;box-shadow:0 12px 30px rgba(0,0,0,.2);display:none;z-index:10}.toast.show{display:block}@media(max-width:760px){.wrap{padding:18px 12px 40px}header{display:block}.actions{margin-top:14px}.stats{grid-template-columns:repeat(2,1fr)}h1{font-size:26px}.flash h2{font-size:36px}.tabs{overflow:auto}.sentence{font-size:17px}button{min-height:44px}}
 </style>
 </head>
 <body>
 <div class="wrap">
 <header>
-  <div><h1>英検1級 単語学習アプリ</h1><p class="sub">10問の空欄補充4択クイズ＋当日単語のフラッシュカード（iPhone Safari対応）</p></div>
-  <div class="actions">
-    <button id="createBtn" class="primary" type="button">今日の10問を作成</button>
-    <button id="resetBtn" type="button">今日の10問を再生成</button>
-    <button id="clearBtn" class="danger" type="button">履歴リセット</button>
-  </div>
+  <div><h1>英検1級 単語学習アプリ</h1><p class="sub">毎日10問の空欄補充4択クイズ＋当日単語のフラッシュカード。苦手語を優先して復習します。</p></div>
+  <div class="actions"><button id="todayBtn" class="primary">今日の10問</button><button id="regenBtn">再生成</button><button id="resetBtn" class="danger">履歴リセット</button></div>
 </header>
 <section class="panel">
   <div class="stats">
-    <div class="stat"><div class="muted">Score</div><b id="score">0/10</b></div>
-    <div class="stat"><div class="muted">Study days</div><b id="days">0</b></div>
-    <div class="stat"><div class="muted">Known cards</div><b id="known">0</b></div>
+    <div class="stat"><span>Today's score</span><b id="score">0/10</b></div>
+    <div class="stat"><span>Study days</span><b id="days">0</b></div>
+    <div class="stat"><span>Known words</span><b id="known">0</b></div>
+    <div class="stat"><span>Due today</span><b id="due">0</b></div>
   </div>
-  <p id="status" class="muted" style="margin:12px 0 0">「今日の10問を作成」を押してください。</p>
+  <div class="progress"><div id="bar" class="bar"></div></div>
+  <p id="status" class="small">読み込み中です。</p>
 </section>
-<nav class="tabs">
-  <button class="tab active" type="button" data-tab="quiz">Quiz</button>
-  <button class="tab" type="button" data-tab="cards">Flashcards</button>
-  <button class="tab" type="button" data-tab="words">Word List</button>
-</nav>
-<section id="quiz" class="panel tabPanel"><div id="quizBox"></div><div class="actions" style="margin-top:16px"><button id="gradeBtn" class="primary" type="button">採点する</button><button id="answerBtn" type="button">解説を表示</button></div></section>
-<section id="cards" class="panel tabPanel hidden"><div id="flash" class="flash"><div><p class="muted">WORD</p><h2 id="cardWord">---</h2><p id="cardPron"></p><p class="muted">クリックで意味を表示</p></div></div><div class="actions" style="justify-content:center"><button id="prevBtn" type="button">前へ</button><button id="knownBtn" class="primary" type="button">覚えた</button><button id="nextBtn" type="button">次へ</button></div><p id="counter" class="muted" style="text-align:center"></p></section>
+<nav class="tabs"><button class="tab active" data-tab="quiz">Quiz</button><button class="tab" data-tab="cards">Flashcards</button><button class="tab" data-tab="words">Word List</button><button class="tab" data-tab="data">Data</button></nav>
+<section id="quiz" class="panel tabPanel"><div id="quizBox"></div><div class="actions" style="margin-top:16px"><button id="gradeBtn" class="primary">採点する</button><button id="answerBtn">解説を表示</button></div></section>
+<section id="cards" class="panel tabPanel hidden"><div id="flash" class="flash"><div><p class="small">FLASHCARD</p><h2 id="cardWord">---</h2><p id="cardPron" class="small"></p><p id="cardMean" class="meaning hidden"></p><p id="cardHint" class="small">タップで意味を表示</p></div></div><div class="actions" style="justify-content:center;margin-top:14px"><button id="prevBtn">前へ</button><button id="hardBtn" class="ghost">まだ</button><button id="goodBtn" class="primary">覚えた</button><button id="nextBtn">次へ</button></div><p id="counter" class="small" style="text-align:center"></p></section>
 <section id="words" class="panel tabPanel hidden"><input id="search" type="search" placeholder="単語・意味で検索"><div id="wordBox" class="wordgrid" style="margin-top:14px"></div></section>
-</div>
+<section id="data" class="panel tabPanel hidden"><h2>学習データ</h2><p class="small">端末の localStorage に保存されます。iPhoneとPCでは別データです。</p><div class="actions"><button id="exportBtn">データを書き出し</button><button id="copyBtn">コピー</button></div><textarea id="dataBox" rows="8" placeholder="ここに学習データが表示されます" style="margin-top:12px"></textarea></section>
+</div><div id="toast" class="toast"></div>
 <script>
-(function(){
-'use strict';
+(function(){'use strict';
 var WORDS=[
 {w:'aberration',p:'/ˌæbəˈreɪʃən/',m:'逸脱、異常',j:'通常期待される状態から外れたもの。',s:'The sudden decline in sales was dismissed as a temporary ____ rather than a long-term trend.',o:['aberration','allegiance','reverence','deference'],e:'temporary aberration で「一時的な異常・例外」。'},
 {w:'acrimonious',p:'/ˌækrɪˈmoʊniəs/',m:'辛辣な、とげとげしい',j:'議論・関係などが険悪で攻撃的な様子。',s:'The negotiations became increasingly ____ after both sides refused to compromise.',o:['acrimonious','affluent','pliable','benign'],e:'refused to compromise なので「険悪な」が自然。'},
@@ -60,51 +55,47 @@ var WORDS=[
 {w:'galvanize',p:'/ˈɡælvənaɪz/',m:'奮起させる、活性化する',j:'人々を刺激して行動させる。',s:'The crisis helped ____ citizens into volunteering for relief efforts.',o:['galvanize','dissuade','alienate','encumber'],e:'galvanize A into doing で「Aを奮起させて〜させる」。'},
 {w:'intransigent',p:'/ɪnˈtrænzɪdʒənt/',m:'妥協しない、強硬な',j:'立場を変えず譲歩しない。',s:'The talks collapsed because both parties remained ____.',o:['intransigent','amenable','candid','sporadic'],e:'talks collapsed なので「妥協しない」。'},
 {w:'laconic',p:'/ləˈkɑːnɪk/',m:'簡潔な、口数の少ない',j:'少ない言葉で表現する。',s:'His ____ reply consisted of only two words: “Not approved.”',o:['laconic','verbose','haphazard','opulent'],e:'only two words が手がかり。'},
-{w:'mitigate',p:'/ˈmɪtɪɡeɪt/',m:'軽減する、緩和する',j:'被害・リスク・悪影響を小さくする。',s:'The city planted trees to ____ the impact of extreme heat.',o:['mitigate','intensify','derail','provoke'],e:'impact of heat を軽減する。'},
-{w:'obdurate',p:'/ˈɑːbdərət/',m:'頑固な、強情な',j:'説得されても考えを変えない。',s:'Despite overwhelming evidence, he remained ____ in his denial.',o:['obdurate','receptive','tentative','affable'],e:'evidence があっても denial なので「頑固な」。'},
-{w:'perfunctory',p:'/pərˈfʌŋktəri/',m:'おざなりの、形式的な',j:'最低限だけ行い、熱意や注意がない。',s:'The manager gave a ____ apology that satisfied no one.',o:['perfunctory','heartfelt','meticulous','resilient'],e:'satisfied no one なので形式的で誠意のない謝罪。'},
-{w:'pragmatic',p:'/præɡˈmætɪk/',m:'実用的な、現実的な',j:'理論より実効性を重視する。',s:'Rather than pursue an ideal solution, the team chose a ____ approach.',o:['pragmatic','dogmatic','ornate','reckless'],e:'ideal solution ではなく現実的 approach。'},
-{w:'proliferate',p:'/prəˈlɪfəreɪt/',m:'急増する、拡散する',j:'数が急に増える。',s:'Misinformation can ____ rapidly on social media platforms.',o:['proliferate','wane','stagnate','abstain'],e:'misinformation が social media で急速に拡散する。'},
-{w:'recalcitrant',p:'/rɪˈkælsɪtrənt/',m:'反抗的な、手に負えない',j:'指示や権威に従わない。',s:'The teacher struggled to manage a ____ student who ignored every instruction.',o:['recalcitrant','docile','eloquent','judicious'],e:'ignored every instruction なので反抗的。'},
-{w:'scrupulous',p:'/ˈskruːpjələs/',m:'良心的な、几帳面な',j:'道徳的・手続き的に非常に慎重。',s:'A ____ auditor checks every figure before signing the report.',o:['scrupulous','negligent','frivolous','vague'],e:'auditor が every figure を確認するので几帳面。'},
-{w:'tenuous',p:'/ˈtenjuəs/',m:'根拠の薄い、弱い',j:'論理・関係・証拠が弱い。',s:'The link between the two incidents remains ____ at best.',o:['tenuous','conclusive','robust','explicit'],e:'at best と link から「弱い・根拠が薄い」。'},
-{w:'ubiquitous',p:'/juːˈbɪkwɪtəs/',m:'至る所にある、遍在する',j:'どこでも見られる。',s:'Smartphones have become ____ in modern urban life.',o:['ubiquitous','obsolete','scarce','arcane'],e:'modern urban life の smartphones は至る所にある。'}
+{w:'mitigate',p:'/ˈmɪtɪɡeɪt/',m:'軽減する、緩和する',j:'被害・リスク・悪影響を小さくする。',s:'The city planted trees to ____ the impact of extreme heat.',o:['mitigate','intensify','derail','provoke'],e:'impact of heat を小さくする。'},
+{w:'obdurate',p:'/ˈɑːbdərət/',m:'頑固な、強情な',j:'説得されても考えを変えない。',s:'Despite overwhelming evidence, the board remained ____ in its refusal to change course.',o:['obdurate','pliable','tentative','cordial'],e:'refusal to change course から頑固。'},
+{w:'perfunctory',p:'/pərˈfʌŋktəri/',m:'おざなりの、形式的な',j:'義務的で熱意や注意がない。',s:'The manager gave a ____ apology that satisfied no one.',o:['perfunctory','heartfelt','meticulous','radiant'],e:'satisfied no one なので「おざなりの謝罪」。'},
+{w:'proliferate',p:'/prəˈlɪfəreɪt/',m:'急増する、拡散する',j:'数や種類が急速に増える。',s:'Misinformation can ____ rapidly on social media platforms.',o:['proliferate','abate','stagnate','subside'],e:'rapidly on social media なので「拡散する」。'},
+{w:'recalcitrant',p:'/rɪˈkælsɪtrənt/',m:'反抗的な、扱いにくい',j:'規則や指示に従おうとしない。',s:'The teacher struggled to manage a ____ student who ignored every instruction.',o:['recalcitrant','compliant','docile','amiable'],e:'ignored every instruction が手がかり。'},
+{w:'repudiate',p:'/rɪˈpjuːdieɪt/',m:'拒絶する、否認する',j:'主張・契約・関係などを公式に退ける。',s:'The senator moved quickly to ____ the controversial remarks.',o:['repudiate','endorse','ratify','cherish'],e:'controversial remarks を「否認する」。'},
+{w:'resilient',p:'/rɪˈzɪliənt/',m:'回復力のある',j:'困難から立ち直る力がある。',s:'Small businesses proved surprisingly ____ after the natural disaster.',o:['resilient','brittle','lethargic','obsolete'],e:'after disaster でも耐える・回復する。'},
+{w:'scrutinize',p:'/ˈskruːtənaɪz/',m:'精査する',j:'細部まで注意深く調べる。',s:'Auditors were asked to ____ the company’s financial records.',o:['scrutinize','neglect','fabricate','appease'],e:'auditors と financial records から「精査」。'},
+{w:'tenuous',p:'/ˈtenjuəs/',m:'根拠の薄い、弱い',j:'関係・主張・証拠が弱く不確か。',s:'The link between the policy and the economic recovery remains ____.',o:['tenuous','robust','explicit','inevitable'],e:'link remains tenuous で「関連が弱い」。'},
+{w:'ubiquitous',p:'/juːˈbɪkwɪtəs/',m:'至る所にある',j:'どこにでも存在する。',s:'Smartphones have become ____ in modern urban life.',o:['ubiquitous','scarce','archaic','opaque'],e:'modern life でスマホは「遍在する」。'},
+{w:'vacillate',p:'/ˈvæsəleɪt/',m:'揺れ動く、迷う',j:'決定や意見が行ったり来たりする。',s:'The committee continued to ____ between two competing proposals.',o:['vacillate','persevere','reconcile','accelerate'],e:'between two proposals なので迷う。'},
+{w:'vindicate',p:'/ˈvɪndɪkeɪt/',m:'正当性を証明する',j:'疑いを晴らし正しかったと示す。',s:'The final report seemed to ____ her decision to delay the launch.',o:['vindicate','condemn','belittle','distort'],e:'decision が正しかったと示す。'},
+{w:'wary',p:'/ˈweri/',m:'警戒している',j:'危険や問題に用心している。',s:'Consumers are increasingly ____ of companies that collect excessive personal data.',o:['wary','oblivious','elated','reckless'],e:'excessive personal data への警戒。'}
 ];
-var KEY='eiken1_vocab_app_v2';
-function localDateKey(){var d=new Date();var y=d.getFullYear();var m=('0'+(d.getMonth()+1)).slice(-2);var day=('0'+d.getDate()).slice(-2);return y+'-'+m+'-'+day;}
-var today=localDateKey();
-var state={sets:{},answers:{},scores:{},known:{},days:[]};
-var todayWords=[]; var graded=false; var card=0; var back=false;
+var KEY='eiken1_vocab_app_v4';var today=localDate();var state={date:'',questions:[],answers:{},graded:false,score:0,stats:{},days:{},card:0,reveal:false};
 function $(id){return document.getElementById(id)}
-function load(){try{var s=JSON.parse(localStorage.getItem(KEY)||'{}');state={sets:s.sets||{},answers:s.answers||{},scores:s.scores||{},known:s.known||{},days:s.days||[]}}catch(e){}}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){}}
-function shuffle(a){var r=a.slice();for(var i=r.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=r[i];r[i]=r[j];r[j]=t}return r}
-function createSet(force){if(!force && state.sets[today]){todayWords=state.sets[today].map(function(i){return WORDS[i]});}else{state.sets[today]=shuffle(WORDS.map(function(_,i){return i})).slice(0,10);state.answers[today]={};delete state.scores[today];todayWords=state.sets[today].map(function(i){return WORDS[i]});graded=false;card=0;back=false;save();}renderAll();$('status').textContent=today+' の10問を表示中です。'}
-function ensureSet(){if(todayWords.length===0)createSet(false)}
-function stats(){ $('score').textContent=(state.scores[today]!==undefined?state.scores[today]:0)+'/10'; $('days').textContent=state.days.length; $('known').textContent=Object.keys(state.known).filter(function(k){return state.known[k]}).length; }
-function quiz(){var box=$('quizBox');box.innerHTML=''; if(todayWords.length===0){box.innerHTML='<p class="muted">上の「今日の10問を作成」を押してください。</p>';return;} todayWords.forEach(function(x,i){var div=document.createElement('div');div.className='q';var html='<div class="muted">Question '+(i+1)+' / '+x.m+'</div><p class="sentence">'+x.s.replace('____','<b>____</b>')+'</p>';x.o.forEach(function(o){var cls='choice';if(state.answers[today]&&state.answers[today][i]===o)cls+=' selected';html+='<button type="button" class="'+cls+'" data-q="'+i+'" data-a="'+o+'">'+o+'</button>';});html+='<div class="explain"><b>'+x.w+'</b> '+x.p+'：'+x.e+'<br>'+x.j+'</div>';div.innerHTML=html;box.appendChild(div);}); Array.prototype.forEach.call(document.querySelectorAll('.choice'),function(b){b.onclick=function(){if(graded)return;state.answers[today]=state.answers[today]||{};state.answers[today][this.getAttribute('data-q')]=this.getAttribute('data-a');save();quiz();};}); if(graded)apply();}
-function apply(){Array.prototype.forEach.call(document.querySelectorAll('.q'),function(div,i){var correct=todayWords[i].w;var chosen=state.answers[today]&&state.answers[today][i];Array.prototype.forEach.call(div.querySelectorAll('.choice'),function(b){var a=b.getAttribute('data-a');if(a===correct)b.className+=' correct';if(a===chosen&&a!==correct)b.className+=' wrong';b.disabled=true;});div.querySelector('.explain').className+=' show';});}
-function markDay(){if(state.days.indexOf(today)<0)state.days.push(today)}
-function grade(){ensureSet();var sc=0;todayWords.forEach(function(x,i){if(state.answers[today]&&state.answers[today][i]===x.w)sc++;});state.scores[today]=sc;graded=true;markDay();save();stats();apply();$('status').textContent='採点しました：'+sc+'/10';}
-function showAns(){ensureSet();graded=true;if(state.scores[today]===undefined)state.scores[today]=0;markDay();save();stats();apply();$('status').textContent='解説を表示しました。';}
-function flash(){var f=$('flash');if(todayWords.length===0){$('cardWord').textContent='---';$('cardPron').textContent='';$('counter').textContent='';return;}var x=todayWords[card]; if(back){f.innerHTML='<div><p class="muted">MEANING</p><h2>'+x.m+'</h2><p>'+x.s.replace('____','<b>'+x.w+'</b>')+'</p><p class="muted">'+x.j+'</p></div>';}else{f.innerHTML='<div><p class="muted">WORD</p><h2>'+x.w+'</h2><p>'+x.p+'</p><p class="muted">クリックで意味を表示</p></div>';}$('knownBtn').textContent=state.known[x.w]?'覚えた ✓':'覚えた';$('counter').textContent=(card+1)+' / '+todayWords.length;}
-function wordlist(){var box=$('wordBox');box.innerHTML='';if(todayWords.length===0){box.innerHTML='<p class="muted">まだ単語セットがありません。</p>';return;}var q=($('search').value||'').toLowerCase();todayWords.filter(function(x){return (x.w+x.m+x.j).toLowerCase().indexOf(q)>=0}).forEach(function(x){var d=document.createElement('div');d.className='word';d.innerHTML='<h3>'+x.w+(state.known[x.w]?' ✓':'')+'</h3><p class="muted">'+x.p+' / '+x.m+'</p><p>'+x.s.replace('____','<b>'+x.w+'</b>')+'</p>';box.appendChild(d);});}
-function renderAll(){stats();quiz();flash();wordlist();}
-function onTap(el,fn){ if(!el) return; el.onclick=function(ev){ if(ev){ev.preventDefault();} fn(ev); return false; }; el.addEventListener('touchend', function(ev){ ev.preventDefault(); fn(ev); }, false); }
-function bind(){
-onTap($('createBtn'),function(){createSet(false)});
-onTap($('resetBtn'),function(){createSet(true)});
-onTap($('clearBtn'),function(){if(confirm('全履歴を削除しますか？')){try{localStorage.removeItem(KEY)}catch(e){}load();todayWords=[];graded=false;renderAll();$('status').textContent='履歴をリセットしました。';}});
-onTap($('gradeBtn'),grade);onTap($('answerBtn'),showAns);
-onTap($('flash'),function(){ensureSet();back=!back;flash();});
-onTap($('prevBtn'),function(){ensureSet();card=(card+todayWords.length-1)%todayWords.length;back=false;flash();});
-onTap($('nextBtn'),function(){ensureSet();card=(card+1)%todayWords.length;back=false;flash();});
-onTap($('knownBtn'),function(){ensureSet();var w=todayWords[card].w;state.known[w]=!state.known[w];save();stats();flash();wordlist();});
-$('search').oninput=wordlist;
-Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(t){onTap(t,function(){Array.prototype.forEach.call(document.querySelectorAll('.tab'),function(x){x.classList.remove('active')});Array.prototype.forEach.call(document.querySelectorAll('.tabPanel'),function(x){x.classList.add('hidden')});t.classList.add('active');$(t.getAttribute('data-tab')).classList.remove('hidden');});});
-}
-function init(){load();bind(); if(state.sets[today]){todayWords=state.sets[today].map(function(i){return WORDS[i]});$('status').textContent=today+' の10問を表示中です。';} else {createSet(false);} renderAll();}
-if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded', init, false);}else{init();}
+function localDate(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
+function load(){try{var raw=localStorage.getItem(KEY);if(raw)state=Object.assign(state,JSON.parse(raw));}catch(e){} if(!state.stats)state.stats={}; if(!state.days)state.days={}; WORDS.forEach(function(x){if(!state.stats[x.w])state.stats[x.w]={seen:0,correct:0,wrong:0,known:false,due:'2000-01-01',level:0}})}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));}catch(e){toast('保存できませんでした')}}
+function hash(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h+=(h<<1)+(h<<4)+(h<<7)+(h<<8)+(h<<24)}return h>>>0}
+function rng(seed){var x=seed||123456789;return function(){x^=x<<13;x^=x>>>17;x^=x<<5;return ((x>>>0)/4294967296)}}
+function shuffle(a,seed){var r=rng(seed);a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(r()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function addDays(d,n){var x=new Date(d+'T00:00:00');x.setDate(x.getDate()+n);x.setMinutes(x.getMinutes()-x.getTimezoneOffset());return x.toISOString().slice(0,10)}
+function schedule(word,ok){var s=state.stats[word];s.seen++; if(ok){s.correct++;s.level=Math.min(5,(s.level||0)+1);var gaps=[1,2,4,7,14,30];s.due=addDays(today,gaps[s.level]||30); if(s.level>=4)s.known=true;}else{s.wrong++;s.level=0;s.known=false;s.due=addDays(today,1)}}
+function generate(force){load();today=localDate();if(!force&&state.date===today&&state.questions&&state.questions.length){render();return}state.date=today;state.answers={};state.graded=false;state.score=0;state.card=0;state.reveal=false;state.days[today]=true;var due=WORDS.filter(function(x){var st=state.stats[x.w];return !st.known&&(st.due<=today||st.wrong>0)});var rest=WORDS.filter(function(x){return due.indexOf(x)<0});due.sort(function(a,b){var A=state.stats[a.w],B=state.stats[b.w];return (B.wrong-A.wrong)||(A.level-B.level)||(A.due>B.due?1:-1)});var pool=due.concat(shuffle(rest,hash(today)));state.questions=pool.slice(0,10).map(function(x){return x.w});save();render();toast('今日の10問を作成しました')}
+function currentWords(){return (state.questions||[]).map(function(w){return WORDS.find(function(x){return x.w===w})}).filter(Boolean)}
+function render(){renderStats();renderQuiz();renderCard();renderWords()}
+function renderStats(){var words=currentWords();$('score').textContent=(state.score||0)+'/'+(words.length||10);$('days').textContent=Object.keys(state.days||{}).length;$('known').textContent=Object.keys(state.stats).filter(function(w){return state.stats[w].known}).length;$('due').textContent=WORDS.filter(function(x){return state.stats[x.w].due<=today&&!state.stats[x.w].known}).length;$('bar').style.width=((state.score||0)/10*100)+'%';$('status').textContent=state.date? state.date+' の10問を表示中です。':'「今日の10問」を押してください。'}
+function renderQuiz(){var box=$('quizBox'),words=currentWords();if(!words.length){box.innerHTML='<p>「今日の10問」を押してください。</p>';return}box.innerHTML=words.map(function(x,i){var opts=shuffle(x.o,hash(today+x.w));return '<div class="q" data-word="'+x.w+'"><div class="meta">Question '+(i+1)+' / '+x.m+'</div><div class="sentence">'+x.s+'</div>'+opts.map(function(o){var cls='choice'; if(state.answers[x.w]===o)cls+=' selected'; if(state.graded&&o===x.w)cls+=' correct'; if(state.graded&&state.answers[x.w]===o&&o!==x.w)cls+=' wrong'; return '<button class="'+cls+'" data-choice="'+o+'">'+o+'</button>'}).join('')+'<div class="explain '+(state.graded?'show':'')+'"><b>'+x.w+'</b> '+x.p+' / '+x.m+'<br>'+x.j+'<br>'+x.e+'</div></div>'}).join('');box.querySelectorAll('.choice').forEach(function(b){b.addEventListener('click',function(){if(state.graded)return;var q=b.closest('.q');state.answers[q.getAttribute('data-word')]=b.getAttribute('data-choice');save();renderQuiz()})})}
+function grade(){var words=currentWords();if(!words.length)return;var score=0;words.forEach(function(x){var ok=state.answers[x.w]===x.w;if(ok)score++;schedule(x.w,ok)});state.score=score;state.graded=true;state.days[today]=true;save();render();toast(score+' / '+words.length+' 点です')}
+function showAnswers(){state.graded=true;save();renderQuiz()}
+function renderCard(){var words=currentWords();if(!words.length){$('cardWord').textContent='---';$('cardMean').textContent='';$('counter').textContent='';return}if(state.card>=words.length)state.card=0;if(state.card<0)state.card=words.length-1;var x=words[state.card];$('cardWord').textContent=x.w;$('cardPron').textContent=x.p;$('cardMean').textContent=x.m+' / '+x.j;$('cardMean').className=state.reveal?'meaning':'meaning hidden';$('cardHint').textContent=state.reveal?'もう一度タップで単語へ':'タップで意味を表示';$('counter').textContent=(state.card+1)+' / '+words.length}
+function next(n){var words=currentWords();if(!words.length)return;state.card=(state.card+n+words.length)%words.length;state.reveal=false;save();renderCard()}
+function mark(ok){var words=currentWords();if(!words.length)return;schedule(words[state.card].w,ok);state.reveal=false;save();renderStats();renderWords();next(1);toast(ok?'覚えたにしました':'明日また出します')}
+function renderWords(){var q=($('search').value||'').toLowerCase();var arr=WORDS.filter(function(x){return !q||x.w.toLowerCase().includes(q)||x.m.includes(q)||x.j.includes(q)});$('wordBox').innerHTML=arr.map(function(x){var st=state.stats[x.w]||{};return '<div class="word"><b>'+x.w+'</b><div class="small">'+x.p+'</div><p>'+x.m+'</p><p class="small">'+x.j+'</p><span class="pill">正解 '+(st.correct||0)+'</span><span class="pill">誤答 '+(st.wrong||0)+'</span><span class="pill">due '+(st.due||'-')+'</span></div>'}).join('')}
+function switchTab(name){document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('active',t.dataset.tab===name)});document.querySelectorAll('.tabPanel').forEach(function(p){p.classList.toggle('hidden',p.id!==name)});if(name==='data')exportData()}
+function exportData(){$('dataBox').value=JSON.stringify({exportedAt:new Date().toISOString(),state:state},null,2)}
+function toast(msg){var t=$('toast');t.textContent=msg;t.className='toast show';setTimeout(function(){t.className='toast'},1600)}
+function bind(){$('todayBtn').addEventListener('click',function(){generate(false)});$('regenBtn').addEventListener('click',function(){if(confirm('今日の問題を再生成しますか？回答は消えます。'))generate(true)});$('resetBtn').addEventListener('click',function(){if(confirm('学習履歴をすべて削除しますか？')){localStorage.removeItem(KEY);state={date:'',questions:[],answers:{},graded:false,score:0,stats:{},days:{},card:0,reveal:false};load();generate(true)}});$('gradeBtn').addEventListener('click',grade);$('answerBtn').addEventListener('click',showAnswers);$('flash').addEventListener('click',function(){state.reveal=!state.reveal;save();renderCard()});$('prevBtn').addEventListener('click',function(){next(-1)});$('nextBtn').addEventListener('click',function(){next(1)});$('goodBtn').addEventListener('click',function(){mark(true)});$('hardBtn').addEventListener('click',function(){mark(false)});$('search').addEventListener('input',renderWords);$('exportBtn').addEventListener('click',exportData);$('copyBtn').addEventListener('click',function(){exportData();$('dataBox').select();document.execCommand('copy');toast('コピーしました')});document.querySelectorAll('.tab').forEach(function(t){t.addEventListener('click',function(){switchTab(t.dataset.tab)})})}
+function init(){load();bind();if(state.date!==today||!state.questions||!state.questions.length)generate(false);else render()}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
 </script>
 </body>
