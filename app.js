@@ -21,7 +21,33 @@ function mission(){ensureMission();return state.missions[today]}
 function cardsSeenCount(){return Object.keys(mission().cards||{}).length}
 function updateMission(){var m=mission();m.cardsDone=cardsSeenCount()>=10;if(m.quiz&&m.cardsDone&&!m.complete){m.complete=true;state.days[today]=true;toast('Daily Mission Complete! Streak達成です')}save()}
 function recentMap(days,includeToday){var out={},dates=Object.keys(state.history||{}).sort().slice(-days);dates.forEach(function(d){if(!includeToday&&d===today)return;(state.history[d]||[]).forEach(function(w){out[w]=true})});return out}
-function priority(x,recent,current){var st=state.stats[x.w]||{},p=0;if(st.wrong)p+=st.wrong*12;if(!st.known&&(st.due||'2000-01-01')<=today)p+=30;if(st.level)p-=st.level*4;if(recent[x.w])p-=45;if(current&&current[x.w])p-=80;if(st.known)p-=35;return p}
+function priority(x,recent,current){
+  var st=state.stats[x.w]||{};
+  var p=0;
+
+  // 1. 間違えた単語は最優先
+  if(st.wrong)p+=st.wrong*20;
+
+  // 2. 復習期限が来ている単語を優先
+  if(!st.known&&(st.due||'2000-01-01')<=today)p+=40;
+
+  // 3. 未学習語も一定量出す
+  if(!st.seen)p+=25;
+
+  // 4. 覚えた単語は出題頻度を下げる
+  if(st.known)p-=50;
+
+  // 5. レベルが高い単語は少し下げる
+  if(st.level)p-=st.level*6;
+
+  // 6. 直近7日に出た単語は下げる
+  if(recent[x.w])p-=35;
+
+  // 7. 再生成時は現在の10問を強く避ける
+  if(current&&current[x.w])p-=100;
+
+  return p;
+}
 function pickQuestions(force){var recent=recentMap(7,false),current={};(state.questions||[]).forEach(function(w){current[w]=true});var seed=hash(today+'-'+(state.regenByDate[today]||0)+'-'+RELEASE);var ranked=shuffle(WORDS,seed).sort(function(a,b){return priority(b,recent,force?current:null)-priority(a,recent,force?current:null)});var first=ranked.filter(function(x){return!recent[x.w]&&(!force||!current[x.w])});var second=ranked.filter(function(x){return first.indexOf(x)<0&&(!force||!current[x.w])});var third=ranked.filter(function(x){return first.indexOf(x)<0&&second.indexOf(x)<0});return first.concat(second,third).slice(0,10).map(function(x){return x.w})}
 function generate(force){load();today=localDate();ensureMission();applyTheme();if(!force&&state.date===today&&state.questions&&state.questions.length===10){render();return}if(force)state.regenByDate[today]=(state.regenByDate[today]||0)+1;state.date=today;state.answers={};state.graded=false;state.score=0;state.card=0;state.reveal=false;state.missions[today]={quiz:false,cards:{},cardsDone:false,complete:false};state.questions=pickQuestions(force);state.history[today]=state.questions;save();render();toast(force?'重複を抑えて10問を再生成しました':'今日の10問を作成しました')}
 function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
