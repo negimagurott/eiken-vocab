@@ -32,7 +32,34 @@ function grade(){var words=currentWords();if(!words.length)return;var score=0;wo
 function showAnswers(){state.graded=true;save();renderQuiz()}
 function renderCard(){var words=currentWords();if(!words.length){$('cardWord').textContent='---';$('counter').textContent='';return}if(state.card>=words.length)state.card=0;if(state.card<0)state.card=words.length-1;var x=words[state.card];mission().cards[x.w]=true;updateMission();$('flash').classList.toggle('flipped',!!state.reveal);$('cardWord').textContent=x.w;$('backWord').textContent=x.w;$('cardPron').textContent=x.p||'';$('cardMean').textContent=x.m+' / '+x.j;$('cardSentence').textContent=x.s.replace('____',x.w);$('cardUsage').textContent=x.u;$('cardSpeak').setAttribute('data-word',x.w);$('counter').textContent=(state.card+1)+' / '+words.length}
 function next(n){var words=currentWords();if(!words.length)return;state.card=(state.card+n+words.length)%words.length;state.reveal=false;save();renderCard();renderStats()}
-function mark(ok){var words=currentWords();if(!words.length)return;var word=words[state.card].w;schedule(word,ok);state.reveal=false;save();renderWords();toast(ok?'覚えた：復習間隔を延ばしました':'まだ：明日また出します');setTimeout(function(){next(1)},650)}
+function mark(ok){
+  var words=currentWords();
+  if(!words.length)return;
+
+  var word=words[state.card].w;
+  var btn=ok ? $('goodBtn') : $('hardBtn');
+  var flash=$('flash');
+
+  schedule(word,ok);
+  state.reveal=false;
+  save();
+  renderWords();
+
+  flash.classList.remove('feedback-good','feedback-hard');
+  if(btn){
+    btn.classList.remove('feedback-good','feedback-hard');
+    btn.classList.add(ok?'feedback-good':'feedback-hard');
+  }
+  flash.classList.add(ok?'feedback-good':'feedback-hard');
+
+  toast(ok ? '✓ 覚えた：復習間隔を延ばしました' : '↻ まだ：明日もう一度出します');
+
+  setTimeout(function(){
+    if(btn)btn.classList.remove('feedback-good','feedback-hard');
+    flash.classList.remove('feedback-good','feedback-hard');
+    next(1);
+  },850);
+}
 function renderWords(){var q=($('search').value||'').toLowerCase();var arr=WORDS.filter(function(x){return!q||x.w.toLowerCase().includes(q)||x.m.includes(q)||x.j.includes(q)||x.s.toLowerCase().includes(q)});$('wordBox').innerHTML=arr.map(function(x){var st=state.stats[x.w]||{};return '<div class="word"><b>'+esc(x.w)+'</b><button class="speak" data-speak="'+esc(x.w)+'" type="button">🔊</button><p>'+esc(x.m)+'</p><p class="small">'+esc(x.j)+'</p><p class="small"><b>例文：</b>'+esc(x.s.replace('____',x.w))+'</p><p class="small"><b>用法：</b>'+esc(x.u)+'</p><span class="pill">正解 '+(st.correct||0)+'</span><span class="pill">誤答 '+(st.wrong||0)+'</span><span class="pill">due '+(st.due||'-')+'</span></div>'}).join('');$('wordBox').querySelectorAll('[data-speak]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();speak(b.getAttribute('data-speak'))})})}
 function switchTab(name){document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('active',t.dataset.tab===name)});document.querySelectorAll('.tabPanel').forEach(function(p){p.classList.toggle('hidden',p.id!==name)});if(name==='settings')exportData()}
 function exportData(){if($('dataBox'))$('dataBox').value=JSON.stringify({version:VERSION,release:RELEASE,exportedAt:new Date().toISOString(),state:state},null,2)}
