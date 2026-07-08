@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-var VERSION='2.0.1',RELEASE='20260707-ux1',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'];
+var VERSION='2.1.1',RELEASE='20260707-ux1',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'];
 var WORDS=(window.EIKEN_WORDS||[]),today=localDate(),deferredInstallPrompt=null,state={date:'',questions:[],answers:{},graded:false,score:0,stats:{},days:{},history:{},missions:{},card:0,reveal:false,theme:'auto',regenByDate:{}};
 function $(id){return document.getElementById(id)}
 function localDate(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
@@ -49,11 +49,47 @@ function priority(x,recent,current){
   return p;
 }
 function pickQuestions(force){var recent=recentMap(7,false),current={};(state.questions||[]).forEach(function(w){current[w]=true});var seed=hash(today+'-'+(state.regenByDate[today]||0)+'-'+RELEASE);var ranked=shuffle(WORDS,seed).sort(function(a,b){return priority(b,recent,force?current:null)-priority(a,recent,force?current:null)});var first=ranked.filter(function(x){return!recent[x.w]&&(!force||!current[x.w])});var second=ranked.filter(function(x){return first.indexOf(x)<0&&(!force||!current[x.w])});var third=ranked.filter(function(x){return first.indexOf(x)<0&&second.indexOf(x)<0});return first.concat(second,third).slice(0,10).map(function(x){return x.w})}
+function guessPos(x){
+  var s=' '+(x.s||'').toLowerCase()+' ';
+  var blank=' ____ ';
+
+  if(s.includes('to ____ ')||s.includes('helped ____ ')||s.includes('can ____ ')||s.includes('must ____ ')||s.includes('should ____ ')||s.includes('would ____ ')||s.includes('could ____ ')){
+    return 'verb';
+  }
+
+  if(s.includes('an ____ ')||s.includes('a ____ ')||s.includes('the ____ ')||s.includes('become ____ ')||s.includes('became ____ ')||s.includes('remained ____ ')||s.includes('was ____ ')||s.includes('were ____ ')||s.includes('is ____ ')||s.includes('are ____ ')){
+    return 'adjective';
+  }
+
+  if(s.includes('of ____ ')||s.includes('an ____ for')||s.includes('a ____ of')||s.includes('major ____ ')||s.includes('policy ____ ')){
+    return 'noun';
+  }
+
+  return 'unknown';
+}
+function createChoices(x){
+  var seed=hash(today+x.w+RELEASE+'-choices');
+  var pos=guessPos(x);
+
+  var samePos=WORDS.filter(function(y){
+    return y.w!==x.w && guessPos(y)===pos;
+  });
+
+  var pool=samePos.length>=3?samePos:WORDS.filter(function(y){
+    return y.w!==x.w;
+  });
+
+  var wrongs=shuffle(pool,seed).slice(0,3).map(function(y){
+    return y.w;
+  });
+
+  return shuffle([x.w].concat(wrongs),seed+1);
+}
 function generate(force){load();today=localDate();ensureMission();applyTheme();if(!force&&state.date===today&&state.questions&&state.questions.length===10){render();return}if(force)state.regenByDate[today]=(state.regenByDate[today]||0)+1;state.date=today;state.answers={};state.graded=false;state.score=0;state.card=0;state.reveal=false;state.missions[today]={quiz:false,cards:{},cardsDone:false,complete:false};state.questions=pickQuestions(force);state.history[today]=state.questions;save();render();toast(force?'重複を抑えて10問を再生成しました':'今日の10問を作成しました')}
 function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function render(){renderStats();renderQuiz();renderCard();renderWords();exportData()}
 function renderStats(){var words=currentWords(),m=mission(),ms=(m.quiz?1:0)+(m.cardsDone?1:0);$('score').textContent=(state.score||0)+'/'+(words.length||10);$('missionScore').textContent=ms+'/2';$('days').textContent=Object.keys(state.days||{}).length;$('streak').textContent=streak();$('exam').textContent=examDays();$('known').textContent=Object.keys(state.stats).filter(function(w){return state.stats[w].known}).length;$('bar').style.width=(ms/2*100)+'%';$('missionQuiz').classList.toggle('done',!!m.quiz);$('missionCards').classList.toggle('done',!!m.cardsDone);$('cardsSeen').textContent=cardsSeenCount();$('status').textContent=m.complete?'Daily Mission Complete. 英検1級まであと '+examDays()+' 日。':'今日のMission: Quiz採点＋Flashcards全確認。英検1級まであと '+examDays()+' 日。'}
-function renderQuiz(){var box=$('quizBox'),words=currentWords();if(!words.length){box.innerHTML='<p>「今日の10問」を押してください。</p>';return}box.innerHTML=words.map(function(x,i){var opts=shuffle(x.o,hash(today+x.w+RELEASE));return '<div class="q" data-word="'+esc(x.w)+'"><div class="meta">Question '+(i+1)+'</div><div class="sentence">'+esc(x.s)+'</div>'+opts.map(function(o){var cls='choice';if(state.answers[x.w]===o)cls+=' selected';if(state.graded&&o===x.w)cls+=' correct';if(state.graded&&state.answers[x.w]===o&&o!==x.w)cls+=' wrong';return '<button class="'+cls+'" data-choice="'+esc(o)+'">'+esc(o)+'</button>'}).join('')+'<div class="explain '+(state.graded?'show':'')+'"><b>'+esc(x.w)+'</b> <button class="speak" data-speak="'+esc(x.w)+'" type="button">🔊</button><br>'+esc(x.m)+'<br>'+esc(x.j)+'<br><b>用法：</b>'+esc(x.u)+'</div></div>'}).join('');box.querySelectorAll('.choice').forEach(function(b){b.addEventListener('click',function(){if(state.graded)return;var q=b.closest('.q');state.answers[q.getAttribute('data-word')]=b.getAttribute('data-choice');save();renderQuiz()})});box.querySelectorAll('[data-speak]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();speak(b.getAttribute('data-speak'))})})}
+function renderQuiz(){var box=$('quizBox'),words=currentWords();if(!words.length){box.innerHTML='<p>「今日の10問」を押してください。</p>';return}box.innerHTML=words.map(function(x,i){var opts=createChoices(x);return '<div class="q" data-word="'+esc(x.w)+'"><div class="meta">Question '+(i+1)+'</div><div class="sentence">'+esc(x.s)+'</div>'+opts.map(function(o){var cls='choice';if(state.answers[x.w]===o)cls+=' selected';if(state.graded&&o===x.w)cls+=' correct';if(state.graded&&state.answers[x.w]===o&&o!==x.w)cls+=' wrong';return '<button class="'+cls+'" data-choice="'+esc(o)+'">'+esc(o)+'</button>'}).join('')+'<div class="explain '+(state.graded?'show':'')+'"><b>'+esc(x.w)+'</b> <button class="speak" data-speak="'+esc(x.w)+'" type="button">🔊</button><br>'+esc(x.m)+'<br>'+esc(x.j)+'<br><b>用法：</b>'+esc(x.u)+'</div></div>'}).join('');box.querySelectorAll('.choice').forEach(function(b){b.addEventListener('click',function(){if(state.graded)return;var q=b.closest('.q');state.answers[q.getAttribute('data-word')]=b.getAttribute('data-choice');save();renderQuiz()})});box.querySelectorAll('[data-speak]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();speak(b.getAttribute('data-speak'))})})}
 function grade(){var words=currentWords();if(!words.length)return;var score=0;words.forEach(function(x){var ok=state.answers[x.w]===x.w;if(ok)score++;schedule(x.w,ok)});state.score=score;state.graded=true;mission().quiz=true;updateMission();render();toast(score+' / '+words.length+' 点です')}
 function showAnswers(){state.graded=true;save();renderQuiz()}
 function renderCard(){var words=currentWords();if(!words.length){$('cardWord').textContent='---';$('counter').textContent='';return}if(state.card>=words.length)state.card=0;if(state.card<0)state.card=words.length-1;var x=words[state.card];mission().cards[x.w]=true;updateMission();$('flash').classList.toggle('flipped',!!state.reveal);$('cardWord').textContent=x.w;$('backWord').textContent=x.w;$('cardPron').textContent=x.p||'';$('cardMean').textContent=x.m+' / '+x.j;$('cardSentence').textContent=x.s.replace('____',x.w);$('cardUsage').textContent=x.u;$('cardSpeak').setAttribute('data-word',x.w);$('counter').textContent=(state.card+1)+' / '+words.length}
