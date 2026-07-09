@@ -1,11 +1,11 @@
 (function(){
 'use strict';
-var VERSION='2.1.1',RELEASE='20260707-ux1',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'];
+var VERSION='2.1.2',RELEASE='20260710-cardstate',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'];
 var WORDS=(window.EIKEN_WORDS||[]),today=localDate(),deferredInstallPrompt=null,state={date:'',questions:[],answers:{},graded:false,score:0,stats:{},days:{},history:{},missions:{},card:0,reveal:false,theme:'auto',regenByDate:{}};
 function $(id){return document.getElementById(id)}
 function localDate(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){toast('保存できませんでした')}}
-function load(){try{var raw=localStorage.getItem(KEY);if(!raw){for(var i=0;i<OLD_KEYS.length;i++){raw=localStorage.getItem(OLD_KEYS[i]);if(raw)break}}if(raw)state=Object.assign(state,JSON.parse(raw))}catch(e){}if(!state.stats)state.stats={};if(!state.days)state.days={};if(!state.history)state.history={};if(!state.missions)state.missions={};if(!state.answers)state.answers={};if(!state.regenByDate)state.regenByDate={};if(!state.theme)state.theme='auto';WORDS.forEach(function(x){if(!state.stats[x.w])state.stats[x.w]={seen:0,correct:0,wrong:0,known:false,due:'2000-01-01',level:0}});ensureMission();save()}
+function load(){try{var raw=localStorage.getItem(KEY);if(!raw){for(var i=0;i<OLD_KEYS.length;i++){raw=localStorage.getItem(OLD_KEYS[i]);if(raw)break}}if(raw)state=Object.assign(state,JSON.parse(raw))}catch(e){}if(!state.stats)state.stats={};if(!state.days)state.days={};if(!state.history)state.history={};if(!state.missions)state.missions={};if(!state.answers)state.answers={};if(!state.regenByDate)state.regenByDate={};if(!state.theme)state.theme='auto';WORDS.forEach(function(x){if(!state.stats[x.w])state.stats[x.w]={seen:0,correct:0,wrong:0,known:false,due:'2000-01-01',level:0};if(!state.stats[x.w].due)state.stats[x.w].due='2000-01-01'});ensureMission();save()}
 function ensureMission(){if(!state.missions)state.missions={};if(!state.missions[today])state.missions[today]={quiz:false,cards:{},cardsDone:false,complete:false}}
 function applyTheme(){var mode=state.theme||'auto',dark=mode==='dark'||(mode==='auto'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.setAttribute('data-theme',dark?'dark':'light');var meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content',dark?'#0d111a':'#172033');if($('themeSelect'))$('themeSelect').value=mode}
 function hash(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h+=(h<<1)+(h<<4)+(h<<7)+(h<<8)+(h<<24)}return h>>>0}
@@ -92,7 +92,8 @@ function renderStats(){var words=currentWords(),m=mission(),ms=(m.quiz?1:0)+(m.c
 function renderQuiz(){var box=$('quizBox'),words=currentWords();if(!words.length){box.innerHTML='<p>「今日の10問」を押してください。</p>';return}box.innerHTML=words.map(function(x,i){var opts=createChoices(x);return '<div class="q" data-word="'+esc(x.w)+'"><div class="meta">Question '+(i+1)+'</div><div class="sentence">'+esc(x.s)+'</div>'+opts.map(function(o){var cls='choice';if(state.answers[x.w]===o)cls+=' selected';if(state.graded&&o===x.w)cls+=' correct';if(state.graded&&state.answers[x.w]===o&&o!==x.w)cls+=' wrong';return '<button class="'+cls+'" data-choice="'+esc(o)+'">'+esc(o)+'</button>'}).join('')+'<div class="explain '+(state.graded?'show':'')+'"><b>'+esc(x.w)+'</b> <button class="speak" data-speak="'+esc(x.w)+'" type="button">🔊</button><br>'+esc(x.m)+'<br>'+esc(x.j)+'<br><b>用法：</b>'+esc(x.u)+'</div></div>'}).join('');box.querySelectorAll('.choice').forEach(function(b){b.addEventListener('click',function(){if(state.graded)return;var q=b.closest('.q');state.answers[q.getAttribute('data-word')]=b.getAttribute('data-choice');save();renderQuiz()})});box.querySelectorAll('[data-speak]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();speak(b.getAttribute('data-speak'))})})}
 function grade(){var words=currentWords();if(!words.length)return;var score=0;words.forEach(function(x){var ok=state.answers[x.w]===x.w;if(ok)score++;schedule(x.w,ok)});state.score=score;state.graded=true;mission().quiz=true;updateMission();render();toast(score+' / '+words.length+' 点です')}
 function showAnswers(){state.graded=true;save();renderQuiz()}
-function renderCard(){var words=currentWords();if(!words.length){$('cardWord').textContent='---';$('counter').textContent='';return}if(state.card>=words.length)state.card=0;if(state.card<0)state.card=words.length-1;var x=words[state.card];mission().cards[x.w]=true;updateMission();$('flash').classList.toggle('flipped',!!state.reveal);$('cardWord').textContent=x.w;$('backWord').textContent=x.w;$('cardPron').textContent=x.p||'';$('cardMean').textContent=x.m+' / '+x.j;$('cardSentence').textContent=x.s.replace('____',x.w);$('cardUsage').textContent=x.u;$('cardSpeak').setAttribute('data-word',x.w);$('counter').textContent=(state.card+1)+' / '+words.length}
+function reviewLabel(result){if(result==='good')return '前回: 覚えた';if(result==='hard')return '前回: まだ';return ''}
+function renderCard(){var words=currentWords();if(!words.length){$('cardWord').textContent='---';$('counter').textContent='';return}if(state.card>=words.length)state.card=0;if(state.card<0)state.card=words.length-1;var x=words[state.card],st=state.stats[x.w]||{},result=st.lastCardResult||'';mission().cards[x.w]=true;updateMission();$('flash').classList.toggle('flipped',!!state.reveal);$('flash').classList.remove('remembered-good','remembered-hard');if(result==='good')$('flash').classList.add('remembered-good');if(result==='hard')$('flash').classList.add('remembered-hard');$('cardWord').textContent=x.w;$('backWord').textContent=x.w;$('cardPron').textContent=x.p||'';$('cardMean').textContent=x.m+' / '+x.j;$('cardSentence').textContent=x.s.replace('____',x.w);$('cardUsage').textContent=x.u;$('cardSpeak').setAttribute('data-word',x.w);$('counter').innerHTML=(state.card+1)+' / '+words.length+(result?' <span class="review-badge '+(result==='good'?'review-good':'review-hard')+'">'+reviewLabel(result)+'</span>':'')}
 function next(n){var words=currentWords();if(!words.length)return;state.card=(state.card+n+words.length)%words.length;state.reveal=false;save();renderCard();renderStats()}
 function mark(ok){
   var words=currentWords();
@@ -101,13 +102,16 @@ function mark(ok){
   var word=words[state.card].w;
   var btn=ok ? $('goodBtn') : $('hardBtn');
   var flash=$('flash');
+  var st=state.stats[word];
 
   schedule(word,ok);
+  st=state.stats[word];
+  if(st){st.lastCardResult=ok?'good':'hard';st.lastCardDate=today;}
   state.reveal=false;
   save();
   renderWords();
 
-  flash.classList.remove('feedback-good','feedback-hard');
+  flash.classList.remove('feedback-good','feedback-hard','remembered-good','remembered-hard');
   if(btn){
     btn.classList.remove('feedback-good','feedback-hard');
     btn.classList.add(ok?'feedback-good':'feedback-hard');
@@ -122,7 +126,7 @@ function mark(ok){
     next(1);
   },850);
 }
-function renderWords(){var q=($('search').value||'').toLowerCase();var arr=WORDS.filter(function(x){return!q||x.w.toLowerCase().includes(q)||x.m.includes(q)||x.j.includes(q)||x.s.toLowerCase().includes(q)});$('wordBox').innerHTML=arr.map(function(x){var st=state.stats[x.w]||{};return '<div class="word"><b>'+esc(x.w)+'</b><button class="speak" data-speak="'+esc(x.w)+'" type="button">🔊</button><p>'+esc(x.m)+'</p><p class="small">'+esc(x.j)+'</p><p class="small"><b>例文：</b>'+esc(x.s.replace('____',x.w))+'</p><p class="small"><b>用法：</b>'+esc(x.u)+'</p><span class="pill">正解 '+(st.correct||0)+'</span><span class="pill">誤答 '+(st.wrong||0)+'</span><span class="pill">due '+(st.due||'-')+'</span></div>'}).join('');$('wordBox').querySelectorAll('[data-speak]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();speak(b.getAttribute('data-speak'))})})}
+function renderWords(){var q=($('search').value||'').toLowerCase();var arr=WORDS.filter(function(x){return!q||x.w.toLowerCase().includes(q)||x.m.includes(q)||x.j.includes(q)||x.s.toLowerCase().includes(q)});$('wordBox').innerHTML=arr.map(function(x){var st=state.stats[x.w]||{},label=reviewLabel(st.lastCardResult);return '<div class="word"><b>'+esc(x.w)+'</b><button class="speak" data-speak="'+esc(x.w)+'" type="button">🔊</button><p>'+esc(x.m)+'</p><p class="small">'+esc(x.j)+'</p><p class="small"><b>例文：</b>'+esc(x.s.replace('____',x.w))+'</p><p class="small"><b>用法：</b>'+esc(x.u)+'</p><span class="pill">正解 '+(st.correct||0)+'</span><span class="pill">誤答 '+(st.wrong||0)+'</span><span class="pill">due '+(st.due||'-')+'</span>'+(label?'<span class="pill '+(st.lastCardResult==='good'?'review-good':'review-hard')+'">'+label+'</span>':'')+'</div>'}).join('');$('wordBox').querySelectorAll('[data-speak]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();speak(b.getAttribute('data-speak'))})})}
 function switchTab(name){document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('active',t.dataset.tab===name)});document.querySelectorAll('.tabPanel').forEach(function(p){p.classList.toggle('hidden',p.id!==name)});if(name==='settings')exportData()}
 function exportData(){if($('dataBox'))$('dataBox').value=JSON.stringify({version:VERSION,release:RELEASE,exportedAt:new Date().toISOString(),state:state},null,2)}
 function latestUrl(){var u=location.origin+location.pathname+'?v='+RELEASE;if(navigator.clipboard)navigator.clipboard.writeText(u).then(function(){toast('最新版URLをコピーしました')}).catch(function(){prompt('最新版URL',u)});else prompt('最新版URL',u)}
