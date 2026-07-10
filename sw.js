@@ -1,4 +1,4 @@
-const RELEASE='20260710-vocab300';
+const RELEASE='20260710-vocab300b';
 const CACHE_NAME='eiken-vocab-v2-'+RELEASE;
 const ASSETS=['./','./index.html?v='+RELEASE,'./style.css?v='+RELEASE,'./writing.css?v='+RELEASE,'./words.js?v='+RELEASE,'./words-extra.js?v='+RELEASE,'./writing.js?v='+RELEASE,'./app.js?v='+RELEASE,'./manifest.webmanifest?v='+RELEASE,'./icon.svg?v='+RELEASE];
 self.addEventListener('install',event=>{self.skipWaiting();event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(ASSETS).catch(()=>undefined)));});

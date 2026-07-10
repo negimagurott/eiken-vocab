@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-var VERSION='2.1.4',RELEASE='20260710-vocab300',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'];
+var VERSION='2.1.4',RELEASE='20260710-vocab300b',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'];
 var WORDS=(window.EIKEN_WORDS||[]),WRITING_TOPICS=(window.EIKEN_WRITING_TOPICS||[]),today=localDate(),deferredInstallPrompt=null,state={date:'',questions:[],answers:{},graded:false,score:0,stats:{},days:{},history:{},missions:{},writingByDate:{},card:0,reveal:false,theme:'auto',regenByDate:{}};
 function $(id){return document.getElementById(id)}
 function localDate(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
