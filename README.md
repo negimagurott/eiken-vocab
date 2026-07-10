@@ -2,7 +2,7 @@
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.1.3 / 20260710-writing
+Release: v2.1.4 / 20260710-vocab300
 
 ## v2.1 Development Policy
 

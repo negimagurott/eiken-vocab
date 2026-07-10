@@ -8,26 +8,27 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>英検1級 Companion v2.1 beta</title>
-<link rel="manifest" href="manifest.webmanifest?v=20260710-writing">
-<link rel="icon" href="icon.svg?v=20260710-writing" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icon.svg?v=20260710-writing">
-<link rel="stylesheet" href="style.css?v=20260710-writing">
-<link rel="stylesheet" href="writing.css?v=20260710-writing">
+<link rel="manifest" href="manifest.webmanifest?v=20260710-vocab300">
+<link rel="icon" href="icon.svg?v=20260710-vocab300" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg?v=20260710-vocab300">
+<link rel="stylesheet" href="style.css?v=20260710-vocab300">
+<link rel="stylesheet" href="writing.css?v=20260710-vocab300">
 </head>
 <body>
 <div class="wrap">
 <header><div><h1>英検1級 Companion</h1><p class="sub">v2.1 beta: Flashcards UX改善、出題優先度改善、PWA対応。</p>
-<span class="version">v2.1.3</span><span id="updateBadge" class="version hidden">更新あり</span></div><div class="actions"><button id="todayBtn" class="primary">今日の10問</button><button id="regenBtn">再生成</button><button id="latestBtn">最新版URL</button><button id="installBtn" class="hidden">ホームに追加</button><button id="resetBtn" class="danger">履歴リセット</button></div></header>
+<span class="version">v2.1.4</span><span id="updateBadge" class="version hidden">更新あり</span></div><div class="actions"><button id="todayBtn" class="primary">今日の10問</button><button id="regenBtn">再生成</button><button id="latestBtn">最新版URL</button><button id="installBtn" class="hidden">ホームに追加</button><button id="resetBtn" class="danger">履歴リセット</button></div></header>
 <section class="panel"><div class="stats"><div class="stat"><span>Today's score</span><b id="score">0/10</b></div><div class="stat"><span>Mission</span><b id="missionScore">0/3</b></div><div class="stat"><span>Study days</span><b id="days">0</b></div><div class="stat"><span>Streak</span><b id="streak">0</b></div><div class="stat"><span>Exam countdown</span><b id="exam">--</b></div><div class="stat"><span>Known words</span><b id="known">0</b></div></div><div class="mission"><div id="missionQuiz" class="missionitem"><b>📝 Quiz</b><p class="small">10問を採点まで完了</p></div><div id="missionCards" class="missionitem"><b>🃏 Flashcards</b><p class="small"><span id="cardsSeen">0</span>/10枚を確認</p></div><div id="missionWriting" class="missionitem"><b>✍️ Writing</b><p class="small">今日の1題に回答</p></div></div><div class="progress"><div id="bar" class="bar"></div></div><p id="status" class="small">読み込み中です。</p></section>
 <nav class="tabs"><button class="tab active" data-tab="quiz">Quiz</button><button class="tab" data-tab="cards">Flashcards</button><button class="tab" data-tab="writing">Writing</button><button class="tab" data-tab="words">Word List</button><button class="tab" data-tab="settings">Settings</button></nav>
 <section id="quiz" class="panel tabPanel"><div id="quizBox"></div><div class="actions" style="margin-top:16px"><button id="gradeBtn" class="primary">採点する</button><button id="answerBtn">解説を表示</button></div></section>
 <section id="cards" class="panel tabPanel hidden"><div class="cardstage"><div id="flash" class="flash"><div class="face front"><div><p class="small">FLASHCARD</p><h2 id="cardWord">---</h2><p><span id="cardPron" class="small"></span><button id="cardSpeak" class="speak" type="button">🔊</button></p><p class="small">タップでカードをめくる</p></div></div><div class="face back"><div><p class="small">MEANING / EXAMPLE / USAGE</p><h2 id="backWord">---</h2><p class="meaning" id="cardMean"></p><p class="usage"><b>例文：</b><span id="cardSentence"></span></p><p class="usage"><b>用法：</b><span id="cardUsage"></span></p><p class="small">タップで単語面へ戻る</p></div></div></div></div><div class="actions center"><button id="prevBtn">前へ</button><button id="hardBtn">まだ</button><button id="goodBtn" class="primary">覚えた</button><button id="nextBtn">次へ</button></div><p id="counter" class="small centerText"></p></section>
 <section id="writing" class="panel tabPanel hidden"><p class="meta">TODAY'S WRITING TOPIC</p><h2 id="writingTopic" class="writing-topic"></h2><p class="small">Write 200–240 words. Give three reasons to support your answer.</p><textarea id="writingDraft" class="writing-draft" rows="12" placeholder="Write your essay here..."></textarea><div class="writing-footer"><span id="writingCount" class="small">0 words</span><button id="writingDoneBtn" class="primary">今日のWritingを完了</button></div><p id="writingSaved" class="small">入力内容はこの端末に自動保存されます。</p></section>
 <section id="words" class="panel tabPanel hidden"><input id="search" type="search" placeholder="単語・意味・例文で検索"><div id="wordBox" class="wordgrid"></div></section>
-<section id="settings" class="panel tabPanel hidden"><h2>Settings</h2><div class="settingrow"><div><b>Theme</b><p class="small">Light / Dark / Autoを切り替えます。</p></div><select id="themeSelect"><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option></select></div><div class="settingrow"><div><b>Version</b><p class="small">v2.1.3 / 毎日のWriting topic・下書き保存。</p></div></div><div class="settingrow"><div><b>PWA更新</b><p class="small">ホーム画面から開いた場合も起動時に最新版を確認します。</p></div><button id="reloadBtn">更新を確認</button></div><div class="settingrow"><div><b>学習データ</b><p class="small">端末のlocalStorageに保存。v1.2/v1.3データを自動移行します。</p></div><button id="exportBtn">書き出し</button></div><textarea id="dataBox" rows="8"></textarea></section>
+<section id="settings" class="panel tabPanel hidden"><h2>Settings</h2><div class="settingrow"><div><b>Theme</b><p class="small">Light / Dark / Autoを切り替えます。</p></div><select id="themeSelect"><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option></select></div><div class="settingrow"><div><b>Version</b><p class="small">v2.1.4 / 英検1級重要語彙300語。</p></div></div><div class="settingrow"><div><b>PWA更新</b><p class="small">ホーム画面から開いた場合も起動時に最新版を確認します。</p></div><button id="reloadBtn">更新を確認</button></div><div class="settingrow"><div><b>学習データ</b><p class="small">端末のlocalStorageに保存。v1.2/v1.3データを自動移行します。</p></div><button id="exportBtn">書き出し</button></div><textarea id="dataBox" rows="8"></textarea></section>
 </div><div id="toast" class="toast"></div>
-<script src="words.js?v=20260710-writing"></script>
-<script src="writing.js?v=20260710-writing"></script>
-<script src="app.js?v=20260710-writing"></script>
+<script src="words.js?v=20260710-vocab300"></script>
+<script src="words-extra.js?v=20260710-vocab300"></script>
+<script src="writing.js?v=20260710-vocab300"></script>
+<script src="app.js?v=20260710-vocab300"></script>
 </body>
 </html>
