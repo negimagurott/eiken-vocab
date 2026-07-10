@@ -1,8 +1,8 @@
-# 英検1級 Companion v2.0
+# 英検1級 Companion v2.1
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.0.0 / 20260706-20c
+Release: v2.1.3 / 20260710-writing
 
 ## v2.1 Development Policy
 
@@ -17,6 +17,7 @@ Every morning:
 1. Answer 10 Eiken Grade 1 Part 1-style vocabulary questions.
 2. Review 10 flashcards.
 3. Use selected words later in ChatGPT speaking practice.
+4. Draft one Eiken Grade 1 writing response.
 
 ### v2.1 priorities
 
@@ -26,10 +27,10 @@ Every morning:
 - Prioritize difficult, high-impact words.
 - Avoid low-frequency or already-mastered basic words.
 - Add Today's Speaking Challenge.
+- Add one daily Writing topic with autosaved drafting.
 
 ### Out of scope for v2.1
 
-- Writing module
 - Listening module
 - Advanced analytics
 - AI scoring

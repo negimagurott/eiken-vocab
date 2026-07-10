@@ -1,0 +1,36 @@
+.writing-topic {
+  font-size: 24px;
+  line-height: 1.45;
+  margin: 8px 0 10px;
+}
+
+.writing-draft {
+  max-width: 100%;
+  min-height: 260px;
+  line-height: 1.65;
+  resize: vertical;
+}
+
+.writing-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.writing-footer .small {
+  font-weight: 800;
+}
+
+button.writing-complete {
+  background: var(--ok);
+  color: #fff;
+}
+
+@media (max-width: 520px) {
+  .writing-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
