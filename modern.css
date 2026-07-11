@@ -251,6 +251,8 @@ button.primary {
 .card-details p {
   margin: 0;
   line-height: 1.55;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 @media (max-width: 600px) {
@@ -263,10 +265,15 @@ button.primary {
 
 .face {
   border-radius: 24px;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
   background:
     radial-gradient(circle at 95% 0%, rgba(49, 87, 213, .13), transparent 22rem),
     var(--panel2);
 }
+
+.front { transform: translateZ(0); }
+.back { transform: rotateY(180deg) translateZ(0); }
 
 .flash h2 {
   font-size: clamp(40px, 7vw, 58px);
@@ -329,7 +336,10 @@ input:focus, textarea:focus, select:focus {
   .stat { min-height: 82px; }
   .tabs { justify-content: flex-start; width: 100%; margin: 14px 0; }
   .tab { flex: 0 0 auto; padding: 9px 13px; }
-  .flash { min-height: 420px; }
+  .flash { min-height: 480px; }
+  .face { padding: 20px 16px; }
+  .face > div { width: 100%; min-width: 0; }
+  .back { overflow-wrap: anywhere; }
   .wordgrid { grid-template-columns: 1fr; }
 }
 
