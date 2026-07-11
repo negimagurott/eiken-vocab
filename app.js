@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-var VERSION='2.2.0',RELEASE='20260711-ios-card-layout',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'];
+var VERSION='2.2.0',RELEASE='20260711-unique-quiz-sentences',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'];
 var WORDS=(window.EIKEN_WORDS||[]),WRITING_TOPICS=(window.EIKEN_WRITING_TOPICS||[]),today=localDate(),deferredInstallPrompt=null,state={date:'',questions:[],answers:{},graded:false,score:0,stats:{},days:{},history:{},missions:{},writingByDate:{},card:0,reveal:false,theme:'auto',regenByDate:{}};
 function $(id){return document.getElementById(id)}
 function localDate(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
@@ -48,7 +48,7 @@ function priority(x,recent,current){
 
   return p;
 }
-function pickQuestions(force){var recent=recentMap(7,false),current={};(state.questions||[]).forEach(function(w){current[w]=true});var seed=hash(today+'-'+(state.regenByDate[today]||0)+'-'+RELEASE);var ranked=shuffle(WORDS,seed).sort(function(a,b){return priority(b,recent,force?current:null)-priority(a,recent,force?current:null)});var first=ranked.filter(function(x){return!recent[x.w]&&(!force||!current[x.w])});var second=ranked.filter(function(x){return first.indexOf(x)<0&&(!force||!current[x.w])});var third=ranked.filter(function(x){return first.indexOf(x)<0&&second.indexOf(x)<0});return first.concat(second,third).slice(0,10).map(function(x){return x.w})}
+function pickQuestions(force){var recent=recentMap(7,false),current={};(state.questions||[]).forEach(function(w){current[w]=true});var seed=hash(today+'-'+(state.regenByDate[today]||0)+'-'+RELEASE);var ranked=shuffle(WORDS,seed).sort(function(a,b){return priority(b,recent,force?current:null)-priority(a,recent,force?current:null)});var first=ranked.filter(function(x){return!recent[x.w]&&(!force||!current[x.w])});var second=ranked.filter(function(x){return first.indexOf(x)<0&&(!force||!current[x.w])});var third=ranked.filter(function(x){return first.indexOf(x)<0&&second.indexOf(x)<0}),ordered=first.concat(second,third),picked=[],sentences={};ordered.forEach(function(x){if(picked.length<10&&!sentences[x.s]){sentences[x.s]=true;picked.push(x)}});if(picked.length<10)ordered.forEach(function(x){if(picked.length<10&&picked.indexOf(x)<0)picked.push(x)});return picked.slice(0,10).map(function(x){return x.w})}
 function guessPos(x){
   if(x.p==='v')return 'verb';
   if(x.p==='a')return 'adjective';
