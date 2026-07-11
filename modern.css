@@ -218,6 +218,45 @@ button.primary {
   border-color: rgba(49, 87, 213, .4);
 }
 
+.choice small {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.choice.correct small,
+.choice.wrong small { color: inherit; }
+
+.pos-badge {
+  display: inline-block;
+  margin-left: 7px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--brand2);
+  color: var(--brand);
+  font-size: 11px;
+  font-weight: 800;
+  vertical-align: middle;
+}
+
+.card-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 18px;
+  margin: 14px 0;
+}
+
+.card-details p {
+  margin: 0;
+  line-height: 1.55;
+}
+
+@media (max-width: 600px) {
+  .card-details { grid-template-columns: 1fr; }
+}
+
 .flash {
   min-height: 390px;
 }

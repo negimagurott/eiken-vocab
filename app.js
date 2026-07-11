@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-var VERSION='2.1.5',RELEASE='20260710-modern',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'];
+var VERSION='2.2.0',RELEASE='20260711-learning-details',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'];
 var WORDS=(window.EIKEN_WORDS||[]),WRITING_TOPICS=(window.EIKEN_WRITING_TOPICS||[]),today=localDate(),deferredInstallPrompt=null,state={date:'',questions:[],answers:{},graded:false,score:0,stats:{},days:{},history:{},missions:{},writingByDate:{},card:0,reveal:false,theme:'auto',regenByDate:{}};
 function $(id){return document.getElementById(id)}
 function localDate(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
@@ -129,12 +129,46 @@ function mark(ok){
     next(1);
   },850);
 }
+function posLabel(x){return{v:'動詞',a:'形容詞',n:'名詞',verb:'動詞',adjective:'形容詞',noun:'名詞'}[x.pos||x.p||guessPos(x)]||'品詞未登録'}
+function listText(value){return Array.isArray(value)&&value.length?value.join(' / '):'—'}
 function writingTopic(){if(!WRITING_TOPICS.length)return 'Writing topic is unavailable.';return WRITING_TOPICS[hash(today)%WRITING_TOPICS.length]}
 function wordCount(text){var trimmed=(text||'').trim();return trimmed?trimmed.split(/\s+/).length:0}
 function renderWriting(){var draft=state.writingByDate[today]||'';$('writingTopic').textContent=writingTopic();if(document.activeElement!==$('writingDraft'))$('writingDraft').value=draft;$('writingCount').textContent=wordCount(draft)+' words';$('writingDoneBtn').textContent=mission().writing?'✓ 完了済み':'今日のWritingを完了';$('writingDoneBtn').classList.toggle('writing-complete',!!mission().writing)}
 function saveWriting(){state.writingByDate[today]=$('writingDraft').value;$('writingCount').textContent=wordCount(state.writingByDate[today])+' words';save()}
 function completeWriting(){saveWriting();if(wordCount(state.writingByDate[today])<1){toast('回答を入力してから完了してください');return}mission().writing=true;updateMission();renderStats();renderWriting();toast('今日のWritingを保存しました')}
 function renderWords(){var q=($('search').value||'').toLowerCase();var arr=WORDS.filter(function(x){return!q||x.w.toLowerCase().includes(q)||x.m.includes(q)||x.j.includes(q)||x.s.toLowerCase().includes(q)});$('wordBox').innerHTML=arr.map(function(x){var st=state.stats[x.w]||{},label=reviewLabel(st.lastCardResult);return '<div class="word"><b>'+esc(x.w)+'</b><button class="speak" data-speak="'+esc(x.w)+'" type="button">🔊</button><p>'+esc(x.m)+'</p><p class="small">'+esc(x.j)+'</p><p class="small"><b>例文：</b>'+esc(x.s.replace('____',x.w))+'</p><p class="small"><b>用法：</b>'+esc(x.u)+'</p><span class="pill">正解 '+(st.correct||0)+'</span><span class="pill">誤答 '+(st.wrong||0)+'</span><span class="pill">due '+(st.due||'-')+'</span>'+(label?'<span class="pill '+(st.lastCardResult==='good'?'review-good':'review-hard')+'">'+label+'</span>':'')+'</div>'}).join('');$('wordBox').querySelectorAll('[data-speak]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();speak(b.getAttribute('data-speak'))})})}
+function renderQuiz(){
+  var box=$('quizBox'),words=currentWords();
+  if(!words.length){box.innerHTML='<p>「今日の10問」を押してください。</p>';return}
+  box.innerHTML=words.map(function(x,i){
+    var opts=createChoices(x);
+    return '<div class="q" data-word="'+esc(x.w)+'"><div class="meta">Question '+(i+1)+'</div><div class="sentence">'+esc(x.s)+'</div>'+opts.map(function(o){
+      var cls='choice',item=WORDS.find(function(y){return y.w===o}),mark='';
+      if(state.answers[x.w]===o)cls+=' selected';
+      if(state.graded&&o===x.w){cls+=' correct';mark='✓ '}
+      if(state.graded&&state.answers[x.w]===o&&o!==x.w){cls+=' wrong';mark='✕ '}
+      return '<button class="'+cls+'" data-choice="'+esc(o)+'"><span>'+mark+esc(o)+'</span>'+(state.graded?'<small>'+esc(item?item.m:'意味未登録')+'</small>':'')+'</button>';
+    }).join('')+'<div class="explain '+(state.graded?'show':'')+'"><b>'+esc(x.w)+'</b> <span class="pos-badge">'+esc(posLabel(x))+'</span> <button class="speak" data-speak="'+esc(x.w)+'" type="button">🔊</button><br>'+esc(x.m)+'<br>'+esc(x.s.replace('____',x.w))+'</div></div>';
+  }).join('');
+  box.querySelectorAll('.choice').forEach(function(b){b.addEventListener('click',function(){if(state.graded)return;var q=b.closest('.q');state.answers[q.getAttribute('data-word')]=b.getAttribute('data-choice');save();renderQuiz()})});
+  box.querySelectorAll('[data-speak]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();speak(b.getAttribute('data-speak'))})});
+}
+function renderCard(){
+  var words=currentWords();
+  if(!words.length){$('cardWord').textContent='---';$('counter').textContent='';return}
+  if(state.card>=words.length)state.card=0;if(state.card<0)state.card=words.length-1;
+  var x=words[state.card],st=state.stats[x.w]||{},result=st.lastCardResult||'';
+  mission().cards[x.w]=true;updateMission();$('flash').classList.toggle('flipped',!!state.reveal);$('flash').classList.remove('remembered-good','remembered-hard');
+  if(result==='good')$('flash').classList.add('remembered-good');if(result==='hard')$('flash').classList.add('remembered-hard');
+  $('cardWord').textContent=x.w;$('backWord').textContent=x.w;$('cardPron').textContent=posLabel(x);$('cardMean').textContent=x.m;$('cardSentence').textContent=x.s.replace('____',x.w);
+  $('cardDetails').innerHTML='<p><b>品詞：</b>'+esc(posLabel(x))+'</p><p><b>類義語：</b>'+esc(listText(x.synonyms))+'</p><p><b>反意語：</b>'+esc(listText(x.antonyms))+'</p><p><b>コロケーション：</b>'+esc(listText(x.collocations))+'</p>';
+  $('cardSpeak').setAttribute('data-word',x.w);$('counter').innerHTML=(state.card+1)+' / '+words.length+(result?' <span class="review-badge '+(result==='good'?'review-good':'review-hard')+'">'+reviewLabel(result)+'</span>':'');
+}
+function renderWords(){
+  var q=($('search').value||'').toLowerCase();var arr=WORDS.filter(function(x){return!q||x.w.toLowerCase().includes(q)||x.m.includes(q)||x.j.includes(q)||x.s.toLowerCase().includes(q)});
+  $('wordBox').innerHTML=arr.map(function(x){var st=state.stats[x.w]||{},label=reviewLabel(st.lastCardResult);return '<div class="word"><b>'+esc(x.w)+'</b><span class="pos-badge">'+esc(posLabel(x))+'</span><button class="speak" data-speak="'+esc(x.w)+'" type="button">🔊</button><p>'+esc(x.m)+'</p><p class="small"><b>例文：</b>'+esc(x.s.replace('____',x.w))+'</p>'+(x.collocations&&x.collocations.length?'<p class="small"><b>コロケーション：</b>'+esc(listText(x.collocations))+'</p>':'')+'<span class="pill">正解 '+(st.correct||0)+'</span><span class="pill">誤答 '+(st.wrong||0)+'</span><span class="pill">due '+(st.due||'-')+'</span>'+(label?'<span class="pill '+(st.lastCardResult==='good'?'review-good':'review-hard')+'">'+label+'</span>':'')+'</div>'}).join('');
+  $('wordBox').querySelectorAll('[data-speak]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();speak(b.getAttribute('data-speak'))})});
+}
 function switchTab(name){document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('active',t.dataset.tab===name)});document.querySelectorAll('.tabPanel').forEach(function(p){p.classList.toggle('hidden',p.id!==name)});if(name==='settings')exportData()}
 function exportData(){if($('dataBox'))$('dataBox').value=JSON.stringify({version:VERSION,release:RELEASE,exportedAt:new Date().toISOString(),state:state},null,2)}
 function latestUrl(){var u=location.origin+location.pathname+'?v='+RELEASE;if(navigator.clipboard)navigator.clipboard.writeText(u).then(function(){toast('最新版URLをコピーしました')}).catch(function(){prompt('最新版URL',u)});else prompt('最新版URL',u)}
