@@ -1,8 +1,20 @@
-# 英検1級 Companion v2.1
+# 英検1級 Companion v2.2
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.1.5 / 20260710-modern
+Release: v2.2.0 / 20260712-quiz-pipeline-v2
+
+## Quiz pipeline v2
+
+Quiz delivery is separated from the vocabulary list. `quiz-data.js` contains the approved question bank; generic template questions are rejected and cannot be selected by the app.
+
+Run the deterministic quality gate before publishing:
+
+```powershell
+node scripts/audit-quiz-data.js
+```
+
+The audit checks question IDs, vocabulary references, blank count, exact duplicate sentences, required acceptance cases, and rejected legacy templates. AI generation and reverse-answer review must run during development; API keys must never be shipped to GitHub Pages.
 
 ## v2.1 Development Policy
 

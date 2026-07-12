@@ -8,12 +8,12 @@
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
 <title>英検1級 Companion v2.1 beta</title>
-<link rel="manifest" href="manifest.webmanifest?v=20260711-unique-quiz-sentences">
-<link rel="icon" href="icon.svg?v=20260711-unique-quiz-sentences" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icon.svg?v=20260711-unique-quiz-sentences">
-<link rel="stylesheet" href="style.css?v=20260711-unique-quiz-sentences">
-<link rel="stylesheet" href="writing.css?v=20260711-unique-quiz-sentences">
-<link rel="stylesheet" href="modern.css?v=20260711-unique-quiz-sentences">
+<link rel="manifest" href="manifest.webmanifest?v=20260712-quiz-pipeline-v2">
+<link rel="icon" href="icon.svg?v=20260712-quiz-pipeline-v2" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg?v=20260712-quiz-pipeline-v2">
+<link rel="stylesheet" href="style.css?v=20260712-quiz-pipeline-v2">
+<link rel="stylesheet" href="writing.css?v=20260712-quiz-pipeline-v2">
+<link rel="stylesheet" href="modern.css?v=20260712-quiz-pipeline-v2">
 </head>
 <body>
 <div class="wrap">
@@ -27,10 +27,11 @@
 <section id="words" class="panel tabPanel hidden"><input id="search" type="search" placeholder="単語・意味・例文で検索"><div id="wordBox" class="wordgrid"></div></section>
 <section id="settings" class="panel tabPanel hidden"><h2>Settings</h2><div class="settingrow"><div><b>Theme</b><p class="small">Light / Dark / Autoを切り替えます。</p></div><select id="themeSelect"><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option></select></div><div class="settingrow"><div><b>Version</b><p class="small">v2.2.0 / 語彙情報とクイズ解説を強化。</p></div></div><div class="settingrow"><div><b>PWA更新</b><p class="small">ホーム画面から開いた場合も起動時に最新版を確認します。</p></div><button id="reloadBtn">更新を確認</button></div><div class="settingrow"><div><b>学習データ</b><p class="small">端末のlocalStorageに保存。旧バージョンのデータを自動移行します。</p></div><button id="exportBtn">書き出し</button></div><textarea id="dataBox" rows="8"></textarea></section>
 </div><div id="toast" class="toast"></div>
-<script src="words.js?v=20260711-unique-quiz-sentences"></script>
-<script src="words-extra.js?v=20260711-unique-quiz-sentences"></script>
-<script src="word-details.js?v=20260711-unique-quiz-sentences"></script>
-<script src="writing.js?v=20260711-unique-quiz-sentences"></script>
-<script src="app.js?v=20260711-unique-quiz-sentences"></script>
+<script src="words.js?v=20260712-quiz-pipeline-v2"></script>
+<script src="words-extra.js?v=20260712-quiz-pipeline-v2"></script>
+<script src="word-details.js?v=20260712-quiz-pipeline-v2"></script>
+<script src="quiz-data.js?v=20260712-quiz-pipeline-v2"></script>
+<script src="writing.js?v=20260712-quiz-pipeline-v2"></script>
+<script src="app.js?v=20260712-quiz-pipeline-v2"></script>
 </body>
 </html>
