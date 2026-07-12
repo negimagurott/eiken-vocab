@@ -2,10 +2,11 @@ const fs=require('fs');
 const vm=require('vm');
 const context={window:{}};
 vm.createContext(context);
-['words.js','words-extra.js','word-details.js','quiz-data.js'].forEach(file=>vm.runInContext(fs.readFileSync(file,'utf8'),context,{filename:file}));
+['words.js','words-extra.js','word-details.js','quiz-data.js','quiz-translations.js'].forEach(file=>vm.runInContext(fs.readFileSync(file,'utf8'),context,{filename:file}));
 const words=context.window.EIKEN_WORDS||[];
 const items=context.window.EIKEN_QUIZ_ITEMS||[];
 const rejected=context.window.EIKEN_REJECTED_QUIZ_WORDS||[];
+const translations=context.window.EIKEN_QUIZ_TRANSLATIONS||{};
 const errors=[];
 const ids=new Set();
 const sentences=new Set();
@@ -14,6 +15,7 @@ items.forEach(item=>{
   if(ids.has(item.id))errors.push(`duplicate id: ${item.id}`);ids.add(item.id);
   if(!words.some(word=>word.w===item.word))errors.push(`unknown word: ${item.word}`);
   if((item.sentence.match(/____/g)||[]).length!==1)errors.push(`blank count: ${item.word}`);
+  if(!translations[item.word]||translations[item.word].trim().length<4)errors.push(`missing translation: ${item.word}`);
   const normalized=item.sentence.toLowerCase().replace(/[^a-z_ ]/g,'').replace(/\s+/g,' ').trim();
   if(sentences.has(normalized))errors.push(`duplicate sentence: ${item.word}`);sentences.add(normalized);
   normalizedItems.push({word:item.word,tokens:new Set(normalized.split(' ').filter(token=>token!=='____'&&token.length>2))});
@@ -46,5 +48,5 @@ Object.entries(required).forEach(([word,sentence])=>{
   const item=items.find(candidate=>candidate.word===word);
   if(!item||item.sentence!==sentence)errors.push(`acceptance case failed: ${word}`);
 });
-console.log(JSON.stringify({vocabulary:words.length,approved:items.length,fixedChoiceSets:items.filter(item=>item.choices).length,rejected:rejected.length,errors:errors.length},null,2));
+console.log(JSON.stringify({vocabulary:words.length,approved:items.length,fixedChoiceSets:items.filter(item=>item.choices).length,translations:Object.keys(translations).length,rejected:rejected.length,errors:errors.length},null,2));
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
