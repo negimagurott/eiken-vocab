@@ -2,19 +2,21 @@ const fs=require('fs');
 const vm=require('vm');
 const context={window:{}};
 vm.createContext(context);
-['words.js','words-extra.js','quiz-data.js'].forEach(file=>vm.runInContext(fs.readFileSync(file,'utf8'),context,{filename:file}));
+['words.js','words-extra.js','word-details.js','quiz-data.js'].forEach(file=>vm.runInContext(fs.readFileSync(file,'utf8'),context,{filename:file}));
 const words=context.window.EIKEN_WORDS||[];
 const items=context.window.EIKEN_QUIZ_ITEMS||[];
 const rejected=context.window.EIKEN_REJECTED_QUIZ_WORDS||[];
 const errors=[];
 const ids=new Set();
 const sentences=new Set();
+const normalizedItems=[];
 items.forEach(item=>{
   if(ids.has(item.id))errors.push(`duplicate id: ${item.id}`);ids.add(item.id);
   if(!words.some(word=>word.w===item.word))errors.push(`unknown word: ${item.word}`);
   if((item.sentence.match(/____/g)||[]).length!==1)errors.push(`blank count: ${item.word}`);
   const normalized=item.sentence.toLowerCase().replace(/[^a-z_ ]/g,'').replace(/\s+/g,' ').trim();
   if(sentences.has(normalized))errors.push(`duplicate sentence: ${item.word}`);sentences.add(normalized);
+  normalizedItems.push({word:item.word,tokens:new Set(normalized.split(' ').filter(token=>token!=='____'&&token.length>2))});
   if(item.choices){
     if(item.choices.length!==4||new Set(item.choices).size!==4)errors.push(`invalid choices: ${item.word}`);
     if(!item.choices.includes(item.word))errors.push(`answer missing from choices: ${item.word}`);
@@ -23,9 +25,17 @@ items.forEach(item=>{
       const candidate=words.find(word=>word.w===choice);
       if(!candidate)errors.push(`unknown choice ${choice}: ${item.word}`);
       else if(answer&&answer.p&&candidate.p!==answer.p)errors.push(`part of speech mismatch ${choice}: ${item.word}`);
+      else if(choice!==item.word&&answer){
+        const answerRelated=(answer.synonyms||[]).map(value=>value.toLowerCase()),candidateRelated=(candidate.synonyms||[]).map(value=>value.toLowerCase());
+        if(answerRelated.includes(choice.toLowerCase())||candidateRelated.includes(item.word.toLowerCase()))errors.push(`synonym used as distractor ${choice}: ${item.word}`);
+      }
     });
   }
 });
+for(let i=0;i<normalizedItems.length;i++)for(let j=i+1;j<normalizedItems.length;j++){
+  const a=normalizedItems[i],b=normalizedItems[j],intersection=[...a.tokens].filter(token=>b.tokens.has(token)).length,union=new Set([...a.tokens,...b.tokens]).size;
+  if(union&&intersection/union>=0.9)errors.push(`near-duplicate sentences: ${a.word}, ${b.word}`);
+}
 const required={
   malleable:'Unlike brittle alloys, gold is highly ____ and can be shaped without breaking.',
   edify:'The documentary aims to ____ viewers by examining the ethical consequences of the policy.',
