@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-var VERSION='2.2.0',RELEASE='20260712-quiz-pipeline-v2',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'];
+var VERSION='2.2.0',RELEASE='20260712-quiz-pipeline-v2-batch1',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'];
 var WORDS=(window.EIKEN_WORDS||[]),QUESTION_BANK=(window.EIKEN_QUIZ_ITEMS||[]),QUESTION_WORDS=QUESTION_BANK.map(function(item){return WORDS.find(function(word){return word.w===item.word})}).filter(Boolean),WRITING_TOPICS=(window.EIKEN_WRITING_TOPICS||[]),today=localDate(),deferredInstallPrompt=null,state={date:'',questions:[],answers:{},graded:false,score:0,stats:{},days:{},history:{},missions:{},writingByDate:{},card:0,reveal:false,theme:'auto',regenByDate:{}};
 function $(id){return document.getElementById(id)}
 function localDate(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
@@ -72,6 +72,8 @@ function guessPos(x){
 }
 function createChoices(x){
   var seed=hash(today+x.w+RELEASE+'-choices');
+  var approved=QUESTION_BANK.find(function(item){return item.word===x.w});
+  if(approved&&Array.isArray(approved.choices)&&approved.choices.length===4)return shuffle(approved.choices,seed+1);
   var pos=guessPos(x);
 
   var samePos=WORDS.filter(function(y){
