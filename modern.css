@@ -26,11 +26,19 @@
 
 body {
   min-height: 100vh;
+  font-family: "Noto Sans JP", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
   background:
     radial-gradient(circle at 8% -10%, rgba(77, 119, 255, .17), transparent 32rem),
     radial-gradient(circle at 100% 14%, rgba(81, 201, 169, .12), transparent 28rem),
     var(--bg);
   letter-spacing: .01em;
+}
+
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
 }
 
 .wrap {
