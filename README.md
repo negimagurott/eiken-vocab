@@ -2,7 +2,7 @@
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.5.2 / 20260716-icon-refresh
+Release: v2.5.3 / 20260716-daily-motivation
 
 ## v2.5 Learning calendar
 
@@ -12,6 +12,7 @@ Release: v2.5.2 / 20260716-icon-refresh
 - 前月から当月まで移動して過去の積み重ねを確認
 - カレンダーを専用ページへ分離し、ホームの「📣 学習成果」から表示
 - iPhone用180pxとPWA用192／512pxを、シンプルなCモノグラムへ刷新
+- ホーム上部に、日付ごとに切り替わる20種類のモチベーションメッセージを表示
 
 ## v2.4 Question quality
 
