@@ -231,12 +231,20 @@ var REVIEWED_CHOICE_OVERRIDES={
 };
 function autoChoices(word){
   if(REVIEWED_CHOICE_OVERRIDES[word])return REVIEWED_CHOICE_OVERRIDES[word].slice();
-  var words=window.EIKEN_WORDS||[],answer=words.find(function(item){return item.w===word}),pool=words.filter(function(item){return item.w!==word&&item.p===answer.p&&OVERRIDES[item.w]});
+  var words=window.EIKEN_WORDS||[],answer=words.find(function(item){return item.w===word}),answerPos=answer.pos||answer.p,related=[].concat(answer.synonyms||[],answer.antonyms||[]).map(function(value){return String(value).toLowerCase()}),pool=words.filter(function(item){var candidateRelated=[].concat(item.synonyms||[],item.antonyms||[]).map(function(value){return String(value).toLowerCase()});return item.w!==word&&(item.pos||item.p)===answerPos&&related.indexOf(item.w.toLowerCase())<0&&candidateRelated.indexOf(word.toLowerCase())<0});
   var seed=word.split('').reduce(function(total,ch){return total+ch.charCodeAt(0)},0),choices=[word];
   for(var i=0;choices.length<4&&i<pool.length;i++){var candidate=pool[(seed+i)%pool.length].w;if(choices.indexOf(candidate)<0)choices.push(candidate)}
   return choices;
 }
 Object.keys(REMAINING_SENTENCES).forEach(function(word){OVERRIDES[word]={sentence:REMAINING_SENTENCES[word],choices:autoChoices(word)}});
-window.EIKEN_QUIZ_ITEMS=(window.EIKEN_WORDS||[]).filter(function(word){return OVERRIDES[word.w]||!GENERIC_TEMPLATES[word.s]}).map(function(word){var override=OVERRIDES[word.w];return{id:word.w+'-001',word:word.w,sentence:override?override.sentence:word.s,choices:override?override.choices:null,source:override?'manual-review':'curated-v1'}});
+OVERRIDES.intransigent={sentence:'Even after the audit exposed serious flaws, the minister remained ____ and refused to revise the policy.',choices:['intransigent','equivocal','magnanimous','sanguine']};
+OVERRIDES.indispensable={sentence:'Independent courts are ____ to a democracy seeking to protect citizens from arbitrary rule.',choices:['indispensable','intransigent','inadvertent','unprecedented']};
+OVERRIDES.impede={sentence:'Lengthy approval procedures could ____ the delivery of emergency supplies to isolated communities.',choices:['impede','engender','curtail','rectify']};
+OVERRIDES.perpetuate={sentence:'Ignoring unequal access to education may ____ the economic divisions the reform was intended to eliminate.',choices:['perpetuate','obfuscate','substantiate','relegate']};
+OVERRIDES.superfluous={sentence:'After the editor condensed the report, several ____ paragraphs that merely repeated earlier arguments were removed.',choices:['superfluous','vociferous','contentious','conspicuous']};
+window.EIKEN_QUIZ_ITEMS=(window.EIKEN_WORDS||[]).filter(function(word){return OVERRIDES[word.w]||!GENERIC_TEMPLATES[word.s]}).map(function(word){var override=OVERRIDES[word.w];return{id:word.w+'-001',word:word.w,sentence:override?override.sentence:word.s,choices:override?override.choices:autoChoices(word.w),source:override?'manual-review':'curated-v1'}});
+var qualityApi=window.EIKEN_QUIZ_QUALITY;
+if(qualityApi)window.EIKEN_QUIZ_ITEMS.forEach(function(item){item.quality=qualityApi.scoreItem(item,window.EIKEN_WORDS||[],window.EIKEN_QUIZ_ITEMS);item.difficulty=qualityApi.difficultyIndex(item.quality)});
+window.EIKEN_EXAMPLE_LIBRARY=window.EIKEN_QUIZ_ITEMS.filter(function(item){return!qualityApi||item.quality.passed}).map(function(item){return{id:item.id,word:item.word,sentence:item.sentence,choices:item.choices.slice(),source:item.source,quality:item.quality,difficulty:item.difficulty,approved:true}});
 window.EIKEN_REJECTED_QUIZ_WORDS=(window.EIKEN_WORDS||[]).filter(function(word){return GENERIC_TEMPLATES[word.s]&&!OVERRIDES[word.w]}).map(function(word){return word.w});
 })();

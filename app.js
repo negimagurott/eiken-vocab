@@ -1,7 +1,7 @@
 (function(){
 'use strict';
-var VERSION='2.3.1',RELEASE='20260716-streak-fix',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'],REVIEW_LIMIT=15,SRS_GAPS=[1,3,7,14,30];
-var WORDS=(window.EIKEN_WORDS||[]),QUESTION_BANK=(window.EIKEN_QUIZ_ITEMS||[]),QUIZ_TRANSLATIONS=(window.EIKEN_QUIZ_TRANSLATIONS||{}),QUESTION_WORDS=QUESTION_BANK.map(function(item){return WORDS.find(function(word){return word.w===item.word})}).filter(Boolean),WRITING_TOPICS=(window.EIKEN_WRITING_TOPICS||[]),today=localDate(),deferredInstallPrompt=null,state={date:'',questions:[],answers:{},graded:false,explanationsVisible:false,score:0,stats:{},days:{},history:{},missions:{},writingByDate:{},dailyReviewByDate:{},card:0,reveal:false,theme:'auto',regenByDate:{}};
+var VERSION='2.4',RELEASE='20260716-question-quality',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'],REVIEW_LIMIT=15,SRS_GAPS=[1,3,7,14,30];
+var WORDS=(window.EIKEN_WORDS||[]),EXAMPLE_LIBRARY=(window.EIKEN_EXAMPLE_LIBRARY||[]),QUESTION_BANK=(EXAMPLE_LIBRARY.length?EXAMPLE_LIBRARY:(window.EIKEN_QUIZ_ITEMS||[])),QUIZ_TRANSLATIONS=(window.EIKEN_QUIZ_TRANSLATIONS||{}),QUESTION_WORDS=QUESTION_BANK.map(function(item){return WORDS.find(function(word){return word.w===item.word})}).filter(Boolean),WRITING_TOPICS=(window.EIKEN_WRITING_TOPICS||[]),today=localDate(),deferredInstallPrompt=null,state={date:'',questions:[],answers:{},graded:false,explanationsVisible:false,score:0,stats:{},days:{},history:{},missions:{},writingByDate:{},dailyReviewByDate:{},card:0,reveal:false,theme:'auto',regenByDate:{}};
 function $(id){return document.getElementById(id)}
 function localDate(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){toast('保存できませんでした')}}
@@ -23,6 +23,7 @@ function mission(){ensureMission();return state.missions[today]}
 function cardsSeenCount(){return Object.keys(mission().cards||{}).length}
 function updateMission(){var m=mission();state.days[today]=true;m.cardsDone=cardsSeenCount()>=REVIEW_LIMIT;if(m.quiz&&m.cardsDone&&m.writing&&!m.complete){m.complete=true;toast('Daily Mission Complete! Streak達成です')}save()}
 function recentMap(days,includeToday){var out={},dates=Object.keys(state.history||{}).sort().slice(-days);dates.forEach(function(d){if(!includeToday&&d===today)return;(state.history[d]||[]).forEach(function(w){out[w]=true})});return out}
+function learnerAccuracy(){var attempts=0,correct=0;Object.keys(state.stats||{}).forEach(function(word){attempts+=state.stats[word].quizAttempts||0;correct+=state.stats[word].quizCorrect||0});return attempts?correct/attempts:0.6}
 function priority(x,recent,current){
   var st=state.stats[x.w]||{};
   var attempts=st.quizAttempts||0,correct=st.quizCorrect||0,age=daysSince(st.lastStudied),p=0;
@@ -34,6 +35,9 @@ function priority(x,recent,current){
   if(st.due&&st.due<=today)p+=45+Math.min(daysSince(st.due),30);
   if(!attempts&&!st.lastStudied)p+=15;
   if(st.known&&(!st.due||st.due>today))p-=35;
+  var item=QUESTION_BANK.find(function(question){return question.word===x.w}),target=learnerAccuracy()>=.75?92:learnerAccuracy()>=.55?88:84;
+  if(item&&typeof item.difficulty==='number')p+=Math.max(0,18-Math.abs(item.difficulty-target)/2);
+  if(item&&item.quality)p+=(item.quality.total-80)/5;
   if(recent&&recent[x.w])p-=12;
   if(current&&current[x.w])p-=100;
   return p;

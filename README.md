@@ -1,8 +1,23 @@
-# 英検1級 Companion v2.3
+# 英検1級 Companion v2.4
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.3.1 / 20260716-streak-fix
+Release: v2.4.0 / 20260716-question-quality
+
+## v2.4 Question quality
+
+- 300問すべてに同品詞の固定選択肢を用意し、正答率に応じて難易度84〜92を狙って出題
+- コロケーション・文法・一意性・難易度を各25点で評価し、80点未満を配信から除外
+- 承認済み300問を `EIKEN_EXAMPLE_LIBRARY` として蓄積し、日々の問題に再利用
+- AI品質チェッカーは80点未満の問題を最大3回まで自動再生成
+
+AIチェックはAPIキーを公開アプリに含めず、開発環境だけで実行します。
+
+```powershell
+$env:OPENAI_API_KEY='...'
+node scripts/ai-quality-checker.mjs --word intransigent --write approved-candidate.json
+node scripts/audit-quiz-quality.js
+```
 
 ## v2.3 Learning efficiency
 

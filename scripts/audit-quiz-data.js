@@ -2,7 +2,7 @@ const fs=require('fs');
 const vm=require('vm');
 const context={window:{}};
 vm.createContext(context);
-['words.js','words-extra.js','word-details.js','quiz-data.js','quiz-translations.js'].forEach(file=>vm.runInContext(fs.readFileSync(file,'utf8'),context,{filename:file}));
+['words.js','words-extra.js','word-details.js','quiz-quality.js','quiz-data.js','quiz-translations.js'].forEach(file=>vm.runInContext(fs.readFileSync(file,'utf8'),context,{filename:file}));
 const words=context.window.EIKEN_WORDS||[];
 const items=context.window.EIKEN_QUIZ_ITEMS||[];
 const rejected=context.window.EIKEN_REJECTED_QUIZ_WORDS||[];
@@ -26,13 +26,14 @@ items.forEach(item=>{
     item.choices.forEach(choice=>{
       const candidate=words.find(word=>word.w===choice);
       if(!candidate)errors.push(`unknown choice ${choice}: ${item.word}`);
-      else if(answer&&answer.p&&candidate.p!==answer.p)errors.push(`part of speech mismatch ${choice}: ${item.word}`);
+      else if(answer&&(answer.pos||answer.p)&&(candidate.pos||candidate.p)!==(answer.pos||answer.p))errors.push(`part of speech mismatch ${choice}: ${item.word}`);
       else if(choice!==item.word&&answer){
         const answerRelated=(answer.synonyms||[]).map(value=>value.toLowerCase()),candidateRelated=(candidate.synonyms||[]).map(value=>value.toLowerCase());
         if(answerRelated.includes(choice.toLowerCase())||candidateRelated.includes(item.word.toLowerCase()))errors.push(`synonym used as distractor ${choice}: ${item.word}`);
       }
     });
   }
+  if(!item.quality||item.quality.total<80)errors.push(`quality below 80: ${item.word}`);
 });
 for(let i=0;i<normalizedItems.length;i++)for(let j=i+1;j<normalizedItems.length;j++){
   const a=normalizedItems[i],b=normalizedItems[j],intersection=[...a.tokens].filter(token=>b.tokens.has(token)).length,union=new Set([...a.tokens,...b.tokens]).size;
