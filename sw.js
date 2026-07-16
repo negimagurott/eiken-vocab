@@ -1,4 +1,4 @@
-const RELEASE='20260716-study-recovery';
+const RELEASE='20260716-study-recovery-button';
 const CACHE_NAME='eiken-vocab-v2-'+RELEASE;
 const ASSETS=['./','./index.html?v='+RELEASE,'./style.css?v='+RELEASE,'./writing.css?v='+RELEASE,'./modern.css?v='+RELEASE,'./words.js?v='+RELEASE,'./words-extra.js?v='+RELEASE,'./word-details.js?v='+RELEASE,'./quiz-quality.js?v='+RELEASE,'./quiz-data.js?v='+RELEASE,'./quiz-translations.js?v='+RELEASE,'./writing.js?v='+RELEASE,'./app.js?v='+RELEASE,'./manifest.webmanifest?v='+RELEASE,'./icon.svg?v='+RELEASE,'./apple-touch-icon.png?v='+RELEASE,'./icon-192.png?v='+RELEASE,'./icon-512.png?v='+RELEASE];
 self.addEventListener('install',event=>{self.skipWaiting();event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(ASSETS).catch(()=>undefined)));});
