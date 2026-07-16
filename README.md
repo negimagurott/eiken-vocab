@@ -2,7 +2,7 @@
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.3.0 / 20260716-learning-efficiency
+Release: v2.3.1 / 20260716-streak-fix
 
 ## v2.3 Learning efficiency
 
