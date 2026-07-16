@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-var VERSION='2.4',RELEASE='20260716-question-quality',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'],REVIEW_LIMIT=15,SRS_GAPS=[1,3,7,14,30];
+var VERSION='2.4.1',RELEASE='20260716-answer-explanations',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'],REVIEW_LIMIT=15,SRS_GAPS=[1,3,7,14,30];
 var WORDS=(window.EIKEN_WORDS||[]),EXAMPLE_LIBRARY=(window.EIKEN_EXAMPLE_LIBRARY||[]),QUESTION_BANK=(EXAMPLE_LIBRARY.length?EXAMPLE_LIBRARY:(window.EIKEN_QUIZ_ITEMS||[])),QUIZ_TRANSLATIONS=(window.EIKEN_QUIZ_TRANSLATIONS||{}),QUESTION_WORDS=QUESTION_BANK.map(function(item){return WORDS.find(function(word){return word.w===item.word})}).filter(Boolean),WRITING_TOPICS=(window.EIKEN_WRITING_TOPICS||[]),today=localDate(),deferredInstallPrompt=null,state={date:'',questions:[],answers:{},graded:false,explanationsVisible:false,score:0,stats:{},days:{},history:{},missions:{},writingByDate:{},dailyReviewByDate:{},card:0,reveal:false,theme:'auto',regenByDate:{}};
 function $(id){return document.getElementById(id)}
 function localDate(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
@@ -129,6 +129,15 @@ function mark(ok){
 }
 function posLabel(x){return{v:'動詞',a:'形容詞',n:'名詞',verb:'動詞',adjective:'形容詞',noun:'名詞'}[x.pos||x.p||guessPos(x)]||'品詞未登録'}
 function listText(value){return Array.isArray(value)&&value.length?value.join(' / '):'—'}
+function contextFrame(sentence,word){var parts=String(sentence||'').split('____'),left=(parts[0]||'').trim().split(/\s+/).slice(-4).join(' '),right=(parts[1]||'').trim().split(/\s+/).slice(0,4).join(' ');return(left+' '+word+' '+right).trim()}
+function answerReason(x,opts){
+  var translation=x.translation||'和訳未登録',frame=contextFrame(x.s,x.w),collocations=(x.collocations||[]).filter(function(value){return String(value).toLowerCase().indexOf(x.w.toLowerCase())>=0&&String(value).split(/\s+/).length<=7}).slice(0,2),wrong=opts.filter(function(option){return option!==x.w}).map(function(option){return WORDS.find(function(word){return word.w===option})}).filter(Boolean),selected=state.answers[x.w],selectedWord=selected&&selected!==x.w?WORDS.find(function(word){return word.w===selected}):null;
+  var html='<div class="reasoning"><p><b>決め手：</b>和訳の「'+esc(translation)+'」から、空欄には「'+esc(x.m)+'」を表す'+esc(posLabel(x))+'が必要です。</p><p><b>文中での結びつき：</b><span class="context-frame">'+esc(frame)+'</span> とすると、文が伝えたい意味と語法が一致します。</p>';
+  if(collocations.length)html+='<p><b>関連する自然な表現：</b>'+esc(collocations.join(' / '))+'</p>';
+  if(selectedWord)html+='<p class="selected-miss"><b>選んだ語との違い：</b>「'+esc(selectedWord.w)+'」は「'+esc(selectedWord.m)+'」なので、この文が必要とする「'+esc(x.m)+'」とは意味の方向が異なります。</p>';
+  if(wrong.length)html+='<p><b>ほかの選択肢：</b>'+wrong.map(function(word){return esc(word.w)+'（'+esc(word.m)+'）'}).join('、')+'。品詞は同じでも、文脈が要求する意味や語の結びつきに合いません。</p>';
+  return html+'</div>';
+}
 function syncCardHeight(){var flash=$('flash'),front=flash&&flash.querySelector('.front'),back=flash&&flash.querySelector('.back');if(!flash||!front||!back)return;flash.style.height='';var minimum=window.innerWidth<=620?480:390;flash.style.height=Math.max(minimum,front.scrollHeight,back.scrollHeight)+'px'}
 function writingTopic(){if(!WRITING_TOPICS.length)return 'Writing topic is unavailable.';return WRITING_TOPICS[hash(today)%WRITING_TOPICS.length]}
 function wordCount(text){var trimmed=(text||'').trim();return trimmed?trimmed.split(/\s+/).length:0}
@@ -146,7 +155,7 @@ function renderQuiz(){
       if(state.graded&&o===x.w){cls+=' correct';mark='✓ '}
       if(state.graded&&state.answers[x.w]===o&&o!==x.w){cls+=' wrong';mark='✕ '}
       return '<button class="'+cls+'" data-choice="'+esc(o)+'"><span>'+mark+esc(o)+'</span>'+(state.graded?'<small>'+esc(item?item.m:'意味未登録')+'</small>':'')+'</button>';
-    }).join('')+'<div class="explain '+(showExplanation?'show':'')+'"><b>'+esc(x.w)+'</b> <span class="pos-badge">'+esc(posLabel(x))+'</span> <button class="speak" data-speak="'+esc(x.w)+'" type="button">🔊</button><p><b>意味：</b>'+esc(x.m)+'</p><p><b>完成文：</b>'+esc(x.s.replace('____',x.w))+'</p><p><b>和訳：</b>'+esc(x.translation||'和訳未登録')+'</p><p><b>なぜこの答え？：</b>「'+esc(x.w)+'」は「'+esc(x.m)+'」を意味し、この文脈と文法に最も自然に当てはまります。</p></div></div>';
+    }).join('')+'<div class="explain '+(showExplanation?'show':'')+'"><b>'+esc(x.w)+'</b> <span class="pos-badge">'+esc(posLabel(x))+'</span> <button class="speak" data-speak="'+esc(x.w)+'" type="button">🔊</button><p><b>意味：</b>'+esc(x.m)+'</p><p><b>完成文：</b>'+esc(x.s.replace('____',x.w))+'</p><p><b>和訳：</b>'+esc(x.translation||'和訳未登録')+'</p><h4>なぜこの答え？</h4>'+answerReason(x,opts)+'</div></div>';
   }).join('');
   box.querySelectorAll('.choice').forEach(function(b){b.addEventListener('click',function(){if(state.graded)return;var q=b.closest('.q');state.answers[q.getAttribute('data-word')]=b.getAttribute('data-choice');save();renderQuiz()})});
   box.querySelectorAll('[data-speak]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();speak(b.getAttribute('data-speak'))})});

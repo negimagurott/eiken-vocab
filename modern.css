@@ -267,6 +267,23 @@ button.primary {
 .choice.correct small,
 .choice.wrong small { color: inherit; }
 
+.explain h4 {
+  margin: 18px 0 8px;
+  color: var(--fg);
+  font-size: 16px;
+}
+
+.reasoning {
+  padding: 2px 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel);
+}
+
+.reasoning p { margin: 11px 0; }
+.context-frame { color: var(--fg); font-weight: 700; }
+.selected-miss { color: var(--bad); }
+
 .pos-badge {
   display: inline-block;
   margin-left: 7px;
