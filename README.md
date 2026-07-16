@@ -1,8 +1,14 @@
-# 英検1級 Companion v2.2
+# 英検1級 Companion v2.3
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.2.0 / 20260712-quiz-pipeline-v2
+Release: v2.3.0 / 20260716-learning-efficiency
+
+## v2.3 Learning efficiency
+
+- 間違い回数、「まだ」回数、最終学習日、正答率から優先度を自動計算
+- 「覚えた」後は1日、3日、7日、14日、30日の間隔で自動復習
+- トップ画面の Today's Review から、その日の優先15語をすぐに学習
 
 ## Quiz pipeline v2
 

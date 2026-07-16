@@ -103,6 +103,31 @@ button.primary {
   -webkit-backdrop-filter: blur(18px);
 }
 
+.dashboard {
+  display: grid;
+  gap: 18px;
+}
+
+.today-review {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 20px 22px;
+  text-align: left;
+  color: #fff;
+  background: linear-gradient(135deg, #3157d5, #6d79e9 58%, #34a98b);
+  box-shadow: 0 14px 30px rgba(49, 87, 213, .24);
+}
+
+.today-review > span { display: grid; gap: 3px; }
+.today-review small { font-size: 11px; letter-spacing: .12em; }
+.today-review strong { font-size: clamp(28px, 5vw, 42px); line-height: 1.08; }
+.today-review em { font-size: 12px; font-style: normal; opacity: .82; }
+.today-review > b { white-space: nowrap; }
+.today-review.review-complete { background: linear-gradient(135deg, #07875d, #34a98b); }
+
 .stats {
   grid-template-columns: repeat(6, 1fr);
   gap: 10px;
@@ -337,6 +362,10 @@ input:focus, textarea:focus, select:focus {
 @media (max-width: 900px) {
   .stats { grid-template-columns: repeat(3, 1fr); }
   .mission { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .today-review { align-items: flex-start; flex-direction: column; }
 }
 
 @media (max-width: 620px) {

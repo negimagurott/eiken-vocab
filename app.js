@@ -1,11 +1,11 @@
 (function(){
 'use strict';
-var VERSION='2.2',RELEASE='20260713-flashcard-audit',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'];
-var WORDS=(window.EIKEN_WORDS||[]),QUESTION_BANK=(window.EIKEN_QUIZ_ITEMS||[]),QUIZ_TRANSLATIONS=(window.EIKEN_QUIZ_TRANSLATIONS||{}),QUESTION_WORDS=QUESTION_BANK.map(function(item){return WORDS.find(function(word){return word.w===item.word})}).filter(Boolean),WRITING_TOPICS=(window.EIKEN_WRITING_TOPICS||[]),today=localDate(),deferredInstallPrompt=null,state={date:'',questions:[],answers:{},graded:false,explanationsVisible:false,score:0,stats:{},days:{},history:{},missions:{},writingByDate:{},card:0,reveal:false,theme:'auto',regenByDate:{}};
+var VERSION='2.3',RELEASE='20260716-learning-efficiency',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'],REVIEW_LIMIT=15,SRS_GAPS=[1,3,7,14,30];
+var WORDS=(window.EIKEN_WORDS||[]),QUESTION_BANK=(window.EIKEN_QUIZ_ITEMS||[]),QUIZ_TRANSLATIONS=(window.EIKEN_QUIZ_TRANSLATIONS||{}),QUESTION_WORDS=QUESTION_BANK.map(function(item){return WORDS.find(function(word){return word.w===item.word})}).filter(Boolean),WRITING_TOPICS=(window.EIKEN_WRITING_TOPICS||[]),today=localDate(),deferredInstallPrompt=null,state={date:'',questions:[],answers:{},graded:false,explanationsVisible:false,score:0,stats:{},days:{},history:{},missions:{},writingByDate:{},dailyReviewByDate:{},card:0,reveal:false,theme:'auto',regenByDate:{}};
 function $(id){return document.getElementById(id)}
 function localDate(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(state))}catch(e){toast('保存できませんでした')}}
-function load(){try{var raw=localStorage.getItem(KEY);if(!raw){for(var i=0;i<OLD_KEYS.length;i++){raw=localStorage.getItem(OLD_KEYS[i]);if(raw)break}}if(raw)state=Object.assign(state,JSON.parse(raw))}catch(e){}if(!state.stats)state.stats={};if(!state.days)state.days={};if(!state.history)state.history={};if(!state.missions)state.missions={};if(!state.answers)state.answers={};if(!state.regenByDate)state.regenByDate={};if(!state.writingByDate)state.writingByDate={};if(!state.theme)state.theme='auto';WORDS.forEach(function(x){if(!state.stats[x.w])state.stats[x.w]={seen:0,correct:0,wrong:0,known:false,due:'2000-01-01',level:0};if(!state.stats[x.w].due)state.stats[x.w].due='2000-01-01'});ensureMission();save()}
+function load(){try{var raw=localStorage.getItem(KEY);if(!raw){for(var i=0;i<OLD_KEYS.length;i++){raw=localStorage.getItem(OLD_KEYS[i]);if(raw)break}}if(raw)state=Object.assign(state,JSON.parse(raw))}catch(e){}if(!state.stats)state.stats={};if(!state.days)state.days={};if(!state.history)state.history={};if(!state.missions)state.missions={};if(!state.answers)state.answers={};if(!state.regenByDate)state.regenByDate={};if(!state.writingByDate)state.writingByDate={};if(!state.dailyReviewByDate)state.dailyReviewByDate={};if(!state.theme)state.theme='auto';WORDS.forEach(function(x){var s=state.stats[x.w];if(!s)s=state.stats[x.w]={seen:0,correct:0,wrong:0,known:false,due:'',level:0};if(typeof s.hardCount!=='number')s.hardCount=0;if(typeof s.quizAttempts!=='number')s.quizAttempts=s.seen||0;if(typeof s.quizCorrect!=='number')s.quizCorrect=s.correct||0;if(typeof s.reviewStep!=='number')s.reviewStep=Math.max(0,Math.min(4,s.level||0));if(!s.lastStudied)s.lastStudied=s.lastCardDate||'';if(!s.seen&&s.due==='2000-01-01')s.due=''});ensureMission();ensureDailyReview();save()}
 function ensureMission(){if(!state.missions)state.missions={};if(!state.missions[today])state.missions[today]={quiz:false,cards:{},cardsDone:false,writing:false,complete:false};var m=state.missions[today];if(!m.cards)m.cards={};if(typeof m.writing==='undefined')m.writing=!!m.complete}
 function applyTheme(){var mode=state.theme||'auto',dark=mode==='dark'||(mode==='auto'&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.setAttribute('data-theme',dark?'dark':'light');var meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content',dark?'#0d111a':'#172033');if($('themeSelect'))$('themeSelect').value=mode}
 function hash(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h+=(h<<1)+(h<<4)+(h<<7)+(h<<8)+(h<<24)}return h>>>0}
@@ -13,42 +13,34 @@ function rng(seed){var x=seed||123456789;return function(){x^=x<<13;x^=x>>>17;x^
 function shuffle(a,seed){var r=rng(seed),b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(r()*(i+1)),t=b[i];b[i]=b[j];b[j]=t}return b}
 function addDays(d,n){var x=new Date(d+'T00:00:00');x.setDate(x.getDate()+n);x.setMinutes(x.getMinutes()-x.getTimezoneOffset());return x.toISOString().slice(0,10)}
 function speak(word){try{if(!('speechSynthesis'in window)){toast('このブラウザでは音声再生に非対応です');return}speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(word);u.lang='en-US';u.rate=.82;speechSynthesis.speak(u)}catch(e){toast('音声を再生できませんでした')}}
-function schedule(word,ok){var s=state.stats[word];if(!s)return;s.seen++;if(ok){s.correct++;s.level=Math.min(5,(s.level||0)+1);var gaps=[1,2,4,7,14,30];s.due=addDays(today,gaps[s.level]||30);if(s.level>=4)s.known=true}else{s.wrong++;s.level=0;s.known=false;s.due=addDays(today,1)}}
+function schedule(word,ok,source){var s=state.stats[word];if(!s)return;s.lastStudied=today;if(source==='quiz'){s.quizAttempts=(s.quizAttempts||0)+1;s.seen=(s.seen||0)+1;if(ok){s.quizCorrect=(s.quizCorrect||0)+1;s.correct=(s.correct||0)+1}else{s.wrong=(s.wrong||0)+1}}else if(!ok){s.hardCount=(s.hardCount||0)+1}if(ok){var step=Math.max(0,Math.min(4,s.reviewStep||0));s.due=addDays(today,SRS_GAPS[step]);s.reviewStep=Math.min(4,step+1);s.level=s.reviewStep;if(s.reviewStep>=4)s.known=true}else{s.reviewStep=0;s.level=0;s.known=false;s.due=addDays(today,1)}}
 function streak(){var n=0,d=today;while(state.days&&state.days[d]){n++;d=addDays(d,-1)}return n}
 function examDays(){var target=new Date('2026-10-04T00:00:00'),now=new Date(today+'T00:00:00');return Math.max(0,Math.ceil((target-now)/86400000))}
 function currentWords(){return(state.questions||[]).map(function(w){var word=WORDS.find(function(x){return x.w===w}),item=QUESTION_BANK.find(function(x){return x.word===w});if(!word||!item)return null;return Object.assign({},word,{s:item.sentence,translation:QUIZ_TRANSLATIONS[w]||''})}).filter(Boolean)}
+function reviewWords(){return((state.dailyReviewByDate&&state.dailyReviewByDate[today])||[]).map(function(w){return WORDS.find(function(x){return x.w===w})}).filter(Boolean)}
+function daysSince(date){if(!date)return 365;return Math.max(0,Math.floor((new Date(today+'T00:00:00')-new Date(date+'T00:00:00'))/86400000))}
 function mission(){ensureMission();return state.missions[today]}
 function cardsSeenCount(){return Object.keys(mission().cards||{}).length}
-function updateMission(){var m=mission();m.cardsDone=cardsSeenCount()>=10;if(m.quiz&&m.cardsDone&&m.writing&&!m.complete){m.complete=true;state.days[today]=true;toast('Daily Mission Complete! Streak達成です')}save()}
+function updateMission(){var m=mission();m.cardsDone=cardsSeenCount()>=REVIEW_LIMIT;if(m.quiz&&m.cardsDone&&m.writing&&!m.complete){m.complete=true;state.days[today]=true;toast('Daily Mission Complete! Streak達成です')}save()}
 function recentMap(days,includeToday){var out={},dates=Object.keys(state.history||{}).sort().slice(-days);dates.forEach(function(d){if(!includeToday&&d===today)return;(state.history[d]||[]).forEach(function(w){out[w]=true})});return out}
 function priority(x,recent,current){
   var st=state.stats[x.w]||{};
-  var p=0;
-
-  // 1. 間違えた単語は最優先
-  if(st.wrong)p+=st.wrong*20;
-
-  // 2. 復習期限が来ている単語を優先
-  if(!st.known&&(st.due||'2000-01-01')<=today)p+=40;
-
-  // 3. 未学習語も一定量出す
-  if(!st.seen)p+=25;
-
-  // 4. 覚えた単語は出題頻度を下げる
-  if(st.known)p-=50;
-
-  // 5. レベルが高い単語は少し下げる
-  if(st.level)p-=st.level*6;
-
-  // 6. 直近7日に出た単語は下げる
-  if(recent[x.w])p-=35;
-
-  // 7. 再生成時は現在の10問を強く避ける
+  var attempts=st.quizAttempts||0,correct=st.quizCorrect||0,age=daysSince(st.lastStudied),p=0;
+  p+=(st.wrong||0)*12;
+  p+=(st.hardCount||0)*10;
+  p+=attempts?Math.round((1-correct/attempts)*30):18;
+  p+=Math.min(age,30);
+  if(age>=7)p+=15;
+  if(st.due&&st.due<=today)p+=45+Math.min(daysSince(st.due),30);
+  if(!attempts&&!st.lastStudied)p+=15;
+  if(st.known&&(!st.due||st.due>today))p-=35;
+  if(recent&&recent[x.w])p-=12;
   if(current&&current[x.w])p-=100;
-
   return p;
 }
-function pickQuestions(force){var recent=recentMap(7,false),current={};(state.questions||[]).forEach(function(w){current[w]=true});var seed=hash(today+'-'+(state.regenByDate[today]||0)+'-'+RELEASE);var ranked=shuffle(QUESTION_WORDS,seed).sort(function(a,b){return priority(b,recent,force?current:null)-priority(a,recent,force?current:null)});var first=ranked.filter(function(x){return!recent[x.w]&&(!force||!current[x.w])});var second=ranked.filter(function(x){return first.indexOf(x)<0&&(!force||!current[x.w])});var third=ranked.filter(function(x){return first.indexOf(x)<0&&second.indexOf(x)<0}),ordered=first.concat(second,third),picked=[],sentences={};ordered.forEach(function(x){var item=QUESTION_BANK.find(function(q){return q.word===x.w}),sentence=item&&item.sentence;if(picked.length<10&&sentence&&!sentences[sentence]){sentences[sentence]=true;picked.push(x)}});return picked.slice(0,10).map(function(x){return x.w})}
+function rankWords(words,recent,current,seed){return shuffle(words,seed).sort(function(a,b){return priority(b,recent,current)-priority(a,recent,current)})}
+function ensureDailyReview(){if(!state.dailyReviewByDate)state.dailyReviewByDate={};var saved=state.dailyReviewByDate[today];if(saved&&saved.length&&saved.every(function(w){return WORDS.some(function(x){return x.w===w})}))return;state.dailyReviewByDate[today]=rankWords(WORDS,{},null,hash(today+'-review-'+RELEASE)).slice(0,REVIEW_LIMIT).map(function(x){return x.w})}
+function pickQuestions(force){var recent=recentMap(7,false),current={};(state.questions||[]).forEach(function(w){current[w]=true});var seed=hash(today+'-'+(state.regenByDate[today]||0)+'-'+RELEASE),ranked=rankWords(QUESTION_WORDS,recent,force?current:null,seed),picked=[],sentences={};ranked.forEach(function(x){var item=QUESTION_BANK.find(function(q){return q.word===x.w}),sentence=item&&item.sentence;if(picked.length<10&&sentence&&!sentences[sentence]){sentences[sentence]=true;picked.push(x)}});return picked.map(function(x){return x.w})}
 function guessPos(x){
   if(x.p==='v')return 'verb';
   if(x.p==='a')return 'adjective';
@@ -93,15 +85,13 @@ function createChoices(x){
 function generate(force){load();today=localDate();ensureMission();applyTheme();if(!force&&state.date===today&&state.questions&&state.questions.length===10&&state.questions.every(function(word){return QUESTION_BANK.some(function(item){return item.word===word})})){render();return}if(force)state.regenByDate[today]=(state.regenByDate[today]||0)+1;state.date=today;state.answers={};state.graded=false;state.explanationsVisible=false;state.score=0;state.card=0;state.reveal=false;var m=mission();m.quiz=false;m.cards={};m.cardsDone=false;m.complete=false;state.questions=pickQuestions(force);state.history[today]=state.questions;save();render();toast(force?'重複を抑えて10問を再生成しました':'今日の10問を作成しました')}
 function esc(s){return String(s||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
 function render(){renderStats();renderQuiz();renderCard();renderWriting();renderWords();exportData()}
-function renderStats(){var words=currentWords(),m=mission(),ms=(m.quiz?1:0)+(m.cardsDone?1:0)+(m.writing?1:0);$('score').textContent=(state.score||0)+'/'+(words.length||10);$('missionScore').textContent=ms+'/3';$('days').textContent=Object.keys(state.days||{}).length;$('streak').textContent=streak();$('exam').textContent=examDays();$('known').textContent=Object.keys(state.stats).filter(function(w){return state.stats[w].known}).length;$('bar').style.width=(ms/3*100)+'%';$('missionQuiz').classList.toggle('done',!!m.quiz);$('missionCards').classList.toggle('done',!!m.cardsDone);$('missionWriting').classList.toggle('done',!!m.writing);$('cardsSeen').textContent=cardsSeenCount();$('status').textContent=m.complete?'Daily Mission Complete. 英検1級まであと '+examDays()+' 日。':'今日のMission: Quiz＋Flashcards＋Writing。英検1級まであと '+examDays()+' 日。'}
-function renderQuiz(){var box=$('quizBox'),words=currentWords();if(!words.length){box.innerHTML='<p>「今日の10問」を押してください。</p>';return}box.innerHTML=words.map(function(x,i){var opts=createChoices(x);return '<div class="q" data-word="'+esc(x.w)+'"><div class="meta">Question '+(i+1)+'</div><div class="sentence">'+esc(x.s)+'</div>'+opts.map(function(o){var cls='choice';if(state.answers[x.w]===o)cls+=' selected';if(state.graded&&o===x.w)cls+=' correct';if(state.graded&&state.answers[x.w]===o&&o!==x.w)cls+=' wrong';return '<button class="'+cls+'" data-choice="'+esc(o)+'">'+esc(o)+'</button>'}).join('')+'<div class="explain '+(state.graded?'show':'')+'"><b>'+esc(x.w)+'</b> <button class="speak" data-speak="'+esc(x.w)+'" type="button">🔊</button><br>'+esc(x.m)+'<br>'+esc(x.j)+'<br><b>用法：</b>'+esc(x.u)+'</div></div>'}).join('');box.querySelectorAll('.choice').forEach(function(b){b.addEventListener('click',function(){if(state.graded)return;var q=b.closest('.q');state.answers[q.getAttribute('data-word')]=b.getAttribute('data-choice');save();renderQuiz()})});box.querySelectorAll('[data-speak]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();speak(b.getAttribute('data-speak'))})})}
-function grade(){var words=currentWords();if(!words.length)return;var score=0;words.forEach(function(x){var ok=state.answers[x.w]===x.w;if(ok)score++;schedule(x.w,ok)});state.score=score;state.graded=true;state.explanationsVisible=true;mission().quiz=true;updateMission();render();toast(score+' / '+words.length+' 点です')}
+function renderStats(){var words=currentWords(),m=mission(),reviewed=cardsSeenCount(),remaining=Math.max(0,reviewWords().length-reviewed),ms=(m.quiz?1:0)+(m.cardsDone?1:0)+(m.writing?1:0);$('score').textContent=(state.score||0)+'/'+(words.length||10);$('missionScore').textContent=ms+'/3';$('days').textContent=Object.keys(state.days||{}).length;$('streak').textContent=streak();$('exam').textContent=examDays();$('known').textContent=Object.keys(state.stats).filter(function(w){return state.stats[w].known}).length;$('reviewRemaining').textContent=remaining;$('startReviewBtn').classList.toggle('review-complete',remaining===0);$('startReviewBtn').querySelector('b').textContent=remaining===0?'今日の復習完了 ✓':'復習を始める →';$('bar').style.width=(ms/3*100)+'%';$('missionQuiz').classList.toggle('done',!!m.quiz);$('missionCards').classList.toggle('done',!!m.cardsDone);$('missionWriting').classList.toggle('done',!!m.writing);$('cardsSeen').textContent=reviewed;$('status').textContent=m.complete?'Daily Mission Complete. 英検1級まであと '+examDays()+' 日。':'今日のMission: Quiz＋Flashcards＋Writing。英検1級まであと '+examDays()+' 日。'}
+function grade(){var words=currentWords();if(!words.length||state.graded)return;var score=0;words.forEach(function(x){var ok=state.answers[x.w]===x.w;if(ok)score++;schedule(x.w,ok,'quiz')});state.score=score;state.graded=true;state.explanationsVisible=true;mission().quiz=true;updateMission();render();toast(score+' / '+words.length+' 点です')}
 function showAnswers(){if(!state.graded){toast('採点後に解説を表示できます');return}state.explanationsVisible=!state.explanationsVisible;save();renderQuiz()}
 function reviewLabel(result){if(result==='good')return '前回: 覚えた';if(result==='hard')return '前回: まだ';return ''}
-function renderCard(){var words=currentWords();if(!words.length){$('cardWord').textContent='---';$('counter').textContent='';return}if(state.card>=words.length)state.card=0;if(state.card<0)state.card=words.length-1;var x=words[state.card],st=state.stats[x.w]||{},result=st.lastCardResult||'';mission().cards[x.w]=true;updateMission();$('flash').classList.toggle('flipped',!!state.reveal);$('flash').classList.remove('remembered-good','remembered-hard');if(result==='good')$('flash').classList.add('remembered-good');if(result==='hard')$('flash').classList.add('remembered-hard');$('cardWord').textContent=x.w;$('backWord').textContent=x.w;$('cardPron').textContent=x.p||'';$('cardMean').textContent=x.m+' / '+x.j;$('cardSentence').textContent=x.s.replace('____',x.w);$('cardUsage').textContent=x.u;$('cardSpeak').setAttribute('data-word',x.w);$('counter').innerHTML=(state.card+1)+' / '+words.length+(result?' <span class="review-badge '+(result==='good'?'review-good':'review-hard')+'">'+reviewLabel(result)+'</span>':'')}
-function next(n){var words=currentWords();if(!words.length)return;state.card=(state.card+n+words.length)%words.length;state.reveal=false;save();renderCard();renderStats()}
+function next(n){var words=reviewWords();if(!words.length)return;state.card=(state.card+n+words.length)%words.length;state.reveal=false;save();renderCard();renderStats()}
 function mark(ok){
-  var words=currentWords();
+  var words=reviewWords();
   if(!words.length)return;
 
   var word=words[state.card].w;
@@ -109,9 +99,11 @@ function mark(ok){
   var flash=$('flash');
   var st=state.stats[word];
 
-  schedule(word,ok);
+  schedule(word,ok,'card');
   st=state.stats[word];
   if(st){st.lastCardResult=ok?'good':'hard';st.lastCardDate=today;}
+  mission().cards[word]=true;
+  updateMission();
   state.reveal=false;
   save();
   renderWords();
@@ -139,7 +131,6 @@ function wordCount(text){var trimmed=(text||'').trim();return trimmed?trimmed.sp
 function renderWriting(){var draft=state.writingByDate[today]||'';$('writingTopic').textContent=writingTopic();if(document.activeElement!==$('writingDraft'))$('writingDraft').value=draft;$('writingCount').textContent=wordCount(draft)+' words';$('writingDoneBtn').textContent=mission().writing?'✓ 完了済み':'今日のWritingを完了';$('writingDoneBtn').classList.toggle('writing-complete',!!mission().writing)}
 function saveWriting(){state.writingByDate[today]=$('writingDraft').value;$('writingCount').textContent=wordCount(state.writingByDate[today])+' words';save()}
 function completeWriting(){saveWriting();if(wordCount(state.writingByDate[today])<1){toast('回答を入力してから完了してください');return}mission().writing=true;updateMission();renderStats();renderWriting();toast('今日のWritingを保存しました')}
-function renderWords(){var q=($('search').value||'').toLowerCase();var arr=WORDS.filter(function(x){return!q||x.w.toLowerCase().includes(q)||x.m.includes(q)||x.j.includes(q)||x.s.toLowerCase().includes(q)});$('wordBox').innerHTML=arr.map(function(x){var st=state.stats[x.w]||{},label=reviewLabel(st.lastCardResult);return '<div class="word"><b>'+esc(x.w)+'</b><button class="speak" data-speak="'+esc(x.w)+'" type="button">🔊</button><p>'+esc(x.m)+'</p><p class="small">'+esc(x.j)+'</p><p class="small"><b>例文：</b>'+esc(x.s.replace('____',x.w))+'</p><p class="small"><b>用法：</b>'+esc(x.u)+'</p><span class="pill">正解 '+(st.correct||0)+'</span><span class="pill">誤答 '+(st.wrong||0)+'</span><span class="pill">due '+(st.due||'-')+'</span>'+(label?'<span class="pill '+(st.lastCardResult==='good'?'review-good':'review-hard')+'">'+label+'</span>':'')+'</div>'}).join('');$('wordBox').querySelectorAll('[data-speak]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();speak(b.getAttribute('data-speak'))})})}
 function renderQuiz(){
   var box=$('quizBox'),words=currentWords(),showExplanation=!!(state.graded&&state.explanationsVisible);
   if(!words.length){box.innerHTML='<p>「今日の10問」を押してください。</p>';return}
@@ -156,14 +147,15 @@ function renderQuiz(){
   box.querySelectorAll('.choice').forEach(function(b){b.addEventListener('click',function(){if(state.graded)return;var q=b.closest('.q');state.answers[q.getAttribute('data-word')]=b.getAttribute('data-choice');save();renderQuiz()})});
   box.querySelectorAll('[data-speak]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();speak(b.getAttribute('data-speak'))})});
   $('answerBtn').disabled=!state.graded;
+  $('gradeBtn').disabled=!!state.graded;
   $('answerBtn').textContent=showExplanation?'解説を隠す':'解説を表示';
 }
 function renderCard(){
-  var words=currentWords();
+  var words=reviewWords();
   if(!words.length){$('cardWord').textContent='---';$('counter').textContent='';return}
   if(state.card>=words.length)state.card=0;if(state.card<0)state.card=words.length-1;
   var x=words[state.card],st=state.stats[x.w]||{},result=st.lastCardResult||'';
-  mission().cards[x.w]=true;updateMission();$('flash').classList.toggle('flipped',!!state.reveal);$('flash').classList.remove('remembered-good','remembered-hard');
+  $('flash').classList.toggle('flipped',!!state.reveal);$('flash').classList.remove('remembered-good','remembered-hard');
   if(result==='good')$('flash').classList.add('remembered-good');if(result==='hard')$('flash').classList.add('remembered-hard');
   $('cardWord').textContent=x.w;$('backWord').textContent=x.w;$('cardPron').textContent=posLabel(x);$('cardMean').textContent=x.m;$('cardSentence').textContent=x.s.replace('____',x.w);
   $('cardDetails').innerHTML='<p><b>品詞：</b>'+esc(posLabel(x))+'</p><p><b>類義語：</b>'+esc(listText(x.synonyms))+'</p><p><b>反意語：</b>'+esc(listText(x.antonyms))+'</p><p><b>コロケーション：</b>'+esc(listText(x.collocations))+'</p>';
@@ -172,7 +164,7 @@ function renderCard(){
 }
 function renderWords(){
   var q=($('search').value||'').toLowerCase();var arr=WORDS.filter(function(x){return!q||x.w.toLowerCase().includes(q)||x.m.includes(q)||x.j.includes(q)||x.s.toLowerCase().includes(q)});
-  $('wordBox').innerHTML=arr.map(function(x){var st=state.stats[x.w]||{},label=reviewLabel(st.lastCardResult);return '<div class="word"><b>'+esc(x.w)+'</b><span class="pos-badge">'+esc(posLabel(x))+'</span><button class="speak" data-speak="'+esc(x.w)+'" type="button">🔊</button><p>'+esc(x.m)+'</p><p class="small"><b>例文：</b>'+esc(x.s.replace('____',x.w))+'</p>'+(x.collocations&&x.collocations.length?'<p class="small"><b>コロケーション：</b>'+esc(listText(x.collocations))+'</p>':'')+'<span class="pill">正解 '+(st.correct||0)+'</span><span class="pill">誤答 '+(st.wrong||0)+'</span><span class="pill">due '+(st.due||'-')+'</span>'+(label?'<span class="pill '+(st.lastCardResult==='good'?'review-good':'review-hard')+'">'+label+'</span>':'')+'</div>'}).join('');
+  $('wordBox').innerHTML=arr.map(function(x){var st=state.stats[x.w]||{},label=reviewLabel(st.lastCardResult),attempts=st.quizAttempts||0,accuracy=attempts?Math.round((st.quizCorrect||0)/attempts*100)+'%':'—';return '<div class="word"><b>'+esc(x.w)+'</b><span class="pos-badge">'+esc(posLabel(x))+'</span><button class="speak" data-speak="'+esc(x.w)+'" type="button">🔊</button><p>'+esc(x.m)+'</p><p class="small"><b>例文：</b>'+esc(x.s.replace('____',x.w))+'</p>'+(x.collocations&&x.collocations.length?'<p class="small"><b>コロケーション：</b>'+esc(listText(x.collocations))+'</p>':'')+'<span class="pill">正答率 '+accuracy+'</span><span class="pill">誤答 '+(st.wrong||0)+'</span><span class="pill">まだ '+(st.hardCount||0)+'</span><span class="pill">次回 '+(st.due||'未設定')+'</span>'+(label?'<span class="pill '+(st.lastCardResult==='good'?'review-good':'review-hard')+'">'+label+'</span>':'')+'</div>'}).join('');
   $('wordBox').querySelectorAll('[data-speak]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();speak(b.getAttribute('data-speak'))})});
 }
 function switchTab(name){document.querySelectorAll('.tab').forEach(function(t){t.classList.toggle('active',t.dataset.tab===name)});document.querySelectorAll('.tabPanel').forEach(function(p){p.classList.toggle('hidden',p.id!==name)});if(name==='cards')syncCardHeight();if(name==='settings')exportData()}
@@ -180,7 +172,7 @@ function exportData(){if($('dataBox'))$('dataBox').value=JSON.stringify({version
 function latestUrl(){var u=location.origin+location.pathname+'?v='+RELEASE;if(navigator.clipboard)navigator.clipboard.writeText(u).then(function(){toast('最新版URLをコピーしました')}).catch(function(){prompt('最新版URL',u)});else prompt('最新版URL',u)}
 function toast(msg){var t=$('toast');if(!t)return;t.textContent=msg;t.className='toast show';setTimeout(function(){t.className='toast'},1800)}
 function setupPwa(){window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredInstallPrompt=e;if($('installBtn'))$('installBtn').classList.remove('hidden')});if($('installBtn'))$('installBtn').addEventListener('click',function(){if(!deferredInstallPrompt)return;deferredInstallPrompt.prompt();deferredInstallPrompt=null;$('installBtn').classList.add('hidden')});if('serviceWorker'in navigator){navigator.serviceWorker.register('./sw.js?v='+RELEASE).then(function(reg){reg.update();reg.addEventListener('updatefound',function(){var nw=reg.installing;if(!nw)return;nw.addEventListener('statechange',function(){if(nw.state==='installed'&&navigator.serviceWorker.controller){$('updateBadge').classList.remove('hidden');toast('更新があります。再読み込みしてください')}})})}).catch(function(){})}}
-function bind(){$('todayBtn').addEventListener('click',function(){generate(false)});$('regenBtn').addEventListener('click',function(){if(confirm('今日の問題を再生成しますか？回答は消えます。'))generate(true)});$('latestBtn').addEventListener('click',latestUrl);$('reloadBtn').addEventListener('click',function(){location.reload()});$('resetBtn').addEventListener('click',function(){if(confirm('学習履歴をすべて削除しますか？')){[KEY].concat(OLD_KEYS).forEach(function(k){localStorage.removeItem(k)});state={date:'',questions:[],answers:{},graded:false,score:0,stats:{},days:{},history:{},missions:{},writingByDate:{},card:0,reveal:false,theme:'auto',regenByDate:{}};load();generate(true)}});$('gradeBtn').addEventListener('click',grade);$('answerBtn').addEventListener('click',showAnswers);$('flash').addEventListener('click',function(e){if(e.target&&e.target.id==='cardSpeak')return;state.reveal=!state.reveal;save();renderCard()});$('cardSpeak').addEventListener('click',function(e){e.stopPropagation();speak($('cardSpeak').getAttribute('data-word')||$('cardWord').textContent)});$('prevBtn').addEventListener('click',function(){next(-1)});$('nextBtn').addEventListener('click',function(){next(1)});$('goodBtn').addEventListener('click',function(){mark(true)});$('hardBtn').addEventListener('click',function(){mark(false)});$('writingDraft').addEventListener('input',saveWriting);$('writingDoneBtn').addEventListener('click',completeWriting);$('search').addEventListener('input',renderWords);$('exportBtn').addEventListener('click',exportData);$('themeSelect').addEventListener('change',function(){state.theme=this.value;save();applyTheme();toast('テーマを変更しました')});document.querySelectorAll('.tab').forEach(function(t){t.addEventListener('click',function(){switchTab(t.dataset.tab)})});if(window.matchMedia)matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){if(state.theme==='auto')applyTheme()})}
+function bind(){$('todayBtn').addEventListener('click',function(){generate(false)});$('startReviewBtn').addEventListener('click',function(){state.card=0;state.reveal=false;save();switchTab('cards');renderCard()});$('regenBtn').addEventListener('click',function(){if(confirm('今日の問題を再生成しますか？回答は消えます。'))generate(true)});$('latestBtn').addEventListener('click',latestUrl);$('reloadBtn').addEventListener('click',function(){location.reload()});$('resetBtn').addEventListener('click',function(){if(confirm('学習履歴をすべて削除しますか？')){[KEY].concat(OLD_KEYS).forEach(function(k){localStorage.removeItem(k)});state={date:'',questions:[],answers:{},graded:false,score:0,stats:{},days:{},history:{},missions:{},writingByDate:{},dailyReviewByDate:{},card:0,reveal:false,theme:'auto',regenByDate:{}};load();generate(true)}});$('gradeBtn').addEventListener('click',grade);$('answerBtn').addEventListener('click',showAnswers);$('flash').addEventListener('click',function(e){if(e.target&&e.target.id==='cardSpeak')return;state.reveal=!state.reveal;save();renderCard()});$('cardSpeak').addEventListener('click',function(e){e.stopPropagation();speak($('cardSpeak').getAttribute('data-word')||$('cardWord').textContent)});$('prevBtn').addEventListener('click',function(){next(-1)});$('nextBtn').addEventListener('click',function(){next(1)});$('goodBtn').addEventListener('click',function(){mark(true)});$('hardBtn').addEventListener('click',function(){mark(false)});$('writingDraft').addEventListener('input',saveWriting);$('writingDoneBtn').addEventListener('click',completeWriting);$('search').addEventListener('input',renderWords);$('exportBtn').addEventListener('click',exportData);$('themeSelect').addEventListener('change',function(){state.theme=this.value;save();applyTheme();toast('テーマを変更しました')});document.querySelectorAll('.tab').forEach(function(t){t.addEventListener('click',function(){switchTab(t.dataset.tab)})});if(window.matchMedia)matchMedia('(prefers-color-scheme: dark)').addEventListener('change',function(){if(state.theme==='auto')applyTheme()})}
 function init(){if(!WORDS.length){toast('単語データを読み込めませんでした');return}load();applyTheme();bind();window.addEventListener('resize',syncCardHeight);setupPwa();generate(false)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
