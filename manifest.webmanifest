@@ -2,7 +2,7 @@
   "name": "英検1級 Companion",
   "short_name": "英検1級",
   "description": "英検1級語彙学習PWA",
-  "start_url": "./?v=20260716-answer-explanations",
+  "start_url": "./?v=20260716-learning-calendar",
   "scope": "./",
   "display": "standalone",
   "background_color": "#eef2f8",

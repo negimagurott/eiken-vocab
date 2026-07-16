@@ -128,6 +128,108 @@ button.primary {
 .today-review > b { white-space: nowrap; }
 .today-review.review-complete { background: linear-gradient(135deg, #07875d, #34a98b); }
 
+.achievement-panel {
+  overflow: hidden;
+  padding: 0;
+}
+
+.streak-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 26px 32px;
+  color: #fff;
+  background:
+    linear-gradient(135deg, rgba(49, 87, 213, .96), rgba(89, 109, 229, .94)),
+    repeating-linear-gradient(45deg, transparent 0 32px, rgba(255,255,255,.08) 32px 64px);
+}
+
+.streak-hero > div:first-child { display: grid; gap: 2px; }
+.streak-hero > div > span { font-size: 13px; font-weight: 800; letter-spacing: .08em; }
+.streak-hero strong { font-size: clamp(54px, 9vw, 86px); line-height: 1; letter-spacing: -.05em; }
+.streak-hero strong small { font-size: 15px; letter-spacing: .08em; }
+.streak-hero p { margin: 7px 0 0; font-size: 13px; opacity: .86; }
+.streak-flame { font-size: clamp(44px, 7vw, 70px); filter: drop-shadow(0 10px 16px rgba(20,30,70,.24)); }
+
+.calendar-head {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: center;
+  gap: 12px;
+  padding: 22px 24px 10px;
+}
+
+.calendar-head h2 { margin: 0; text-align: center; font-size: 22px; }
+.calendar-head button { padding: 7px; font-size: 28px; line-height: 1; background: transparent; color: var(--muted); }
+.calendar-head button:disabled { opacity: .22; }
+
+.calendar-summary {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 520px;
+  margin: 0 auto 18px;
+}
+
+.calendar-summary div { display: grid; gap: 2px; padding: 7px 24px; text-align: center; }
+.calendar-summary div + div { border-left: 1px solid var(--line); }
+.calendar-summary span { color: var(--muted); font-size: 12px; font-weight: 700; }
+.calendar-summary b { font-size: 24px; }
+
+.calendar-weekdays,
+.study-calendar {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  margin: 0 24px;
+}
+
+.calendar-weekdays {
+  border-radius: 10px 10px 0 0;
+  overflow: hidden;
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.calendar-weekdays span { padding: 9px 2px; text-align: center; font-size: 12px; font-weight: 800; }
+
+.study-calendar { border-left: 1px solid var(--line); border-top: 1px solid var(--line); }
+.calendar-day {
+  min-height: 82px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  place-items: center;
+  gap: 3px;
+  padding: 7px 3px;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.calendar-day b { font-size: 13px; color: var(--muted); }
+.calendar-day small { min-height: 15px; color: var(--muted); font-size: 10px; font-weight: 700; }
+.calendar-day.outside { background: var(--panel2); opacity: .45; }
+.calendar-day.future { opacity: .48; }
+.calendar-day.studied { background: linear-gradient(145deg, rgba(49,87,213,.13), rgba(84,199,168,.10)); }
+.calendar-day.today { position: relative; box-shadow: inset 0 0 0 2px var(--brand); }
+.calendar-day.today b { color: var(--brand); }
+.day-marker {
+  width: 29px;
+  height: 29px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--panel2);
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.calendar-day.studied .day-marker { color: #fff; background: linear-gradient(135deg, #3157d5, #54c7a8); box-shadow: 0 5px 12px rgba(49,87,213,.22); }
+.calendar-legend { display: flex; justify-content: center; gap: 18px; padding: 15px 20px 20px; color: var(--muted); font-size: 11px; }
+.calendar-legend span { display: flex; align-items: center; gap: 5px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--panel2); }
+.legend-dot.studied { background: linear-gradient(135deg, #3157d5, #54c7a8); }
+.legend-dot.today { border: 2px solid var(--brand); background: transparent; }
+
 .stats {
   grid-template-columns: repeat(6, 1fr);
   gap: 10px;
@@ -383,6 +485,13 @@ input:focus, textarea:focus, select:focus {
 
 @media (max-width: 600px) {
   .today-review { align-items: flex-start; flex-direction: column; }
+  .streak-hero { padding: 22px 20px; }
+  .calendar-head { padding: 18px 12px 8px; }
+  .calendar-weekdays, .study-calendar { margin: 0 10px; }
+  .calendar-day { min-height: 66px; padding: 5px 1px; }
+  .day-marker { width: 25px; height: 25px; }
+  .calendar-summary div { padding: 6px 12px; }
+  .calendar-legend { gap: 10px; padding-inline: 10px; }
 }
 
 @media (max-width: 620px) {

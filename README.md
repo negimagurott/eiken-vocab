@@ -1,8 +1,15 @@
-# 英検1級 Companion v2.4
+# 英検1級 Companion v2.5
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.4.1 / 20260716-answer-explanations
+Release: v2.5.0 / 20260716-learning-calendar
+
+## v2.5 Learning calendar
+
+- 現在の連続学習日数を大きく表示
+- 月間カレンダーで学習日、今日、未学習日を可視化
+- 各日のQuiz・Flashcards・Writing達成数と月間達成率を表示
+- 前月から当月まで移動して過去の積み重ねを確認
 
 ## v2.4 Question quality
 

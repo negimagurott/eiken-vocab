@@ -7,36 +7,37 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
-<title>英検1級 Companion v2.4</title>
+<title>英検1級 Companion v2.5</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="manifest" href="manifest.webmanifest?v=20260716-answer-explanations">
-<link rel="icon" href="icon.svg?v=20260716-answer-explanations" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icon.svg?v=20260716-answer-explanations">
-<link rel="stylesheet" href="style.css?v=20260716-answer-explanations">
-<link rel="stylesheet" href="writing.css?v=20260716-answer-explanations">
-<link rel="stylesheet" href="modern.css?v=20260716-answer-explanations">
+<link rel="manifest" href="manifest.webmanifest?v=20260716-learning-calendar">
+<link rel="icon" href="icon.svg?v=20260716-learning-calendar" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icon.svg?v=20260716-learning-calendar">
+<link rel="stylesheet" href="style.css?v=20260716-learning-calendar">
+<link rel="stylesheet" href="writing.css?v=20260716-learning-calendar">
+<link rel="stylesheet" href="modern.css?v=20260716-learning-calendar">
 </head>
 <body>
 <div class="wrap">
-<header><div><h1>英検1級 Companion</h1><p class="sub">v2.4: 本番より少し難しい、品質80点以上の問題を出題。</p>
-<span class="version">v2.4</span><span id="updateBadge" class="version hidden">更新あり</span></div><div class="actions"><button id="todayBtn" class="primary">今日の10問</button><button id="regenBtn">再生成</button><button id="latestBtn">最新版URL</button><button id="installBtn" class="hidden">ホームに追加</button><button id="resetBtn" class="danger">履歴リセット</button></div></header>
+<header><div><h1>英検1級 Companion</h1><p class="sub">v2.5: 継続日数と月間カレンダーで学習の積み重ねを可視化。</p>
+<span class="version">v2.5</span><span id="updateBadge" class="version hidden">更新あり</span></div><div class="actions"><button id="todayBtn" class="primary">今日の10問</button><button id="regenBtn">再生成</button><button id="latestBtn">最新版URL</button><button id="installBtn" class="hidden">ホームに追加</button><button id="resetBtn" class="danger">履歴リセット</button></div></header>
 <section class="panel dashboard"><button id="startReviewBtn" class="today-review" type="button"><span><small>TODAY'S REVIEW</small><strong><span id="reviewRemaining">15</span> words</strong><em>間違い・「まだ」・最終学習日・正答率から自動選出</em></span><b>復習を始める →</b></button><div class="stats"><div class="stat"><span>Today's score</span><b id="score">0/10</b></div><div class="stat"><span>Mission</span><b id="missionScore">0/3</b></div><div class="stat"><span>Study days</span><b id="days">0</b></div><div class="stat"><span>Streak</span><b id="streak">0</b></div><div class="stat"><span>Exam countdown</span><b id="exam">--</b></div><div class="stat"><span>Known words</span><b id="known">0</b></div></div><div class="mission"><div id="missionQuiz" class="missionitem"><b>📝 Quiz</b><p class="small">10問を採点まで完了</p></div><div id="missionCards" class="missionitem"><b>🃏 Flashcards</b><p class="small"><span id="cardsSeen">0</span>/15語を復習</p></div><div id="missionWriting" class="missionitem"><b>✍️ Writing</b><p class="small">今日の1題に回答</p></div></div><div class="progress"><div id="bar" class="bar"></div></div><p id="status" class="small">読み込み中です。</p></section>
+<section class="panel achievement-panel"><div class="streak-hero"><div><span>連続学習日数</span><strong><span id="streakLarge">0</span><small> DAYS</small></strong><p id="streakMessage">今日も学習を続けましょう</p></div><div class="streak-flame" aria-hidden="true">🔥</div></div><div class="calendar-head"><button id="calendarPrev" type="button" aria-label="前月">‹</button><h2 id="calendarTitle">----</h2><button id="calendarNext" type="button" aria-label="翌月">›</button></div><div class="calendar-summary"><div><span>今月の学習日</span><b id="monthStudyDays">0日</b></div><div><span>学習達成率</span><b id="monthStudyRate">0%</b></div></div><div class="calendar-weekdays" aria-hidden="true"><span>日</span><span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span>土</span></div><div id="studyCalendar" class="study-calendar" role="grid" aria-label="月間学習記録"></div><div class="calendar-legend"><span><i class="legend-dot studied"></i>学習済み</span><span><i class="legend-dot today"></i>今日</span><span><i class="legend-dot empty"></i>未学習</span></div></section>
 <nav class="tabs"><button class="tab active" data-tab="quiz">Quiz</button><button class="tab" data-tab="cards">Flashcards</button><button class="tab" data-tab="writing">Writing</button><button class="tab" data-tab="words">Word List</button><button class="tab" data-tab="settings">Settings</button></nav>
 <section id="quiz" class="panel tabPanel"><div id="quizBox"></div><div class="actions" style="margin-top:16px"><button id="gradeBtn" class="primary">採点する</button><button id="answerBtn" disabled>解説を表示</button></div></section>
 <section id="cards" class="panel tabPanel hidden"><div class="cardstage"><div id="flash" class="flash"><div class="face front"><div><p class="small">FLASHCARD</p><h2 id="cardWord">---</h2><p><span id="cardPron" class="small"></span><button id="cardSpeak" class="speak" type="button">🔊</button></p><p class="small">タップでカードをめくる</p></div></div><div class="face back"><div><p class="small">MEANING / WORD CONNECTIONS</p><h2 id="backWord">---</h2><p class="meaning" id="cardMean"></p><div id="cardDetails" class="card-details"></div><p class="usage"><b>例文：</b><span id="cardSentence"></span></p><p class="small">タップで単語面へ戻る</p></div></div></div></div><div class="actions center"><button id="prevBtn">前へ</button><button id="hardBtn">まだ</button><button id="goodBtn" class="primary">覚えた</button><button id="nextBtn">次へ</button></div><p id="counter" class="small centerText"></p></section>
 <section id="writing" class="panel tabPanel hidden"><p class="meta">TODAY'S WRITING TOPIC</p><h2 id="writingTopic" class="writing-topic"></h2><p class="small">Write 200–240 words. Give three reasons to support your answer.</p><textarea id="writingDraft" class="writing-draft" rows="12" placeholder="Write your essay here..."></textarea><div class="writing-footer"><span id="writingCount" class="small">0 words</span><button id="writingDoneBtn" class="primary">今日のWritingを完了</button></div><p id="writingSaved" class="small">入力内容はこの端末に自動保存されます。</p></section>
 <section id="words" class="panel tabPanel hidden"><input id="search" type="search" placeholder="単語・意味・例文で検索"><div id="wordBox" class="wordgrid"></div></section>
-<section id="settings" class="panel tabPanel hidden"><h2>Settings</h2><div class="settingrow"><div><b>Theme</b><p class="small">Light / Dark / Autoを切り替えます。</p></div><select id="themeSelect"><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option></select></div><div class="settingrow"><div><b>Version</b><p class="small">v2.4.1 / 文脈・語法・誤答理由まで踏み込んだ個別解説。</p></div></div><div class="settingrow"><div><b>PWA更新</b><p class="small">ホーム画面から開いた場合も起動時に最新版を確認します。</p></div><button id="reloadBtn">更新を確認</button></div><div class="settingrow"><div><b>学習データ</b><p class="small">端末のlocalStorageに保存。旧バージョンのデータを自動移行します。</p></div><button id="exportBtn">書き出し</button></div><textarea id="dataBox" rows="8"></textarea></section>
+<section id="settings" class="panel tabPanel hidden"><h2>Settings</h2><div class="settingrow"><div><b>Theme</b><p class="small">Light / Dark / Autoを切り替えます。</p></div><select id="themeSelect"><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option></select></div><div class="settingrow"><div><b>Version</b><p class="small">v2.5 / 連続学習日数・月間学習カレンダー・日別達成数。</p></div></div><div class="settingrow"><div><b>PWA更新</b><p class="small">ホーム画面から開いた場合も起動時に最新版を確認します。</p></div><button id="reloadBtn">更新を確認</button></div><div class="settingrow"><div><b>学習データ</b><p class="small">端末のlocalStorageに保存。旧バージョンのデータを自動移行します。</p></div><button id="exportBtn">書き出し</button></div><textarea id="dataBox" rows="8"></textarea></section>
 </div><div id="toast" class="toast"></div>
-<script src="words.js?v=20260716-answer-explanations"></script>
-<script src="words-extra.js?v=20260716-answer-explanations"></script>
-<script src="word-details.js?v=20260716-answer-explanations"></script>
-<script src="quiz-quality.js?v=20260716-answer-explanations"></script>
-<script src="quiz-data.js?v=20260716-answer-explanations"></script>
-<script src="quiz-translations.js?v=20260716-answer-explanations"></script>
-<script src="writing.js?v=20260716-answer-explanations"></script>
-<script src="app.js?v=20260716-answer-explanations"></script>
+<script src="words.js?v=20260716-learning-calendar"></script>
+<script src="words-extra.js?v=20260716-learning-calendar"></script>
+<script src="word-details.js?v=20260716-learning-calendar"></script>
+<script src="quiz-quality.js?v=20260716-learning-calendar"></script>
+<script src="quiz-data.js?v=20260716-learning-calendar"></script>
+<script src="quiz-translations.js?v=20260716-learning-calendar"></script>
+<script src="writing.js?v=20260716-learning-calendar"></script>
+<script src="app.js?v=20260716-learning-calendar"></script>
 </body>
 </html>
