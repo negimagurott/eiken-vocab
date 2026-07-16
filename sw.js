@@ -1,6 +1,6 @@
-const RELEASE='20260716-achievement-page';
+const RELEASE='20260716-icon-refresh';
 const CACHE_NAME='eiken-vocab-v2-'+RELEASE;
-const ASSETS=['./','./index.html?v='+RELEASE,'./style.css?v='+RELEASE,'./writing.css?v='+RELEASE,'./modern.css?v='+RELEASE,'./words.js?v='+RELEASE,'./words-extra.js?v='+RELEASE,'./word-details.js?v='+RELEASE,'./quiz-quality.js?v='+RELEASE,'./quiz-data.js?v='+RELEASE,'./quiz-translations.js?v='+RELEASE,'./writing.js?v='+RELEASE,'./app.js?v='+RELEASE,'./manifest.webmanifest?v='+RELEASE,'./icon.svg?v='+RELEASE];
+const ASSETS=['./','./index.html?v='+RELEASE,'./style.css?v='+RELEASE,'./writing.css?v='+RELEASE,'./modern.css?v='+RELEASE,'./words.js?v='+RELEASE,'./words-extra.js?v='+RELEASE,'./word-details.js?v='+RELEASE,'./quiz-quality.js?v='+RELEASE,'./quiz-data.js?v='+RELEASE,'./quiz-translations.js?v='+RELEASE,'./writing.js?v='+RELEASE,'./app.js?v='+RELEASE,'./manifest.webmanifest?v='+RELEASE,'./icon.svg?v='+RELEASE,'./apple-touch-icon.png?v='+RELEASE,'./icon-192.png?v='+RELEASE,'./icon-512.png?v='+RELEASE];
 self.addEventListener('install',event=>{self.skipWaiting();event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(ASSETS).catch(()=>undefined)));});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k)))));self.clients.claim();});
 self.addEventListener('fetch',event=>{if(event.request.method!=='GET')return;event.respondWith(fetch(event.request,{cache:'no-store'}).then(res=>{const copy=res.clone();caches.open(CACHE_NAME).then(cache=>cache.put(event.request,copy)).catch(()=>undefined);return res;}).catch(()=>caches.match(event.request).then(cached=>cached||caches.match('./index.html?v='+RELEASE))));});

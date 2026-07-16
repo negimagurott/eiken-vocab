@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-var VERSION='2.5.1',RELEASE='20260716-achievement-page',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'],REVIEW_LIMIT=15,SRS_GAPS=[1,3,7,14,30];
+var VERSION='2.5.2',RELEASE='20260716-icon-refresh',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'],REVIEW_LIMIT=15,SRS_GAPS=[1,3,7,14,30];
 var WORDS=(window.EIKEN_WORDS||[]),EXAMPLE_LIBRARY=(window.EIKEN_EXAMPLE_LIBRARY||[]),QUESTION_BANK=(EXAMPLE_LIBRARY.length?EXAMPLE_LIBRARY:(window.EIKEN_QUIZ_ITEMS||[])),QUIZ_TRANSLATIONS=(window.EIKEN_QUIZ_TRANSLATIONS||{}),QUESTION_WORDS=QUESTION_BANK.map(function(item){return WORDS.find(function(word){return word.w===item.word})}).filter(Boolean),WRITING_TOPICS=(window.EIKEN_WRITING_TOPICS||[]),today=localDate(),calendarMonth=today.slice(0,7),deferredInstallPrompt=null,state={date:'',questions:[],answers:{},graded:false,explanationsVisible:false,score:0,stats:{},days:{},history:{},missions:{},writingByDate:{},dailyReviewByDate:{},card:0,reveal:false,theme:'auto',regenByDate:{}};
 function $(id){return document.getElementById(id)}
 function localDate(){var d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,10)}

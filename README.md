@@ -2,7 +2,7 @@
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.5.1 / 20260716-achievement-page
+Release: v2.5.2 / 20260716-icon-refresh
 
 ## v2.5 Learning calendar
 
@@ -11,6 +11,7 @@ Release: v2.5.1 / 20260716-achievement-page
 - 各日のQuiz・Flashcards・Writing達成数と月間達成率を表示
 - 前月から当月まで移動して過去の積み重ねを確認
 - カレンダーを専用ページへ分離し、ホームの「📣 学習成果」から表示
+- iPhone用180pxとPWA用192／512pxを、シンプルなCモノグラムへ刷新
 
 ## v2.4 Question quality
 
