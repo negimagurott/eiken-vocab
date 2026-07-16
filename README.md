@@ -2,7 +2,7 @@
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.5.0 / 20260716-learning-calendar
+Release: v2.5.1 / 20260716-achievement-page
 
 ## v2.5 Learning calendar
 
@@ -10,6 +10,7 @@ Release: v2.5.0 / 20260716-learning-calendar
 - 月間カレンダーで学習日、今日、未学習日を可視化
 - 各日のQuiz・Flashcards・Writing達成数と月間達成率を表示
 - 前月から当月まで移動して過去の積み重ねを確認
+- カレンダーを専用ページへ分離し、ホームの「📣 学習成果」から表示
 
 ## v2.4 Question quality
 

@@ -133,6 +133,28 @@ button.primary {
   padding: 0;
 }
 
+.achievement-link {
+  color: #7a4b00;
+  background: linear-gradient(135deg, #fff2c7, #ffd76a);
+  box-shadow: 0 8px 18px rgba(191, 129, 0, .16);
+}
+
+[data-theme=dark] .achievement-link { color: #ffe49a; background: #4b3915; }
+
+.achievement-page-head {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--line);
+  background: var(--panel);
+}
+
+.achievement-page-head h2,
+.achievement-page-head p { margin: 0; }
+.achievement-page-head h2 { margin-top: 2px; font-size: 25px; }
+.achievement-page-head button { white-space: nowrap; }
+
 .streak-hero {
   display: flex;
   align-items: center;
@@ -492,6 +514,8 @@ input:focus, textarea:focus, select:focus {
   .day-marker { width: 25px; height: 25px; }
   .calendar-summary div { padding: 6px 12px; }
   .calendar-legend { gap: 10px; padding-inline: 10px; }
+  .achievement-page-head { padding: 14px 12px; }
+  .achievement-page-head h2 { font-size: 21px; }
 }
 
 @media (max-width: 620px) {
