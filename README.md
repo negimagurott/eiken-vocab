@@ -2,7 +2,16 @@
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.5.9 / 20260719-quality-improvement
+Release: v2.5.10 / 20260719-security-hardening
+
+## v2.5.10 Security hardening
+
+- Content Security PolicyとReferrer Policyを追加し、外部フォント依存を削除
+- Service Workerのキャッシュを同一オリジンの成功レスポンスに限定
+- このアプリの接頭辞を持つ旧キャッシュだけを削除し、同一オリジン上の別アプリを保護
+- CodeQLによるJavaScriptの継続的なセキュリティ解析を追加
+- `.env`、秘密鍵、資格情報ファイルを除外する `.gitignore` を追加
+- Writingと学習データが端末内に平文保存されることを明記
 
 ## v2.5.9 Sentence quality improvement
 
