@@ -2,7 +2,12 @@
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.5.7 / 20260719-disconcert-collocation
+Release: v2.5.8 / 20260719-sync-approved-examples
+
+## v2.5.8 Approved example synchronization
+
+- Word ListとFlashcardsでも、Quizと同じ承認済み例文を表示
+- 300語すべての語彙例文と承認済み問題の同期を回帰監査
 
 ## v2.5.7 Vocabulary collocation quality
 

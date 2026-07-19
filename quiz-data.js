@@ -246,5 +246,8 @@ window.EIKEN_QUIZ_ITEMS=(window.EIKEN_WORDS||[]).filter(function(word){return OV
 var qualityApi=window.EIKEN_QUIZ_QUALITY;
 if(qualityApi)window.EIKEN_QUIZ_ITEMS.forEach(function(item){item.quality=qualityApi.scoreItem(item,window.EIKEN_WORDS||[],window.EIKEN_QUIZ_ITEMS);item.difficulty=qualityApi.difficultyIndex(item.quality)});
 window.EIKEN_EXAMPLE_LIBRARY=window.EIKEN_QUIZ_ITEMS.filter(function(item){return!qualityApi||item.quality.passed}).map(function(item){return{id:item.id,word:item.word,sentence:item.sentence,choices:item.choices.slice(),source:item.source,quality:item.quality,difficulty:item.difficulty,approved:true}});
+var approvedExamples={};
+window.EIKEN_EXAMPLE_LIBRARY.forEach(function(item){approvedExamples[item.word]=item.sentence});
+(window.EIKEN_WORDS||[]).forEach(function(word){if(approvedExamples[word.w])word.s=approvedExamples[word.w]});
 window.EIKEN_REJECTED_QUIZ_WORDS=(window.EIKEN_WORDS||[]).filter(function(word){return GENERIC_TEMPLATES[word.s]&&!OVERRIDES[word.w]}).map(function(word){return word.w});
 })();
