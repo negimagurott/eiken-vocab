@@ -43,11 +43,19 @@ const required={
   malleable:'Unlike brittle alloys, gold is highly ____ and can be shaped without breaking.',
   edify:'The documentary aims to ____ viewers by examining the ethical consequences of the policy.',
   reconcile:'Diplomats struggled to ____ the two countries after decades of hostility.',
-  construe:'Courts should not automatically ____ a suspect\'s silence as an admission of guilt.'
+  construe:'Courts should not automatically ____ a suspect\'s silence as an admission of guilt.',
+  disconcert:'The moderator\'s unexpected question appeared to ____ the candidate, who paused visibly and struggled to regain his composure.'
 };
 Object.entries(required).forEach(([word,sentence])=>{
   const item=items.find(candidate=>candidate.word===word);
   if(!item||item.sentence!==sentence)errors.push(`acceptance case failed: ${word}`);
 });
+const qualityApi=context.window.EIKEN_QUIZ_QUALITY;
+const disconcertNg={word:'disconcert',sentence:'The new policy could ____ efforts to restore public trust.',choices:['disconcert','discredit','denigrate','dissuade']};
+const disconcertOk={word:'disconcert',sentence:'The moderator\'s unexpected question appeared to ____ the candidate, who paused visibly and struggled to regain his composure.',choices:['disconcert','discredit','denigrate','dissuade']};
+if(!qualityApi.hasObjectSemanticViolation(disconcertNg)||qualityApi.scoreItem(disconcertNg,words,[]).passed)errors.push('NG collocation accepted: disconcert efforts');
+if(qualityApi.hasObjectSemanticViolation(disconcertOk)||!qualityApi.scoreItem(disconcertOk,words,[]).passed)errors.push('natural collocation rejected: disconcert a candidate');
+const displayedDisconcert=disconcertOk.sentence.replace('____',disconcertOk.word);
+if(displayedDisconcert!=="The moderator's unexpected question appeared to disconcert the candidate, who paused visibly and struggled to regain his composure.")errors.push('flashcard display regression: disconcert');
 console.log(JSON.stringify({vocabulary:words.length,approved:items.length,fixedChoiceSets:items.filter(item=>item.choices).length,translations:Object.keys(translations).length,rejected:rejected.length,errors:errors.length},null,2));
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}

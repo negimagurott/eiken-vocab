@@ -2,7 +2,13 @@
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.5.6 / 20260719-streak-manual-recovery
+Release: v2.5.7 / 20260719-disconcert-collocation
+
+## v2.5.7 Vocabulary collocation quality
+
+- `disconcert` の例文を、人を自然な目的語に取る文脈へ修正
+- 人を目的語に取る動詞と抽象名詞の不自然な組み合わせを品質監査で拒否
+- バージョン表示とService Workerのキャッシュ識別子を自動監査
 
 ## v2.5.6 Confirmed study recovery
 
@@ -58,9 +64,10 @@ Run the deterministic quality gate before publishing:
 
 ```powershell
 node scripts/audit-quiz-data.js
+node scripts/audit-release.js
 ```
 
-The audit checks question IDs, vocabulary references, blank count, exact duplicate sentences, required acceptance cases, and rejected legacy templates. AI generation and reverse-answer review must run during development; API keys must never be shipped to GitHub Pages.
+The audit checks question IDs, vocabulary references, blank count, exact/near-duplicate sentences, required acceptance cases, rejected legacy templates, and object-semantic collocations. Verbs that normally act on people are rejected when they take abstract objects such as `efforts`, `policy`, `measures`, or `progress`; for example, `disconcert efforts` is an explicit regression case. AI generation and reverse-answer review must run during development; API keys must never be shipped to GitHub Pages.
 
 ## v2.1 Development Policy
 

@@ -6,10 +6,22 @@ else root.EIKEN_QUIZ_QUALITY=api;
 })(typeof window!=='undefined'?window:this,function(){
 'use strict';
 var MIN_SCORE=80,TARGET_DIFFICULTY=88;
+var HUMAN_OBJECT_VERBS={disconcert:true,bewilder:true,perplex:true,reassure:true,unnerve:true,unsettle:true};
+var ABSTRACT_NONHUMAN_OBJECTS={effort:true,efforts:true,policy:true,policies:true,measure:true,measures:true,progress:true};
 function clamp(n,min,max){return Math.max(min,Math.min(max,n))}
 function tokens(sentence){return String(sentence||'').replace('____','').match(/[A-Za-z']+/g)||[]}
 function normalized(sentence){return String(sentence||'').toLowerCase().replace(/[^a-z_ ]/g,'').replace(/\s+/g,' ').trim()}
 function overlap(a,b){var aa=new Set(tokens(a).filter(function(x){return x.length>3}).map(function(x){return x.toLowerCase()})),bb=new Set(tokens(b).filter(function(x){return x.length>3}).map(function(x){return x.toLowerCase()})),common=0;aa.forEach(function(x){if(bb.has(x))common++});return common/Math.max(1,new Set([].concat(Array.from(aa),Array.from(bb))).size)}
+function directObject(sentence,word){
+  sentence=String(sentence||'').toLowerCase();word=String(word||'').toLowerCase();
+  var marker=sentence.indexOf('____')>=0?'____':'\\b'+word+'(?:s|ed|ing)?\\b';
+  var match=sentence.match(new RegExp('(?:'+marker+')\\s+(?:the\\s+|an?\\s+|several\\s+|some\\s+|many\\s+)?([a-z]+)'));
+  return match?match[1]:'';
+}
+function hasObjectSemanticViolation(item){
+  var word=String(item&&item.word||'').toLowerCase();
+  return!!(HUMAN_OBJECT_VERBS[word]&&ABSTRACT_NONHUMAN_OBJECTS[directObject(item&&item.sentence,word)]);
+}
 function scoreItem(item,words,items){
   words=words||[];items=items||[];
   var sentence=String(item&&item.sentence||''),choices=Array.isArray(item&&item.choices)?item.choices:[],answer=words.find(function(x){return x.w===item.word}),length=tokens(sentence).length;
@@ -21,6 +33,8 @@ function scoreItem(item,words,items){
   if(length>=9)collocation+=5;
   if(!/\b(thing|things|something|good|bad|very)\b/i.test(sentence))collocation+=4;
   if(/\b(to|of|for|with|into|from|as|about|by|on|at|in)\s+____|____\s+(to|of|for|with|into|from|as|about|by|on|at|in)\b/i.test(sentence))collocation+=4;
+  var objectSemanticViolation=hasObjectSemanticViolation(item);
+  if(objectSemanticViolation)collocation=0;
   collocation=clamp(collocation,0,25);
   var uniqueness=0,uniqueChoices=new Set(choices);
   if(choices.length===4&&uniqueChoices.size===4&&choices.indexOf(item.word)>=0)uniqueness+=12;
@@ -33,8 +47,8 @@ function scoreItem(item,words,items){
   difficulty=clamp(difficulty,0,25);
   var duplicatePenalty=items.some(function(other){return other!==item&&normalized(other.sentence)===normalized(sentence)})?20:0;
   var total=clamp(grammar+collocation+uniqueness+difficulty-duplicatePenalty,0,100);
-  return{collocation:collocation,grammar:grammar,uniqueness:uniqueness,difficulty:difficulty,total:total,passed:total>=MIN_SCORE};
+  return{collocation:collocation,grammar:grammar,uniqueness:uniqueness,difficulty:difficulty,total:total,passed:total>=MIN_SCORE&&!objectSemanticViolation,objectSemanticViolation:objectSemanticViolation};
 }
 function difficultyIndex(score){return clamp(Math.round((score&&score.difficulty||0)*4),0,100)}
-return{MIN_SCORE:MIN_SCORE,TARGET_DIFFICULTY:TARGET_DIFFICULTY,scoreItem:scoreItem,difficultyIndex:difficultyIndex};
+return{MIN_SCORE:MIN_SCORE,TARGET_DIFFICULTY:TARGET_DIFFICULTY,scoreItem:scoreItem,difficultyIndex:difficultyIndex,hasObjectSemanticViolation:hasObjectSemanticViolation};
 });

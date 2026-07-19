@@ -102,7 +102,7 @@ var DETAILS={
   dilapidated:{pos:"adjective",synonyms:["ramshackle","damaged"],antonyms:["明確な反意語なし"],collocations:["response as dilapidated during the","the government's response as dilapidated during the national debate"]},
   diligent:{pos:"adjective",synonyms:["assiduous","industrious"],antonyms:["negligent"],collocations:["considered an diligent approach to","what it considered an diligent approach to the problem"]},
   discerning:{pos:"adjective",synonyms:["perceptive","percipient"],antonyms:["undiscerning"],collocations:["Her discerning explanation changed","Her discerning explanation changed how the"]},
-  disconcert:{pos:"verb",synonyms:["discomfit","consternate"],antonyms:["明確な反意語なし"],collocations:["policy could disconcert efforts to","The new policy could disconcert efforts to restore public"]},
+  disconcert:{pos:"verb",synonyms:["discomfit","consternate"],antonyms:["reassure","calm"],collocations:["disconcert a candidate","disconcert an opponent","disconcert observers","be disconcerted by a question","be visibly disconcerted"]},
   discredit:{pos:"verb",synonyms:["disgrace","disrepute"],antonyms:["believe","repute"],collocations:["tried to discredit the claim","Independent investigators tried to discredit the claim before the"]},
   discrepancy:{pos:"unknown",synonyms:["divergence","disagreement"],antonyms:["明確な反意語なし"],collocations:["discovered a discrepancy between the","Auditors discovered a discrepancy between the records and"]},
   disdain:{pos:"verb",synonyms:["scorn","contempt"],antonyms:["明確な反意語なし"],collocations:["officials might disdain the principles","warned that officials might disdain the principles they had"]},

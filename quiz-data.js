@@ -89,7 +89,7 @@ var REMAINING_SENTENCES={
   dilapidated:"The charity converted a ____ warehouse into temporary housing.",
   diligent:"The auditor's ____ examination uncovered discrepancies others had missed.",
   discerning:"____ consumers questioned whether the luxury label justified the higher price.",
-  disconcert:"The sudden change in the witness's testimony appeared to ____ the prosecutor.",
+  disconcert:"The moderator's unexpected question appeared to ____ the candidate, who paused visibly and struggled to regain his composure.",
   discredit:"The fabricated photograph was intended to ____ the opposition candidate.",
   disdain:"Many veteran diplomats ____ the use of personal insults in negotiations.",
   disseminate:"The agency used local radio to ____ accurate information during the outbreak.",
