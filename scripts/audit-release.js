@@ -18,8 +18,13 @@ if(manifest.start_url!=='./'||manifest.scope!=='./')errors.push('GitHub Pages ma
 if(!appRelease||appRelease!==swRelease)errors.push('app and service worker release mismatch');
 const assetUrls=[...index.matchAll(/(?:href|src)="[^"]+\?v=([^"]+)"/g)].map(match=>match[1]);
 if(!assetUrls.length||assetUrls.some(release=>release!==appRelease))errors.push('asset cache-buster mismatch');
-if(!sw.includes("const CACHE_NAME='eiken-vocab-v2-'+RELEASE"))errors.push('service worker cache name is not release-scoped');
-if(!sw.includes("keys.filter(k=>k!==CACHE_NAME).map(k=>caches.delete(k))"))errors.push('old service worker caches are not deleted');
+if(!index.includes('Content-Security-Policy')||!index.includes("default-src 'self'"))errors.push('content security policy is missing');
+if(!index.includes('<meta name="referrer" content="no-referrer">'))errors.push('referrer policy is missing');
+if(/https:\/\/(?:fonts\.googleapis|fonts\.gstatic)\.com/.test(index))errors.push('external font dependency remains');
+if(!sw.includes("const CACHE_PREFIX='eiken-vocab-v2-'" )||!sw.includes('const CACHE_NAME=CACHE_PREFIX+RELEASE'))errors.push('service worker cache name is not release-scoped');
+if(!sw.includes('k.startsWith(CACHE_PREFIX)&&k!==CACHE_NAME'))errors.push('service worker cache cleanup is not app-scoped');
+if(!sw.includes("event.request.method!=='GET'||new URL(event.request.url).origin!==self.location.origin"))errors.push('service worker does not restrict caching to same-origin GET requests');
+if(!sw.includes('if(!res.ok)return res'))errors.push('service worker caches unsuccessful responses');
 
 console.log(JSON.stringify({version,release:appRelease,versionDisplays:3,assetUrls:assetUrls.length,errors:errors.length},null,2));
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
