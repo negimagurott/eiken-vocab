@@ -202,12 +202,7 @@ var EXTRA=[
 ['watershed','重大な転換点','n'],
 ['yearn','切望する','v']
 ];
-var templates={
-v:['The new policy could ____ efforts to restore public trust.','Independent investigators tried to ____ the claim before the report was released.','Critics warned that officials might ____ the principles they had promised to uphold.'],
-a:['Experts described the government\'s response as ____ during the national debate.','The committee rejected what it considered an ____ approach to the problem.','Her ____ explanation changed how the public understood the controversy.'],
-n:['The report identified ____ as a serious obstacle to lasting reform.','Public concern about ____ grew after the investigation.','The debate highlighted the social consequences of ____.']
-};
 var base=window.EIKEN_WORDS||[],n=EXTRA.length;
-EXTRA.forEach(function(a,i){var t=templates[a[2]][i%3];base.push({w:a[0],p:a[2],m:a[1],j:a[1],s:t,o:[a[0],EXTRA[(i+47)%n][0],EXTRA[(i+103)%n][0],EXTRA[(i+157)%n][0]],u:a[0]+' は英検1級Part 1・読解・Writing・Speakingで使える重要語です。'});});
+EXTRA.forEach(function(a,i){base.push({w:a[0],p:a[2],m:a[1],j:a[1],s:'',o:[a[0],EXTRA[(i+47)%n][0],EXTRA[(i+103)%n][0],EXTRA[(i+157)%n][0]],u:a[0]+' は英検1級Part 1・読解・Writing・Speakingで使える重要語です。'});});
 window.EIKEN_WORDS=base;
 })();

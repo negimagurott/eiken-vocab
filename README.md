@@ -2,7 +2,15 @@
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.5.8 / 20260719-sync-approved-examples
+Release: v2.5.9 / 20260719-quality-improvement
+
+## v2.5.9 Sentence quality improvement
+
+- 既知の例文に含まれていた文法・コロケーションの問題を修正
+- 動詞と目的語、および形容詞と名詞の意味的適合性チェックを強化
+- 発音例外を考慮した `a` / `an` 検証を追加
+- 文全体の論理整合性と、正解一意性の回帰テストを強化
+- `disconcert`、`reticent`、`culpable`、`malleable`、`edify` の不自然な旧用例を修正
 
 ## v2.5.8 Approved example synchronization
 
