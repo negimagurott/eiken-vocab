@@ -2,6 +2,7 @@
   "name": "英検1級 Companion",
   "short_name": "英検1級",
   "description": "英検1級語彙学習PWA",
+  "version": "2.5.9",
   "id": "/eiken-vocab/",
   "start_url": "./",
   "scope": "./",
