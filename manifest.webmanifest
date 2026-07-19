@@ -2,13 +2,13 @@
   "name": "英検1級 Companion",
   "short_name": "英検1級",
   "description": "英検1級語彙学習PWA",
-  "version": "2.5.11",
+  "version": "2.5.12",
   "id": "/eiken-vocab/",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "background_color": "#eef2f8",
-  "theme_color": "#172033",
+  "theme_color": "#101b46",
   "icons": [
     {"src":"icon-192.png","sizes":"192x192","type":"image/png","purpose":"any"},
     {"src":"icon-512.png","sizes":"512x512","type":"image/png","purpose":"any maskable"}

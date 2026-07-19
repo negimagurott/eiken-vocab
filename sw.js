@@ -1,4 +1,4 @@
-const RELEASE='20260719-dom-xss-hardening';
+const RELEASE='20260719-energized-home';
 const CACHE_PREFIX='eiken-vocab-v2-';
 const CACHE_NAME=CACHE_PREFIX+RELEASE;
 const ASSETS=['./','./index.html?v='+RELEASE,'./style.css?v='+RELEASE,'./writing.css?v='+RELEASE,'./modern.css?v='+RELEASE,'./words.js?v='+RELEASE,'./words-extra.js?v='+RELEASE,'./word-details.js?v='+RELEASE,'./quiz-quality.js?v='+RELEASE,'./quiz-data.js?v='+RELEASE,'./quiz-translations.js?v='+RELEASE,'./writing.js?v='+RELEASE,'./streak.js?v='+RELEASE,'./app.js?v='+RELEASE,'./manifest.webmanifest?v='+RELEASE,'./icon.svg?v='+RELEASE,'./apple-touch-icon.png?v='+RELEASE,'./icon-192.png?v='+RELEASE,'./icon-512.png?v='+RELEASE];
