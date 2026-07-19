@@ -2,7 +2,12 @@
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.5.10 / 20260719-security-hardening
+Release: v2.5.11 / 20260719-dom-xss-hardening
+
+## v2.5.11 DOM XSS hardening
+
+- CodeQLが検出したDOMテキストのHTML再解釈経路を除去
+- Word Listとフラッシュカード進捗を、`innerHTML`ではなく安全なDOM APIと`textContent`で描画
 
 ## v2.5.10 Security hardening
 
