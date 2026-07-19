@@ -2,7 +2,15 @@
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.5.3 / 20260716-daily-motivation
+Release: v2.5.5 / 20260719-streak-history
+
+## v2.5.5 Streak reliability
+
+- 学習日は端末のUTC差ではなくJST（Asia/Tokyo）の暦日で記録
+- 既存の `days` を維持しつつ、Mission・Writing・単語学習日・旧版の問題履歴から一度だけ復元
+- 保存済みの学習日集合からCurrent StreakとLongest Streakを毎回再計算
+- 「7日分を復旧」による無条件上書きを廃止し、履歴に基づく再計算へ変更
+- 日付境界、うるう日、移行、Current／Longest Streakは `node scripts/test-streak.js` で検証
 
 ## v2.5 Learning calendar
 

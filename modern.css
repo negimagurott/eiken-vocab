@@ -187,8 +187,8 @@ button.primary {
 
 .calendar-summary {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  max-width: 520px;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 680px;
   margin: 0 auto 18px;
 }
 
