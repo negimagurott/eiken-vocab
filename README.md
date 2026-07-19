@@ -2,7 +2,13 @@
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.5.5 / 20260719-streak-history
+Release: v2.5.6 / 20260719-streak-manual-recovery
+
+## v2.5.6 Confirmed study recovery
+
+- 旧版で記録されなかった日がある場合、ユーザーが確認した継続開始日から今日までを補完
+- 既存の学習日は維持し、未来日・不正な日付・10年を超える範囲を拒否
+- 復旧前に対象期間を確認し、Current／Longest Streakを学習日集合から再計算
 
 ## v2.5.5 Streak reliability
 
@@ -86,3 +92,4 @@ Every morning:
 - Listening module
 - Advanced analytics
 - AI scoring
+

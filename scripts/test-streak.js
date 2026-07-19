@@ -43,4 +43,9 @@ const recoveredSeven=streak.deriveStudyDays({
   }
 },{includeLegacyHistory:true});
 assert.deepEqual(streak.calculate(recoveredSeven,'2026-07-19'),{current:7,longest:7,total:7});
+
+const manuallyRecovered=streak.fillRange({'2026-07-18':true,'2026-07-19':true},'2026-07-16','2026-07-19');
+assert.deepEqual(streak.calculate(manuallyRecovered,'2026-07-19'),{current:4,longest:4,total:4});
+assert.throws(()=>streak.fillRange({},'2026-07-20','2026-07-19'),/Invalid study range/);
 console.log('Streak tests passed');
+

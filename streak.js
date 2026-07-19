@@ -72,5 +72,18 @@
     return{current:current,longest:longest,total:keys.length};
   }
 
-  return{JST:JST,isDateKey:isDateKey,dateKey:dateKey,addDays:addDays,missionHasActivity:missionHasActivity,deriveStudyDays:deriveStudyDays,calculate:calculate};
+  function fillRange(days,start,end){
+    if(!isDateKey(start)||!isDateKey(end)||start>end)throw new TypeError('Invalid study range');
+    var out=deriveStudyDays({days:days}),cursor=start,count=0;
+    while(cursor<=end){
+      out[cursor]=true;
+      cursor=addDays(cursor,1);
+      count++;
+      if(count>3660)throw new RangeError('Study range is too large');
+    }
+    return out;
+  }
+
+  return{JST:JST,isDateKey:isDateKey,dateKey:dateKey,addDays:addDays,missionHasActivity:missionHasActivity,deriveStudyDays:deriveStudyDays,calculate:calculate,fillRange:fillRange};
 });
+
