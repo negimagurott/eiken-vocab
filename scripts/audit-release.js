@@ -25,6 +25,8 @@ if(!sw.includes("const CACHE_PREFIX='eiken-vocab-v2-'" )||!sw.includes('const CA
 if(!sw.includes('k.startsWith(CACHE_PREFIX)&&k!==CACHE_NAME'))errors.push('service worker cache cleanup is not app-scoped');
 if(!sw.includes("event.request.method!=='GET'||new URL(event.request.url).origin!==self.location.origin"))errors.push('service worker does not restrict caching to same-origin GET requests');
 if(!sw.includes('if(!res.ok)return res'))errors.push('service worker caches unsuccessful responses');
+if(!index.includes('<script src="grammar-inflection.js?v='+appRelease+'"></script>'))errors.push('grammar inflection module is missing from index');
+if(!sw.includes("'./grammar-inflection.js?v='+RELEASE"))errors.push('grammar inflection module is missing from service worker assets');
 
 console.log(JSON.stringify({version,release:appRelease,versionDisplays:3,assetUrls:assetUrls.length,errors:errors.length},null,2));
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}

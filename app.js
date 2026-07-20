@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-var VERSION='2.5.12',RELEASE='20260719-energized-home',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'],REVIEW_LIMIT=15,SRS_GAPS=[1,3,7,14,30],STREAK=window.EIKEN_STREAK;
+var VERSION='2.5.13',RELEASE='20260720-grammar-inflection',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'],REVIEW_LIMIT=15,SRS_GAPS=[1,3,7,14,30],STREAK=window.EIKEN_STREAK,GRAMMAR=window.EIKEN_GRAMMAR;
 var MOTIVATION_MESSAGES=['今日の10分が、本番で迷わない一問をつくる。','完璧より継続。まずは今日の一問から。','覚えた単語の数だけ、英語で見える世界が広がる。','「まだ」は失敗ではなく、記憶を強くする合図。','思い出そうとした回数が、使える語彙を育てる。','一語ずつでいい。積み重ねは必ず点数になる。','昨日より一語多く分かれば、今日は前進。','忘れるのは自然。復習するたび記憶は強くなる。','難しいと感じる問題ほど、伸びしろが大きい。','小さな学習を止めない人が、最後に強い。','今日覚えた一語が、本番の選択肢を変える。','迷った単語こそ、次に正解できるチャンス。','続けた日数は、自分を裏切らない。','集中するのは10分だけ。その10分を積み上げよう。','できなかった問題は、成長する場所を教えてくれる。','語彙力は一日では増えない。でも毎日なら増えていく。','今日の復習は、未来の自分への先回り。','一問に向き合う。その繰り返しが合格を近づける。','昨日の苦手を、今日の得意に変えていこう。','ここまで続けた自分なら、今日も一歩進める。'];
 var WORDS=(window.EIKEN_WORDS||[]),EXAMPLE_LIBRARY=(window.EIKEN_EXAMPLE_LIBRARY||[]),QUESTION_BANK=(EXAMPLE_LIBRARY.length?EXAMPLE_LIBRARY:(window.EIKEN_QUIZ_ITEMS||[])),QUIZ_TRANSLATIONS=(window.EIKEN_QUIZ_TRANSLATIONS||{}),QUESTION_WORDS=QUESTION_BANK.map(function(item){return WORDS.find(function(word){return word.w===item.word})}).filter(Boolean),WRITING_TOPICS=(window.EIKEN_WRITING_TOPICS||[]),today=localDate(),calendarMonth=today.slice(0,7),deferredInstallPrompt=null,state={date:'',questions:[],answers:{},graded:false,explanationsVisible:false,score:0,stats:{},days:{},history:{},missions:{},writingByDate:{},dailyReviewByDate:{},card:0,reveal:false,theme:'auto',regenByDate:{}};
 function $(id){return document.getElementById(id)}
@@ -154,9 +154,11 @@ function mark(ok){
 }
 function posLabel(x){return{v:'動詞',a:'形容詞',n:'名詞',verb:'動詞',adjective:'形容詞',noun:'名詞'}[x.pos||x.p||guessPos(x)]||'品詞未登録'}
 function listText(value){return Array.isArray(value)&&value.length?value.join(' / '):'—'}
-function contextFrame(sentence,word){var parts=String(sentence||'').split('____'),left=(parts[0]||'').trim().split(/\s+/).slice(-4).join(' '),right=(parts[1]||'').trim().split(/\s+/).slice(0,4).join(' ');return(left+' '+word+' '+right).trim()}
+function grammarResult(x){return GRAMMAR&&GRAMMAR.completeSentence(x.s,x.w,x.pos||x.p||guessPos(x))}
+function completedSentence(x){var result=grammarResult(x);if(!result||!result.valid){if(window.console&&console.warn)console.warn('Grammar validation failed for '+x.w,result&&result.errors);return x.s}return result.text}
+function contextFrame(x){var result=grammarResult(x),answer=result&&result.valid?result.answer:x.w,parts=String(x.s||'').split('____'),left=(parts[0]||'').trim().split(/\s+/).slice(-4).join(' '),right=(parts[1]||'').trim().split(/\s+/).slice(0,4).join(' ');return(left+' '+answer+' '+right).trim()}
 function answerReason(x,opts){
-  var translation=x.translation||'和訳未登録',frame=contextFrame(x.s,x.w),collocations=(x.collocations||[]).filter(function(value){return String(value).toLowerCase().indexOf(x.w.toLowerCase())>=0&&String(value).split(/\s+/).length<=7}).slice(0,2),wrong=opts.filter(function(option){return option!==x.w}).map(function(option){return WORDS.find(function(word){return word.w===option})}).filter(Boolean),selected=state.answers[x.w],selectedWord=selected&&selected!==x.w?WORDS.find(function(word){return word.w===selected}):null;
+  var translation=x.translation||'和訳未登録',frame=contextFrame(x),collocations=(x.collocations||[]).filter(function(value){return String(value).toLowerCase().indexOf(x.w.toLowerCase())>=0&&String(value).split(/\s+/).length<=7}).slice(0,2),wrong=opts.filter(function(option){return option!==x.w}).map(function(option){return WORDS.find(function(word){return word.w===option})}).filter(Boolean),selected=state.answers[x.w],selectedWord=selected&&selected!==x.w?WORDS.find(function(word){return word.w===selected}):null;
   var html='<div class="reasoning"><p><b>決め手：</b>和訳の「'+esc(translation)+'」から、空欄には「'+esc(x.m)+'」を表す'+esc(posLabel(x))+'が必要です。</p><p><b>文中での結びつき：</b><span class="context-frame">'+esc(frame)+'</span> とすると、文が伝えたい意味と語法が一致します。</p>';
   if(collocations.length)html+='<p><b>関連する自然な表現：</b>'+esc(collocations.join(' / '))+'</p>';
   if(selectedWord)html+='<p class="selected-miss"><b>選んだ語との違い：</b>「'+esc(selectedWord.w)+'」は「'+esc(selectedWord.m)+'」なので、この文が必要とする「'+esc(x.m)+'」とは意味の方向が異なります。</p>';
@@ -180,7 +182,7 @@ function renderQuiz(){
       if(state.graded&&o===x.w){cls+=' correct';mark='✓ '}
       if(state.graded&&state.answers[x.w]===o&&o!==x.w){cls+=' wrong';mark='✕ '}
       return '<button class="'+cls+'" data-choice="'+esc(o)+'"><span>'+mark+esc(o)+'</span>'+(state.graded?'<small>'+esc(item?item.m:'意味未登録')+'</small>':'')+'</button>';
-    }).join('')+'<div class="explain '+(showExplanation?'show':'')+'"><b>'+esc(x.w)+'</b> <span class="pos-badge">'+esc(posLabel(x))+'</span> <button class="speak" data-speak="'+esc(x.w)+'" type="button">🔊</button><p><b>意味：</b>'+esc(x.m)+'</p><p><b>完成文：</b>'+esc(x.s.replace('____',x.w))+'</p><p><b>和訳：</b>'+esc(x.translation||'和訳未登録')+'</p><h4>なぜこの答え？</h4>'+answerReason(x,opts)+'</div></div>';
+    }).join('')+'<div class="explain '+(showExplanation?'show':'')+'"><b>'+esc(x.w)+'</b> <span class="pos-badge">'+esc(posLabel(x))+'</span> <button class="speak" data-speak="'+esc(x.w)+'" type="button">🔊</button><p><b>意味：</b>'+esc(x.m)+'</p><p><b>完成文：</b>'+esc(completedSentence(x))+'</p><p><b>和訳：</b>'+esc(x.translation||'和訳未登録')+'</p><h4>なぜこの答え？</h4>'+answerReason(x,opts)+'</div></div>';
   }).join('');
   box.querySelectorAll('.choice').forEach(function(b){b.addEventListener('click',function(){if(state.graded)return;var q=b.closest('.q');state.answers[q.getAttribute('data-word')]=b.getAttribute('data-choice');save();renderQuiz()})});
   box.querySelectorAll('[data-speak]').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();speak(b.getAttribute('data-speak'))})});
@@ -195,7 +197,7 @@ function renderCard(){
   var x=words[state.card],st=state.stats[x.w]||{},result=st.lastCardResult||'';
   $('flash').classList.toggle('flipped',!!state.reveal);$('flash').classList.remove('remembered-good','remembered-hard');
   if(result==='good')$('flash').classList.add('remembered-good');if(result==='hard')$('flash').classList.add('remembered-hard');
-  $('cardWord').textContent=x.w;$('backWord').textContent=x.w;$('cardPron').textContent=posLabel(x);$('cardMean').textContent=x.m;$('cardSentence').textContent=x.s.replace('____',x.w);
+  $('cardWord').textContent=x.w;$('backWord').textContent=x.w;$('cardPron').textContent=posLabel(x);$('cardMean').textContent=x.m;$('cardSentence').textContent=completedSentence(x);
   $('cardDetails').innerHTML='<p><b>品詞：</b>'+esc(posLabel(x))+'</p><p><b>類義語：</b>'+esc(listText(x.synonyms))+'</p><p><b>反意語：</b>'+esc(listText(x.antonyms))+'</p><p><b>コロケーション：</b>'+esc(listText(x.collocations))+'</p>';
   $('cardSpeak').setAttribute('data-word',x.w);var counter=$('counter');counter.textContent=(state.card+1)+' / '+words.length;if(result){counter.appendChild(document.createTextNode(' '));appendText(counter,'span',reviewLabel(result),'review-badge '+(result==='good'?'review-good':'review-hard'))}
   syncCardHeight();
@@ -207,7 +209,7 @@ function renderWords(){
     appendText(card,'b',x.w);appendText(card,'span',posLabel(x),'pos-badge');
     var speaker=appendText(card,'button','🔊','speak');speaker.type='button';speaker.setAttribute('data-speak',x.w);speaker.addEventListener('click',function(e){e.stopPropagation();speak(x.w)});
     appendText(card,'p',x.m);
-    var example=document.createElement('p');example.className='small';appendText(example,'b','例文：');example.appendChild(document.createTextNode(x.s.replace('____',x.w)));card.appendChild(example);
+    var example=document.createElement('p');example.className='small';appendText(example,'b','例文：');example.appendChild(document.createTextNode(completedSentence(x)));card.appendChild(example);
     if(x.collocations&&x.collocations.length){var collocation=document.createElement('p');collocation.className='small';appendText(collocation,'b','コロケーション：');collocation.appendChild(document.createTextNode(listText(x.collocations)));card.appendChild(collocation)}
     appendText(card,'span','正答率 '+accuracy,'pill');appendText(card,'span','誤答 '+(st.wrong||0),'pill');appendText(card,'span','まだ '+(st.hardCount||0),'pill');appendText(card,'span','次回 '+(st.due||'未設定'),'pill');
     if(label)appendText(card,'span',label,'pill '+(st.lastCardResult==='good'?'review-good':'review-hard'));
