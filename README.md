@@ -2,7 +2,12 @@
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.5.12 / 20260719-energized-home
+Release: v2.5.13 / 20260720-grammar-inflection
+
+## v2.5.13 Grammar inflection fix
+
+- Completed Quiz and Flashcard sentences now inflect verb answers for passive voice, tense, third-person singular, gerunds, and infinitives.
+- Every completed sentence passes the shared deterministic grammar check before it is displayed.
 
 ## v2.5.12 Energized home cockpit
 
@@ -97,6 +102,7 @@ Quiz delivery is separated from the vocabulary list. `quiz-data.js` contains the
 Run the deterministic quality gate before publishing:
 
 ```powershell
+node scripts/test-grammar-inflection.js
 node scripts/audit-quiz-data.js
 node scripts/audit-release.js
 ```

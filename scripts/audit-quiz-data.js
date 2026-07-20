@@ -1,5 +1,6 @@
 const fs=require('fs');
 const vm=require('vm');
+const grammar=require('../grammar-inflection.js');
 const context={window:{}};
 vm.createContext(context);
 ['words.js','words-extra.js','word-details.js','quiz-quality.js','quiz-data.js','quiz-translations.js'].forEach(file=>vm.runInContext(fs.readFileSync(file,'utf8'),context,{filename:file}));
@@ -35,7 +36,10 @@ items.forEach(item=>{
     });
   }
   if(!item.quality||item.quality.total<80)errors.push(`quality below 80: ${item.word}`);
-  const filled=item.sentence.replace('____',item.word);
+  const answer=words.find(word=>word.w===item.word);
+  const completion=grammar.completeSentence(item.sentence,item.word,answer&&(answer.pos||answer.p));
+  if(!completion.valid)errors.push(`grammar validation failed: ${item.word} (${completion.errors.join(', ')})`);
+  const filled=completion.text;
   for(const match of filled.matchAll(/\b(a|an)\s+([A-Za-z][A-Za-z'-]*)/g)){
     if(qualityApi&&match[1]!==qualityApi.expectedArticle(match[2]))errors.push(`article mismatch (${match[0]}): ${item.word}`);
   }
@@ -61,6 +65,10 @@ if(!qualityApi.hasObjectSemanticViolation(disconcertNg)||qualityApi.scoreItem(di
 if(qualityApi.hasObjectSemanticViolation(disconcertOk)||!qualityApi.scoreItem(disconcertOk,words,[]).passed)errors.push('natural collocation rejected: disconcert a candidate');
 const displayedDisconcert=disconcertOk.sentence.replace('____',disconcertOk.word);
 if(displayedDisconcert!=="The moderator's unexpected question appeared to disconcert the candidate, who paused visibly and struggled to regain his composure.")errors.push('flashcard display regression: disconcert');
+const ostracize=items.find(item=>item.word==='ostracize');
+const ostracizeWord=words.find(word=>word.w==='ostracize');
+const displayedOstracize=grammar.completeSentence(ostracize.sentence,ostracize.word,ostracizeWord.pos||ostracizeWord.p);
+if(!displayedOstracize.valid||displayedOstracize.text!=='Students who challenge the group may be mocked or ostracized by their peers.')errors.push('passive inflection regression: ostracize');
 const negativeCases=[
   ['disconcert efforts','hasObjectSemanticViolation',{word:'disconcert',sentence:'The new policy could ____ efforts to restore public trust.'}],
   ['reticent explanation','hasAdjectiveNounViolation',{word:'reticent',sentence:'Her ____ explanation changed how the public understood the controversy.'}],
