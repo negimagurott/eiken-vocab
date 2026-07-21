@@ -67,6 +67,7 @@ function inferForm(sentence,partOfSpeech){
   if(MODALS[last]||last==='do'||last==='does'||last==='did')return'base';
   if(HAVE_FORMS[last])return'past-participle';
   if(BE_FORMS[last]){
+    if(last==='be'||last==='been'||last==='being'||MODALS[previous]||HAVE_FORMS[previous])return'past-participle';
     if(/^\s*by\b/i.test(right)||/^\s*(?:[.!?]|$)/.test(right))return'past-participle';
     return'gerund';
   }

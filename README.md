@@ -2,7 +2,12 @@
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.5.13 / 20260720-grammar-inflection
+Release: v2.5.14 / 20260721-passive-choice-display
+
+## v2.5.14 Passive voice choice display
+
+- Passive-voice Quiz choices are displayed as past participles, while clicks, scoring, progress, and flashcards continue to use the base vocabulary entry.
+- Added regressions for `ostracized` and every approved passive-voice question.
 
 ## v2.5.13 Grammar inflection fix
 
