@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-var VERSION='2.5.13',RELEASE='20260720-grammar-inflection',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'],REVIEW_LIMIT=15,SRS_GAPS=[1,3,7,14,30],STREAK=window.EIKEN_STREAK,GRAMMAR=window.EIKEN_GRAMMAR;
+var VERSION='2.5.14',RELEASE='20260721-passive-choice-display',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'],REVIEW_LIMIT=15,SRS_GAPS=[1,3,7,14,30],STREAK=window.EIKEN_STREAK,GRAMMAR=window.EIKEN_GRAMMAR;
 var MOTIVATION_MESSAGES=['今日の10分が、本番で迷わない一問をつくる。','完璧より継続。まずは今日の一問から。','覚えた単語の数だけ、英語で見える世界が広がる。','「まだ」は失敗ではなく、記憶を強くする合図。','思い出そうとした回数が、使える語彙を育てる。','一語ずつでいい。積み重ねは必ず点数になる。','昨日より一語多く分かれば、今日は前進。','忘れるのは自然。復習するたび記憶は強くなる。','難しいと感じる問題ほど、伸びしろが大きい。','小さな学習を止めない人が、最後に強い。','今日覚えた一語が、本番の選択肢を変える。','迷った単語こそ、次に正解できるチャンス。','続けた日数は、自分を裏切らない。','集中するのは10分だけ。その10分を積み上げよう。','できなかった問題は、成長する場所を教えてくれる。','語彙力は一日では増えない。でも毎日なら増えていく。','今日の復習は、未来の自分への先回り。','一問に向き合う。その繰り返しが合格を近づける。','昨日の苦手を、今日の得意に変えていこう。','ここまで続けた自分なら、今日も一歩進める。'];
 var WORDS=(window.EIKEN_WORDS||[]),EXAMPLE_LIBRARY=(window.EIKEN_EXAMPLE_LIBRARY||[]),QUESTION_BANK=(EXAMPLE_LIBRARY.length?EXAMPLE_LIBRARY:(window.EIKEN_QUIZ_ITEMS||[])),QUIZ_TRANSLATIONS=(window.EIKEN_QUIZ_TRANSLATIONS||{}),QUESTION_WORDS=QUESTION_BANK.map(function(item){return WORDS.find(function(word){return word.w===item.word})}).filter(Boolean),WRITING_TOPICS=(window.EIKEN_WRITING_TOPICS||[]),today=localDate(),calendarMonth=today.slice(0,7),deferredInstallPrompt=null,state={date:'',questions:[],answers:{},graded:false,explanationsVisible:false,score:0,stats:{},days:{},history:{},missions:{},writingByDate:{},dailyReviewByDate:{},card:0,reveal:false,theme:'auto',regenByDate:{}};
 function $(id){return document.getElementById(id)}
@@ -155,6 +155,7 @@ function mark(ok){
 function posLabel(x){return{v:'動詞',a:'形容詞',n:'名詞',verb:'動詞',adjective:'形容詞',noun:'名詞'}[x.pos||x.p||guessPos(x)]||'品詞未登録'}
 function listText(value){return Array.isArray(value)&&value.length?value.join(' / '):'—'}
 function grammarResult(x){return GRAMMAR&&GRAMMAR.completeSentence(x.s,x.w,x.pos||x.p||guessPos(x))}
+function choiceDisplay(x,word){var item=WORDS.find(function(candidate){return candidate.w===word}),pos=item&&(item.pos||item.p||guessPos(item)),form=GRAMMAR&&GRAMMAR.inferForm(x.s,x.pos||x.p||guessPos(x));return form==='past-participle'&&pos&&(pos==='v'||pos==='verb')?GRAMMAR.inflect(word,form):word}
 function completedSentence(x){var result=grammarResult(x);if(!result||!result.valid){if(window.console&&console.warn)console.warn('Grammar validation failed for '+x.w,result&&result.errors);return x.s}return result.text}
 function contextFrame(x){var result=grammarResult(x),answer=result&&result.valid?result.answer:x.w,parts=String(x.s||'').split('____'),left=(parts[0]||'').trim().split(/\s+/).slice(-4).join(' '),right=(parts[1]||'').trim().split(/\s+/).slice(0,4).join(' ');return(left+' '+answer+' '+right).trim()}
 function answerReason(x,opts){
@@ -181,7 +182,7 @@ function renderQuiz(){
       if(state.answers[x.w]===o)cls+=' selected';
       if(state.graded&&o===x.w){cls+=' correct';mark='✓ '}
       if(state.graded&&state.answers[x.w]===o&&o!==x.w){cls+=' wrong';mark='✕ '}
-      return '<button class="'+cls+'" data-choice="'+esc(o)+'"><span>'+mark+esc(o)+'</span>'+(state.graded?'<small>'+esc(item?item.m:'意味未登録')+'</small>':'')+'</button>';
+      return '<button class="'+cls+'" data-choice="'+esc(o)+'"><span>'+mark+esc(choiceDisplay(x,o))+'</span>'+(state.graded?'<small>'+esc(item?item.m:'意味未登録')+'</small>':'')+'</button>';
     }).join('')+'<div class="explain '+(showExplanation?'show':'')+'"><b>'+esc(x.w)+'</b> <span class="pos-badge">'+esc(posLabel(x))+'</span> <button class="speak" data-speak="'+esc(x.w)+'" type="button">🔊</button><p><b>意味：</b>'+esc(x.m)+'</p><p><b>完成文：</b>'+esc(completedSentence(x))+'</p><p><b>和訳：</b>'+esc(x.translation||'和訳未登録')+'</p><h4>なぜこの答え？</h4>'+answerReason(x,opts)+'</div></div>';
   }).join('');
   box.querySelectorAll('.choice').forEach(function(b){b.addEventListener('click',function(){if(state.graded)return;var q=b.closest('.q');state.answers[q.getAttribute('data-word')]=b.getAttribute('data-choice');save();renderQuiz()})});
