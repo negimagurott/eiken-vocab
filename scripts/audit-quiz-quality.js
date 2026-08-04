@@ -2,7 +2,7 @@ const fs=require('fs');
 const vm=require('vm');
 const context={window:{}};
 vm.createContext(context);
-['words.js','words-extra.js','word-details.js','quiz-quality.js','quiz-data.js'].forEach(file=>vm.runInContext(fs.readFileSync(file,'utf8'),context,{filename:file}));
+['words.js','words-extra.js','vocab-expansion.js','word-details.js','quiz-quality.js','quiz-data.js'].forEach(file=>vm.runInContext(fs.readFileSync(file,'utf8'),context,{filename:file}));
 const items=context.window.EIKEN_QUIZ_ITEMS||[];
 const library=context.window.EIKEN_EXAMPLE_LIBRARY||[];
 const min=context.window.EIKEN_QUIZ_QUALITY.MIN_SCORE;

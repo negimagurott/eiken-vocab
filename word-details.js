@@ -628,13 +628,88 @@ Object.assign(DETAILS,{
   ,bemoan:{pos:"verb",synonyms:["lament","deplore"],antonyms:["celebrate","praise"],collocations:["bemoan the loss","bemoan a lack of","publicly bemoan","continue to bemoan"]}
   ,paramount:{pos:"adjective",synonyms:["supreme","foremost"],antonyms:["minor","secondary"],collocations:["paramount importance","remain paramount","a paramount concern","consider safety paramount"]}
   ,implore:{pos:"verb",synonyms:["beg","plead"],antonyms:["command","refuse"],collocations:["implore someone to","implore the court","desperately implore","implore leaders to"]}
+  ,elucidate:{pos:"verb",synonyms:["clarify","explain"],antonyms:["obscure","confuse"],collocations:["elucidate a point","help elucidate","elucidate the mechanism","clearly elucidate"]}
+  ,solicit:{pos:"verb",synonyms:["request","seek"],antonyms:["reject","discourage"],collocations:["solicit donations","solicit feedback","solicit advice","actively solicit"]}
+  ,emanate:{pos:"verb",synonyms:["originate","radiate"],antonyms:["converge","absorb"],collocations:["emanate from","light emanates from","seem to emanate","authority emanates from"]}
+  ,consolidate:{pos:"verb",synonyms:["combine","strengthen"],antonyms:["fragment","weaken"],collocations:["consolidate power","consolidate operations","consolidate gains","help consolidate"]}
+  ,vestige:{pos:"noun",synonyms:["trace","remnant"],antonyms:["whole","entirety"],collocations:["the last vestige of","a vestige of","leave no vestige","a surviving vestige"]}
+  ,pertinent:{pos:"adjective",synonyms:["relevant","applicable"],antonyms:["irrelevant","immaterial"],collocations:["a pertinent question","pertinent information","directly pertinent to","remain pertinent"]}
+  ,impregnable:{pos:"adjective",synonyms:["invulnerable","unassailable"],antonyms:["vulnerable","penetrable"],collocations:["an impregnable fortress","virtually impregnable","seem impregnable","an impregnable defense"]}
+  ,concoct:{pos:"verb",synonyms:["invent","fabricate"],antonyms:["verify","reveal"],collocations:["concoct a story","concoct an excuse","hastily concoct","concoct a scheme"]}
+  ,deduce:{pos:"verb",synonyms:["infer","conclude"],antonyms:["overlook","misinterpret"],collocations:["deduce from evidence","logically deduce","deduce that","difficult to deduce"]}
+  ,prevarication:{pos:"noun",synonyms:["evasion","equivocation"],antonyms:["candor","honesty"],collocations:["deliberate prevarication","resort to prevarication","weeks of prevarication","expose prevarication"]}
+  ,flout:{pos:"verb",synonyms:["defy","disregard"],antonyms:["obey","respect"],collocations:["flout the law","openly flout","flout regulations","continue to flout"]}
+  ,pungent:{pos:"adjective",synonyms:["acrid","sharp"],antonyms:["mild","odorless"],collocations:["a pungent odor","a pungent aroma","a pungent smell","especially pungent"]}
+  ,incisive:{pos:"adjective",synonyms:["penetrating","perceptive"],antonyms:["superficial","vague"],collocations:["incisive analysis","an incisive question","an incisive critique","remarkably incisive"]}
+  ,solvency:{pos:"noun",synonyms:["financial stability","viability"],antonyms:["insolvency","bankruptcy"],collocations:["threaten solvency","question the solvency of","maintain solvency","long-term solvency"]}
+  ,stolid:{pos:"adjective",synonyms:["impassive","unemotional"],antonyms:["expressive","excitable"],collocations:["a stolid expression","remain stolid","a stolid demeanor","characteristically stolid"]}
+  ,lackluster:{pos:"adjective",synonyms:["uninspired","dull"],antonyms:["impressive","vibrant"],collocations:["a lackluster performance","lackluster sales","a lackluster response","seem lackluster"]}
+  ,backlog:{pos:"noun",synonyms:["accumulation","queue"],antonyms:["clearance","completion"],collocations:["a growing backlog","clear a backlog","a backlog of cases","reduce the backlog"]}
+  ,upheaval:{pos:"noun",synonyms:["turmoil","disruption"],antonyms:["stability","calm"],collocations:["political upheaval","social upheaval","a period of upheaval","cause upheaval"]}
+  ,grievance:{pos:"noun",synonyms:["complaint","objection"],antonyms:["satisfaction","approval"],collocations:["file a grievance","a legitimate grievance","address grievances","a grievance procedure"]}
+  ,precocious:{pos:"adjective",synonyms:["advanced","gifted"],antonyms:["immature","delayed"],collocations:["a precocious child","precocious talent","intellectually precocious","remarkably precocious"]}
+  ,ascetic:{pos:"adjective",synonyms:["austere","self-denying"],antonyms:["indulgent","luxurious"],collocations:["an ascetic lifestyle","an ascetic existence","an ascetic monk","strict ascetic discipline"]}
+  ,squeamish:{pos:"adjective",synonyms:["queasy","sensitive"],antonyms:["unfazed","hardened"],collocations:["squeamish about blood","feel squeamish","make someone squeamish","overly squeamish"]}
+  ,notoriety:{pos:"noun",synonyms:["infamy","disrepute"],antonyms:["respect","obscurity"],collocations:["gain notoriety","achieve notoriety","public notoriety","notoriety for fraud"]}
+  ,fortitude:{pos:"noun",synonyms:["courage","resilience"],antonyms:["cowardice","weakness"],collocations:["show fortitude","moral fortitude","remarkable fortitude","courage and fortitude"]}
+  ,cessation:{pos:"noun",synonyms:["end","halt"],antonyms:["continuation","resumption"],collocations:["cessation of hostilities","an immediate cessation","complete cessation","lead to cessation"]}
+  ,acclimate:{pos:"verb",synonyms:["adjust","adapt"],antonyms:["resist","fail to adapt"],collocations:["acclimate to the heat","gradually acclimate","help someone acclimate","become acclimated to"]}
+  ,deify:{pos:"verb",synonyms:["idolize","glorify"],antonyms:["vilify","condemn"],collocations:["deify a leader","virtually deify","deify political figures","be widely deified"]}
+  ,ferment:{pos:"verb",synonyms:["brew","undergo fermentation"],antonyms:["stabilize","remain inert"],collocations:["ferment in tanks","allow to ferment","ferment naturally","begin to ferment"]}
+  ,suave:{pos:"adjective",synonyms:["polished","charming"],antonyms:["awkward","boorish"],collocations:["a suave manner","a suave diplomat","appear suave","effortlessly suave"]}
+  ,enigma:{pos:"noun",synonyms:["mystery","puzzle"],antonyms:["certainty","explanation"],collocations:["remain an enigma","an enduring enigma","solve the enigma","pose an enigma"]}
+  ,exuberant:{pos:"adjective",synonyms:["enthusiastic","lively"],antonyms:["subdued","restrained"],collocations:["an exuberant celebration","an exuberant crowd","an exuberant personality","overly exuberant"]}
+  ,unassuming:{pos:"adjective",synonyms:["modest","unobtrusive"],antonyms:["arrogant","ostentatious"],collocations:["an unassuming manner","an unassuming appearance","remain unassuming","quiet and unassuming"]}
+  ,provision:{pos:"noun",synonyms:["clause","stipulation"],antonyms:["omission","exclusion"],collocations:["a legal provision","a provision of the law","include a provision","under the provision"]}
+  ,repulse:{pos:"verb",synonyms:["repel","drive back"],antonyms:["welcome","attract"],collocations:["repulse an attack","successfully repulse","repulse the enemy","feel repulsed by"]}
+  ,conciliate:{pos:"verb",synonyms:["appease","reconcile"],antonyms:["antagonize","alienate"],collocations:["conciliate opponents","seek to conciliate","conciliate both sides","attempt to conciliate"]}
+  ,bungle:{pos:"verb",synonyms:["mishandle","botch"],antonyms:["manage","execute"],collocations:["bungle the response","badly bungle","bungle an operation","completely bungle"]}
+  ,acclaim:{pos:"noun",synonyms:["praise","approval"],antonyms:["criticism","condemnation"],collocations:["critical acclaim","win acclaim","international acclaim","widespread acclaim"]}
+  ,bigotry:{pos:"noun",synonyms:["intolerance","prejudice"],antonyms:["tolerance","open-mindedness"],collocations:["religious bigotry","racial bigotry","combat bigotry","blatant bigotry"]}
+  ,dogma:{pos:"noun",synonyms:["doctrine","creed"],antonyms:["skepticism","inquiry"],collocations:["religious dogma","accepted dogma","challenge dogma","rigid dogma"]}
+  ,gaunt:{pos:"adjective",synonyms:["emaciated","haggard"],antonyms:["healthy","plump"],collocations:["look gaunt","a gaunt face","a gaunt appearance","thin and gaunt"]}
+  ,meager:{pos:"adjective",synonyms:["scant","inadequate"],antonyms:["abundant","ample"],collocations:["meager resources","meager income","a meager allowance","relatively meager"]}
+  ,bravado:{pos:"noun",synonyms:["swagger","bluster"],antonyms:["humility","timidity"],collocations:["false bravado","display bravado","an act of bravado","empty bravado"]}
+  ,incarcerate:{pos:"verb",synonyms:["imprison","confine"],antonyms:["release","free"],collocations:["incarcerate offenders","be wrongfully incarcerated","incarcerate without trial","continue to incarcerate"]}
+  ,discord:{pos:"noun",synonyms:["conflict","disharmony"],antonyms:["harmony","agreement"],collocations:["political discord","sow discord","discord within","a source of discord"]}
+  ,consignment:{pos:"noun",synonyms:["shipment","delivery"],antonyms:["retention","collection"],collocations:["a consignment of goods","receive a consignment","a large consignment","ship on consignment"]}
+  ,dupe:{pos:"verb",synonyms:["deceive","trick"],antonyms:["inform","enlighten"],collocations:["dupe investors","dupe someone into","be easily duped","attempt to dupe"]}
+  ,pawn:{pos:"verb",synonyms:["pledge","mortgage"],antonyms:["redeem","reclaim"],collocations:["pawn a watch","pawn jewelry","pawn for cash","be forced to pawn"]}
+  ,sully:{pos:"verb",synonyms:["tarnish","stain"],antonyms:["enhance","honor"],collocations:["sully a reputation","sully the name of","permanently sully","risk sullying"]}
+  ,liaison:{pos:"noun",synonyms:["coordination","intermediary"],antonyms:["separation","disconnect"],collocations:["liaison between agencies","serve as liaison","a police liaison officer","maintain close liaison"]}
+  ,thwart:{pos:"verb",synonyms:["foil","frustrate"],antonyms:["assist","facilitate"],collocations:["thwart an attempt","thwart the plan","successfully thwart","efforts to thwart"]}
+  ,lament:{pos:"verb",synonyms:["mourn","deplore"],antonyms:["celebrate","welcome"],collocations:["lament the decline","deeply lament","lament the loss of","publicly lament"]}
+  ,spar:{pos:"verb",synonyms:["argue","wrangle"],antonyms:["agree","cooperate"],collocations:["spar over policy","spar with opponents","verbally spar","continue to spar"]}
+  ,torment:{pos:"noun",synonyms:["anguish","suffering"],antonyms:["comfort","relief"],collocations:["constant torment","suffer torment","mental torment","a source of torment"]}
+  ,eccentric:{pos:"adjective",synonyms:["unconventional","quirky"],antonyms:["conventional","ordinary"],collocations:["eccentric behavior","an eccentric habit","an eccentric inventor","seem eccentric"]}
+  ,ornate:{pos:"adjective",synonyms:["elaborate","decorative"],antonyms:["plain","unadorned"],collocations:["an ornate ceiling","ornate decoration","highly ornate","an ornate design"]}
+  ,percolate:{pos:"verb",synonyms:["filter","spread gradually"],antonyms:["stagnate","stop"],collocations:["percolate through","percolate up to","ideas percolate","slowly percolate"]}
+  ,contort:{pos:"verb",synonyms:["twist","distort"],antonyms:["straighten","align"],collocations:["contort the body","contort a face","contort into shape","painfully contort"]}
+  ,tarnish:{pos:"verb",synonyms:["stain","damage"],antonyms:["polish","enhance"],collocations:["tarnish a reputation","tarnish an image","be badly tarnished","risk tarnishing"]}
+  ,gratify:{pos:"verb",synonyms:["please","satisfy"],antonyms:["disappoint","frustrate"],collocations:["gratify a desire","gratify curiosity","be deeply gratified by","seek to gratify"]}
+  ,translucent:{pos:"adjective",synonyms:["semitransparent","diaphanous"],antonyms:["opaque","solid"],collocations:["translucent panels","translucent material","translucent skin","translucent glass"]}
+  ,pampered:{pos:"adjective",synonyms:["indulged","spoiled"],antonyms:["neglected","deprived"],collocations:["a pampered child","a pampered lifestyle","a pampered elite","overly pampered"]}
+  ,scamper:{pos:"verb",synonyms:["scurry","dart"],antonyms:["amble","linger"],collocations:["scamper across","scamper away","children scamper","scamper toward"]}
+  ,belittle:{pos:"verb",synonyms:["disparage","demean"],antonyms:["praise","esteem"],collocations:["belittle achievements","belittle employees","constantly belittle","attempt to belittle"]}
+  ,rotund:{pos:"adjective",synonyms:["round","portly"],antonyms:["slender","gaunt"],collocations:["a rotund figure","a rotund man","pleasantly rotund","a rotund body"]}
+  ,intangible:{pos:"adjective",synonyms:["abstract","incorporeal"],antonyms:["tangible","concrete"],collocations:["an intangible asset","intangible benefits","an intangible quality","remain intangible"]}
+  ,mutinous:{pos:"adjective",synonyms:["rebellious","insubordinate"],antonyms:["obedient","loyal"],collocations:["mutinous sailors","a mutinous crew","become mutinous","mutinous behavior"]}
+  ,subversive:{pos:"adjective",synonyms:["seditious","disruptive"],antonyms:["loyal","supportive"],collocations:["subversive activity","subversive literature","be deemed subversive","subversive elements"]}
+  ,impromptu:{pos:"adjective",synonyms:["spontaneous","unrehearsed"],antonyms:["planned","rehearsed"],collocations:["an impromptu speech","an impromptu meeting","deliver impromptu remarks","entirely impromptu"]}
+  ,provincial:{pos:"adjective",synonyms:["regional","parochial"],antonyms:["cosmopolitan","national"],collocations:["a provincial government","a provincial city","a provincial outlook","seem provincial"]}
+  ,contiguous:{pos:"adjective",synonyms:["adjoining","neighboring"],antonyms:["separate","disconnected"],collocations:["contiguous states","contiguous parcels","geographically contiguous","contiguous with"]}
+  ,pristine:{pos:"adjective",synonyms:["unspoiled","immaculate"],antonyms:["polluted","damaged"],collocations:["pristine condition","a pristine beach","remain pristine","nearly pristine"]}
+  ,heedless:{pos:"adjective",synonyms:["careless","unmindful"],antonyms:["attentive","mindful"],collocations:["heedless of warnings","heedless behavior","remain heedless","seemingly heedless"]}
+  ,purge:{pos:"verb",synonyms:["remove","eliminate"],antonyms:["retain","preserve"],collocations:["purge records","purge corrupt officials","purge from a database","systematically purge"]}
+  ,revert:{pos:"verb",synonyms:["return","regress"],antonyms:["advance","progress"],collocations:["revert to form","revert to the previous level","automatically revert","revert to normal"]}
+  ,discretion:{pos:"noun",synonyms:["judgment","prudence"],antonyms:["indiscretion","recklessness"],collocations:["exercise discretion","judicial discretion","at the court's discretion","use discretion"]}
 });
 (window.EIKEN_WORDS||[]).forEach(function(word){
   var detail=DETAILS[word.w]||{};
   word.pos=detail.pos||word.p||'';
-  word.synonyms=detail.synonyms||[];
-  word.antonyms=detail.antonyms||[];
-  word.collocations=detail.collocations||[];
+  word.synonyms=detail.synonyms||word.synonyms||[];
+  word.antonyms=detail.antonyms||word.antonyms||[];
+  word.collocations=detail.collocations||word.collocations||[];
   delete word.u;
 });
 })();

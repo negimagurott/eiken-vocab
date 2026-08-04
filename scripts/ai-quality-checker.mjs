@@ -21,7 +21,7 @@ if(!targetWord){
 
 const context={window:{}};
 vm.createContext(context);
-for(const file of ['words.js','words-extra.js','word-details.js','quiz-quality.js','quiz-data.js']){
+for(const file of ['words.js','words-extra.js','vocab-expansion.js','word-details.js','quiz-quality.js','quiz-data.js']){
   vm.runInContext(fs.readFileSync(file,'utf8'),context,{filename:file});
 }
 const words=context.window.EIKEN_WORDS||[];
