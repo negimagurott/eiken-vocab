@@ -603,6 +603,31 @@ Object.assign(DETAILS,{
   ,zealot:{pos:"noun",synonyms:["fanatic","extremist"],antonyms:["moderate","skeptic"],collocations:["a religious zealot","a political zealot","a reform zealot","zealous followers"]}
   ,watershed:{pos:"noun",synonyms:["turning point","milestone"],antonyms:["non-event","continuity"],collocations:["a watershed moment","a watershed event","mark a watershed","a political watershed"]}
   ,yearn:{pos:"verb",synonyms:["long","crave"],antonyms:["dislike","reject"],collocations:["yearn for freedom","yearn to return","yearn for stability","deeply yearn"]}
+  ,equivocate:{pos:"verb",synonyms:["prevaricate","hedge"],antonyms:["speak plainly","commit"],collocations:["equivocate on the issue","refuse to equivocate","equivocate under questioning","continue to equivocate"]}
+  ,defer:{pos:"verb",synonyms:["postpone","delay"],antonyms:["expedite","advance"],collocations:["defer a decision","defer payment until","defer consideration of","agree to defer"]}
+  ,envoy:{pos:"noun",synonyms:["emissary","delegate"],antonyms:["明確な反意語なし"],collocations:["a special envoy","a presidential envoy","dispatch an envoy","a peace envoy"]}
+  ,auspicious:{pos:"adjective",synonyms:["favorable","promising"],antonyms:["ominous","unfavorable"],collocations:["an auspicious beginning","an auspicious occasion","an auspicious sign","seem auspicious"]}
+  ,obliterate:{pos:"verb",synonyms:["destroy","eradicate"],antonyms:["preserve","restore"],collocations:["obliterate all traces","virtually obliterate","obliterate a target","obliterate evidence"]}
+  ,entail:{pos:"verb",synonyms:["involve","necessitate"],antonyms:["exclude","avoid"],collocations:["entail significant costs","entail a risk","entail major changes","necessarily entail"]}
+  ,convergence:{pos:"noun",synonyms:["union","merging"],antonyms:["divergence","separation"],collocations:["a convergence of interests","economic convergence","gradual convergence","lead to convergence"]}
+  ,coax:{pos:"verb",synonyms:["cajole","persuade"],antonyms:["deter","discourage"],collocations:["coax someone into","coax information from","gently coax","coax back to"]}
+  ,perennial:{pos:"adjective",synonyms:["enduring","recurring"],antonyms:["temporary","short-lived"],collocations:["a perennial problem","a perennial debate","a perennial favorite","a perennial source of"]}
+  ,clemency:{pos:"noun",synonyms:["mercy","leniency"],antonyms:["severity","harshness"],collocations:["grant clemency","appeal for clemency","presidential clemency","seek clemency"]}
+  ,unruly:{pos:"adjective",synonyms:["disorderly","disobedient"],antonyms:["orderly","compliant"],collocations:["an unruly crowd","unruly behavior","unruly passengers","become unruly"]}
+  ,hindsight:{pos:"noun",synonyms:["retrospection","afterthought"],antonyms:["foresight","anticipation"],collocations:["in hindsight","the benefit of hindsight","with hindsight","hindsight bias"]}
+  ,quarantine:{pos:"noun",synonyms:["isolation","seclusion"],antonyms:["integration","release"],collocations:["place in quarantine","mandatory quarantine","quarantine measures","remain under quarantine"]}
+  ,incursion:{pos:"noun",synonyms:["invasion","raid"],antonyms:["withdrawal","retreat"],collocations:["a military incursion","a cross-border incursion","an armed incursion","launch an incursion"]}
+  ,jeopardy:{pos:"noun",synonyms:["danger","peril"],antonyms:["safety","security"],collocations:["place in jeopardy","put jobs in jeopardy","legal jeopardy","double jeopardy"]}
+  ,appraise:{pos:"verb",synonyms:["assess","evaluate"],antonyms:["disregard","ignore"],collocations:["appraise the property","independently appraise","appraise at market value","appraise the evidence"]}
+  ,inane:{pos:"adjective",synonyms:["silly","pointless"],antonyms:["sensible","meaningful"],collocations:["an inane remark","an inane question","inane chatter","utterly inane"]}
+  ,wrest:{pos:"verb",synonyms:["seize","wrench"],antonyms:["surrender","relinquish"],collocations:["wrest control from","wrest power away","wrest ownership from","attempt to wrest"]}
+  ,caustic:{pos:"adjective",synonyms:["scathing","biting"],antonyms:["gentle","praising"],collocations:["caustic criticism","a caustic remark","caustic wit","highly caustic"]}
+  ,embezzlement:{pos:"noun",synonyms:["misappropriation","theft"],antonyms:["restitution","repayment"],collocations:["commit embezzlement","embezzlement charges","convicted of embezzlement","investigate embezzlement"]}
+  ,rife:{pos:"adjective",synonyms:["widespread","prevalent"],antonyms:["scarce","rare"],collocations:["rife with corruption","rumors are rife","disease was rife","become rife"]}
+  ,invigorate:{pos:"verb",synonyms:["energize","revitalize"],antonyms:["exhaust","weaken"],collocations:["invigorate the economy","invigorate public debate","feel invigorated by","help invigorate"]}
+  ,bemoan:{pos:"verb",synonyms:["lament","deplore"],antonyms:["celebrate","praise"],collocations:["bemoan the loss","bemoan a lack of","publicly bemoan","continue to bemoan"]}
+  ,paramount:{pos:"adjective",synonyms:["supreme","foremost"],antonyms:["minor","secondary"],collocations:["paramount importance","remain paramount","a paramount concern","consider safety paramount"]}
+  ,implore:{pos:"verb",synonyms:["beg","plead"],antonyms:["command","refuse"],collocations:["implore someone to","implore the court","desperately implore","implore leaders to"]}
 });
 (window.EIKEN_WORDS||[]).forEach(function(word){
   var detail=DETAILS[word.w]||{};
