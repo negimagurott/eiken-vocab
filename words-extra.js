@@ -200,7 +200,32 @@ var EXTRA=[
 ['whimsical','気まぐれな、風変わりな','a'],
 ['zealot','熱狂的信奉者','n'],
 ['watershed','重大な転換点','n'],
-['yearn','切望する','v']
+['yearn','切望する','v'],
+['equivocate','言葉を濁す、曖昧な態度を取る','v'],
+['defer','延期する、先送りする','v'],
+['envoy','特使、使節','n'],
+['auspicious','幸先のよい、縁起のよい','a'],
+['obliterate','完全に破壊する、消し去る','v'],
+['entail','伴う、必要とする','v'],
+['convergence','収束、融合','n'],
+['coax','うまく説得する、なだめてさせる','v'],
+['perennial','長年続く、繰り返し起こる','a'],
+['clemency','寛大な処置、減刑','n'],
+['unruly','手に負えない、規律に従わない','a'],
+['hindsight','後知恵、振り返っての理解','n'],
+['quarantine','隔離、検疫','n'],
+['incursion','侵入、侵攻','n'],
+['jeopardy','危険、危機','n'],
+['appraise','評価する、査定する','v'],
+['inane','ばかげた、無意味な','a'],
+['wrest','力ずくで奪う','v'],
+['caustic','痛烈な、辛辣な','a'],
+['embezzlement','横領','n'],
+['rife','蔓延して、満ちて','a'],
+['invigorate','活気づける、元気にする','v'],
+['bemoan','嘆く、不満を述べる','v'],
+['paramount','最重要の、最高位の','a'],
+['implore','懇願する','v']
 ];
 var base=window.EIKEN_WORDS||[],n=EXTRA.length;
 EXTRA.forEach(function(a,i){base.push({w:a[0],p:a[2],m:a[1],j:a[1],s:'',o:[a[0],EXTRA[(i+47)%n][0],EXTRA[(i+103)%n][0],EXTRA[(i+157)%n][0]],u:a[0]+' は英検1級Part 1・読解・Writing・Speakingで使える重要語です。'});});

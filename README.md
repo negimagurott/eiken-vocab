@@ -2,7 +2,13 @@
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.5.14 / 20260721-passive-choice-display
+Release: v2.5.15 / 20260804-vocab325
+
+## v2.5.15 Vocabulary expansion batch 1
+
+- Expanded the fully reviewed vocabulary, Quiz, translation, and flashcard-detail data from 300 to 325 words.
+- Added 25 words selected from recent official Eiken Grade 1 material, with original questions and fixed same-part-of-speech choices.
+- Documented the audited 25-word batch workflow for continuing toward the 700–800-word target.
 
 ## v2.5.14 Passive voice choice display
 
@@ -46,7 +52,7 @@ Release: v2.5.14 / 20260721-passive-choice-display
 ## v2.5.8 Approved example synchronization
 
 - Word ListとFlashcardsでも、Quizと同じ承認済み例文を表示
-- 300語すべての語彙例文と承認済み問題の同期を回帰監査
+- 325語すべての語彙例文と承認済み問題の同期を回帰監査
 
 ## v2.5.7 Vocabulary collocation quality
 
@@ -80,9 +86,9 @@ Release: v2.5.14 / 20260721-passive-choice-display
 
 ## v2.4 Question quality
 
-- 300問すべてに同品詞の固定選択肢を用意し、正答率に応じて難易度84〜92を狙って出題
+- 325問すべてに同品詞の固定選択肢を用意し、正答率に応じて難易度84〜92を狙って出題
 - コロケーション・文法・一意性・難易度を各25点で評価し、80点未満を配信から除外
-- 承認済み300問を `EIKEN_EXAMPLE_LIBRARY` として蓄積し、日々の問題に再利用
+- 承認済み325問を `EIKEN_EXAMPLE_LIBRARY` として蓄積し、日々の問題に再利用
 - AI品質チェッカーは80点未満の問題を最大3回まで自動再生成
 - 解説は問題ごとに、文脈・空欄前後の結びつき・コロケーション・誤答選択肢との違いを表示
 
@@ -133,11 +139,18 @@ Every morning:
 
 - Fix flashcard UX.
 - Improve Part 1-style question quality.
-- Build a core 700–800 word vocabulary set.
+- Build a core 700–800 word vocabulary set (325 words completed; expand in audited 25-word batches).
 - Prioritize difficult, high-impact words.
 - Avoid low-frequency or already-mastered basic words.
 - Add Today's Speaking Challenge.
 - Add one daily Writing topic with autosaved drafting.
+
+### Vocabulary expansion workflow
+
+- Add 25 words per reviewed batch so sentence and distractor quality can be checked without weakening the existing bank.
+- Prefer high-value words found in recent official Eiken Grade 1 material, but write original questions and translations for this app.
+- For every word, add a Japanese meaning, part of speech, original example, fixed same-part-of-speech choices, translation, synonyms, antonyms, and three to five natural collocations.
+- Before accepting a batch, run the flashcard, Quiz data, Quiz quality, grammar-inflection, Streak, and release audits. Every word must appear in the approved example library with no rejected item.
 
 ### Out of scope for v2.1
 
