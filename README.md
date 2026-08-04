@@ -2,7 +2,13 @@
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.5.15 / 20260804-vocab325
+Release: v2.5.16 / 20260804-vocab500
+
+## v2.5.16 Vocabulary expansion to 500 words
+
+- Expanded the fully reviewed vocabulary, Quiz, translation, and flashcard-detail data from 325 to 500 words in audited 25-word batches.
+- Added a dedicated expansion data module for the newest 100 words and wired it into the app, offline cache, and all data audits.
+- Verified all 500 questions for fixed same-part-of-speech choices, translations, grammar, uniqueness, and quality.
 
 ## v2.5.15 Vocabulary expansion batch 1
 
@@ -52,7 +58,7 @@ Release: v2.5.15 / 20260804-vocab325
 ## v2.5.8 Approved example synchronization
 
 - Word ListとFlashcardsでも、Quizと同じ承認済み例文を表示
-- 325語すべての語彙例文と承認済み問題の同期を回帰監査
+- 500語すべての語彙例文と承認済み問題の同期を回帰監査
 
 ## v2.5.7 Vocabulary collocation quality
 
@@ -86,9 +92,9 @@ Release: v2.5.15 / 20260804-vocab325
 
 ## v2.4 Question quality
 
-- 325問すべてに同品詞の固定選択肢を用意し、正答率に応じて難易度84〜92を狙って出題
+- 500問すべてに同品詞の固定選択肢を用意し、正答率に応じて難易度84〜92を狙って出題
 - コロケーション・文法・一意性・難易度を各25点で評価し、80点未満を配信から除外
-- 承認済み325問を `EIKEN_EXAMPLE_LIBRARY` として蓄積し、日々の問題に再利用
+- 承認済み500問を `EIKEN_EXAMPLE_LIBRARY` として蓄積し、日々の問題に再利用
 - AI品質チェッカーは80点未満の問題を最大3回まで自動再生成
 - 解説は問題ごとに、文脈・空欄前後の結びつき・コロケーション・誤答選択肢との違いを表示
 
@@ -139,7 +145,7 @@ Every morning:
 
 - Fix flashcard UX.
 - Improve Part 1-style question quality.
-- Build a core 700–800 word vocabulary set (325 words completed; expand in audited 25-word batches).
+- Build a core 700–800 word vocabulary set (500 words completed; expand in audited 25-word batches).
 - Prioritize difficult, high-impact words.
 - Avoid low-frequency or already-mastered basic words.
 - Add Today's Speaking Challenge.

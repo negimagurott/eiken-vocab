@@ -3,7 +3,7 @@ const vm=require('vm');
 
 const context={window:{}};
 vm.createContext(context);
-['words.js','words-extra.js','word-details.js'].forEach(file=>vm.runInContext(fs.readFileSync(file,'utf8'),context,{filename:file}));
+['words.js','words-extra.js','vocab-expansion.js','word-details.js'].forEach(file=>vm.runInContext(fs.readFileSync(file,'utf8'),context,{filename:file}));
 
 const words=context.window.EIKEN_WORDS||[];
 const bannedPatterns=[
