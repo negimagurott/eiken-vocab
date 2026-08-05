@@ -2,7 +2,12 @@
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.5.16 / 20260804-vocab500
+Release: v2.5.17 / 20260806-perfect-celebration
+
+## v2.5.17 Perfect-score celebration
+
+- Daily Quizの全問正解時に、約2秒の紙吹雪と「🎉 Perfect! Excellent work!」を表示します。
+- 演出は操作を妨げず、モバイルとモーション軽減設定に対応しています。
 
 ## v2.5.16 Vocabulary expansion to 500 words
 

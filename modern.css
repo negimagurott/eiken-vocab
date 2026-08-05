@@ -790,6 +790,70 @@ input:focus, textarea:focus, select:focus {
 .dashboard .progress { margin: 20px clamp(24px, 4vw, 44px) 0; }
 .dashboard-status { margin: 13px clamp(24px, 4vw, 44px) 28px; }
 
+.celebration-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  overflow: hidden;
+  pointer-events: none;
+  contain: layout paint;
+}
+
+.celebration-message {
+  position: absolute;
+  top: clamp(110px, 24vh, 220px);
+  left: 50%;
+  display: grid;
+  min-width: min(82vw, 320px);
+  padding: 18px 28px;
+  color: #fff;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,.28);
+  border-radius: 20px;
+  background: rgba(16,27,70,.92);
+  box-shadow: 0 20px 55px rgba(3,10,32,.3);
+  backdrop-filter: blur(12px);
+  animation: celebration-message 2.1s ease-out both;
+}
+
+.celebration-message strong { font-size: clamp(24px, 6vw, 36px); line-height: 1.15; }
+.celebration-message span { margin-top: 5px; font-size: clamp(15px, 3.8vw, 19px); }
+
+.celebration-confetti {
+  position: absolute;
+  top: -24px;
+  left: 0;
+  width: 9px;
+  height: 16px;
+  border-radius: 2px;
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: celebration-confetti var(--duration) cubic-bezier(.2,.65,.35,1) var(--delay) forwards;
+}
+
+@keyframes celebration-message {
+  0% { opacity: 0; transform: translate(-50%, -12px) scale(.94); }
+  12%, 72% { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  100% { opacity: 0; transform: translate(-50%, -6px) scale(.98); }
+}
+
+@keyframes celebration-confetti {
+  0% { opacity: 0; transform: translate3d(var(--x), -5vh, 0) rotate(0); }
+  10% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { opacity: 0; transform: translate3d(calc(var(--x) + var(--drift)), 110vh, 0) rotate(var(--rotation)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .celebration-message { animation: celebration-message-reduced 2.1s ease-out both; }
+  .celebration-confetti { display: none; }
+}
+
+@keyframes celebration-message-reduced {
+  0%, 100% { opacity: 0; transform: translate(-50%, 0); }
+  10%, 75% { opacity: 1; transform: translate(-50%, 0); }
+}
+
 @media (max-width: 900px) {
   .welcome-hero { grid-template-columns: 1fr; min-height: 0; }
   .hero-progress { grid-template-columns: auto 1fr; justify-items: stretch; }

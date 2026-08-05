@@ -27,6 +27,8 @@ if(!sw.includes("event.request.method!=='GET'||new URL(event.request.url).origin
 if(!sw.includes('if(!res.ok)return res'))errors.push('service worker caches unsuccessful responses');
 if(!index.includes('<script src="grammar-inflection.js?v='+appRelease+'"></script>'))errors.push('grammar inflection module is missing from index');
 if(!sw.includes("'./grammar-inflection.js?v='+RELEASE"))errors.push('grammar inflection module is missing from service worker assets');
+if(!index.includes('<script src="celebration.js?v='+appRelease+'"></script>'))errors.push('celebration module is missing from index');
+if(!sw.includes("'./celebration.js?v='+RELEASE"))errors.push('celebration module is missing from service worker assets');
 
 console.log(JSON.stringify({version,release:appRelease,versionDisplays:3,assetUrls:assetUrls.length,errors:errors.length},null,2));
 if(errors.length){console.error(errors.join('\n'));process.exit(1)}
