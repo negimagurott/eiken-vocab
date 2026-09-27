@@ -1,4 +1,4 @@
-const RELEASE='20260927-font-size';
+const RELEASE='20260928-quiz-no-repeat';
 const CACHE_PREFIX='eiken-vocab-v2-';
 const CACHE_NAME=CACHE_PREFIX+RELEASE;
 const ASSETS=['./','./index.html?v='+RELEASE,'./style.css?v='+RELEASE,'./writing.css?v='+RELEASE,'./modern.css?v='+RELEASE,'./words.js?v='+RELEASE,'./words-extra.js?v='+RELEASE,'./vocab-expansion.js?v='+RELEASE,'./word-details.js?v='+RELEASE,'./quiz-quality.js?v='+RELEASE,'./quiz-data.js?v='+RELEASE,'./quiz-translations.js?v='+RELEASE,'./writing.js?v='+RELEASE,'./streak.js?v='+RELEASE,'./grammar-inflection.js?v='+RELEASE,'./celebration.js?v='+RELEASE,'./app.js?v='+RELEASE,'./manifest.webmanifest?v='+RELEASE,'./icon.svg?v='+RELEASE,'./apple-touch-icon.png?v='+RELEASE,'./icon-192.png?v='+RELEASE,'./icon-512.png?v='+RELEASE];
@@ -12,4 +12,5 @@ self.addEventListener('fetch',event=>{
     return caches.open(CACHE_NAME).then(cache=>cache.put(event.request,copy)).catch(()=>undefined).then(()=>res);
   }).catch(()=>caches.match(event.request).then(cached=>cached||(event.request.mode==='navigate'?caches.match('./index.html?v='+RELEASE):Response.error()))));
 });
+
 
