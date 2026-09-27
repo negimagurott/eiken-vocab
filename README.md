@@ -1,8 +1,16 @@
-# 英検1級 Companion v2.5
+# 英検1級 Companion v2.6
+
+## v2.6.0 Vocabulary expansion to 700 words
+
+- 英検1級向けの語彙を200語追加（動詞75語・形容詞75語・名詞50語）。
+- 25語ずつ8組で、個別の例文・和訳・同品詞の固定4択・類義語・反意語・自然な組み合わせを整備。
+- 明確な反意語がない語には、その旨を記載。
+- 既存500語のデータと学習履歴の保存キーを維持。
+- 画面・manifest・Service Workerをv2.6.0 / 20260927-vocab-700に更新。
 
 PWA対応の英検1級語彙学習アプリです。
 
-Release: v2.5.17 / 20260806-perfect-celebration
+Release: v2.6.0 / 20260927-vocab-700
 
 ## v2.5.17 Perfect-score celebration
 
@@ -150,7 +158,7 @@ Every morning:
 
 - Fix flashcard UX.
 - Improve Part 1-style question quality.
-- Build a core 700–800 word vocabulary set (500 words completed; expand in audited 25-word batches).
+- Build a core 700–800 word vocabulary set (700 words completed; expand in audited 25-word batches).
 - Prioritize difficult, high-impact words.
 - Avoid low-frequency or already-mastered basic words.
 - Add Today's Speaking Challenge.
@@ -168,4 +176,5 @@ Every morning:
 - Listening module
 - Advanced analytics
 - AI scoring
+
 
