@@ -1,5 +1,5 @@
 .writing-topic {
-  font-size: 24px;
+  font-size: calc(24px * var(--font-scale, 1));
   line-height: 1.45;
   margin: 8px 0 10px;
 }
