@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-var VERSION='2.6.1',RELEASE='20260927-font-size',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'],REVIEW_LIMIT=15,SRS_GAPS=[1,3,7,14,30],STREAK=window.EIKEN_STREAK,GRAMMAR=window.EIKEN_GRAMMAR,CELEBRATION=window.EIKEN_CELEBRATION;
+var VERSION='2.6.2',RELEASE='20260928-quiz-no-repeat',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'],REVIEW_LIMIT=15,SRS_GAPS=[1,3,7,14,30],STREAK=window.EIKEN_STREAK,GRAMMAR=window.EIKEN_GRAMMAR,CELEBRATION=window.EIKEN_CELEBRATION;
 var MOTIVATION_MESSAGES=['今日の10分が、本番で迷わない一問をつくる。','完璧より継続。まずは今日の一問から。','覚えた単語の数だけ、英語で見える世界が広がる。','「まだ」は失敗ではなく、記憶を強くする合図。','思い出そうとした回数が、使える語彙を育てる。','一語ずつでいい。積み重ねは必ず点数になる。','昨日より一語多く分かれば、今日は前進。','忘れるのは自然。復習するたび記憶は強くなる。','難しいと感じる問題ほど、伸びしろが大きい。','小さな学習を止めない人が、最後に強い。','今日覚えた一語が、本番の選択肢を変える。','迷った単語こそ、次に正解できるチャンス。','続けた日数は、自分を裏切らない。','集中するのは10分だけ。その10分を積み上げよう。','できなかった問題は、成長する場所を教えてくれる。','語彙力は一日では増えない。でも毎日なら増えていく。','今日の復習は、未来の自分への先回り。','一問に向き合う。その繰り返しが合格を近づける。','昨日の苦手を、今日の得意に変えていこう。','ここまで続けた自分なら、今日も一歩進める。'];
 var WORDS=(window.EIKEN_WORDS||[]),EXAMPLE_LIBRARY=(window.EIKEN_EXAMPLE_LIBRARY||[]),QUESTION_BANK=(EXAMPLE_LIBRARY.length?EXAMPLE_LIBRARY:(window.EIKEN_QUIZ_ITEMS||[])),QUIZ_TRANSLATIONS=(window.EIKEN_QUIZ_TRANSLATIONS||{}),QUESTION_WORDS=QUESTION_BANK.map(function(item){return WORDS.find(function(word){return word.w===item.word})}).filter(Boolean),WRITING_TOPICS=(window.EIKEN_WRITING_TOPICS||[]),today=localDate(),calendarMonth=today.slice(0,7),deferredInstallPrompt=null,state={date:'',questions:[],answers:{},graded:false,explanationsVisible:false,score:0,stats:{},days:{},history:{},missions:{},writingByDate:{},dailyReviewByDate:{},card:0,reveal:false,theme:'auto',regenByDate:{}};
 function $(id){return document.getElementById(id)}
@@ -47,7 +47,7 @@ function daysSince(date){if(!date)return 365;return Math.max(0,Math.floor((new D
 function mission(){ensureMission();return state.missions[today]}
 function cardsSeenCount(){return Object.keys(mission().cards||{}).length}
 function updateMission(){var m=mission(),cardTarget=reviewWords().length||REVIEW_LIMIT;state.days[today]=true;m.cardsDone=cardsSeenCount()>=cardTarget;if(m.quiz&&m.cardsDone&&m.writing&&!m.complete){m.complete=true;toast('Daily Mission Complete! Streak達成です')}save()}
-function recentMap(days,includeToday){var out={},dates=Object.keys(state.history||{}).sort().slice(-days);dates.forEach(function(d){if(!includeToday&&d===today)return;(state.history[d]||[]).forEach(function(w){out[w]=true})});return out}
+function recentMap(days,includeToday){var out={},start=addDays(today,includeToday?-(days-1):-days),dates=Object.keys(state.history||{}).filter(function(d){return d>=start&&(includeToday?d<=today:d<today)});dates.forEach(function(d){(state.history[d]||[]).forEach(function(w){out[w]=true})});return out}
 function learnerAccuracy(){var attempts=0,correct=0;Object.keys(state.stats||{}).forEach(function(word){attempts+=state.stats[word].quizAttempts||0;correct+=state.stats[word].quizCorrect||0});return attempts?correct/attempts:0.6}
 function priority(x,recent,current){
   var st=state.stats[x.w]||{};
@@ -68,9 +68,10 @@ function priority(x,recent,current){
   return p;
 }
 function rankWords(words,recent,current,seed){return shuffle(words,seed).sort(function(a,b){return priority(b,recent,current)-priority(a,recent,current)})}
+function quizCandidatePool(words,recent,current){var fresh=words.filter(function(x){return!(recent&&recent[x.w])&&!(current&&current[x.w])});if(fresh.length>=10)return fresh;return words.filter(function(x){return!(current&&current[x.w])})}
 function ensureDailyReview(){if(!state.dailyReviewByDate)state.dailyReviewByDate={};var saved=state.dailyReviewByDate[today];if(saved&&saved.length&&saved.every(function(w){return WORDS.some(function(x){return x.w===w})}))return;state.dailyReviewByDate[today]=rankWords(WORDS,{},null,hash(today+'-review-'+RELEASE)).slice(0,REVIEW_LIMIT).map(function(x){return x.w})}
 function addWrongChoicesToDailyReview(words){ensureDailyReview();var review=state.dailyReviewByDate[today],known={};WORDS.forEach(function(word){known[word.w]=true});review.forEach(function(word){known[word]=false});var added=0;words.forEach(function(word){var selected=state.answers[word.w];if(selected&&selected!==word.w&&known[selected]){review.push(selected);known[selected]=false;added++}});return added}
-function pickQuestions(force){var recent=recentMap(7,false),current={};(state.questions||[]).forEach(function(w){current[w]=true});var seed=hash(today+'-'+(state.regenByDate[today]||0)+'-'+RELEASE),ranked=rankWords(QUESTION_WORDS,recent,force?current:null,seed),picked=[],sentences={};ranked.forEach(function(x){var item=QUESTION_BANK.find(function(q){return q.word===x.w}),sentence=item&&item.sentence;if(picked.length<10&&sentence&&!sentences[sentence]){sentences[sentence]=true;picked.push(x)}});return picked.map(function(x){return x.w})}
+function pickQuestions(force){var recent=recentMap(7,false),current={};(state.questions||[]).forEach(function(w){current[w]=true});var excludedCurrent=force?current:null,pool=quizCandidatePool(QUESTION_WORDS,recent,excludedCurrent),seed=hash(today+'-'+(state.regenByDate[today]||0)+'-'+RELEASE),ranked=rankWords(pool,{},null,seed),picked=[],sentences={};ranked.forEach(function(x){var item=QUESTION_BANK.find(function(q){return q.word===x.w}),sentence=item&&item.sentence;if(picked.length<10&&sentence&&!sentences[sentence]){sentences[sentence]=true;picked.push(x)}});return picked.map(function(x){return x.w})}
 function guessPos(x){
   if(x.p==='v')return 'verb';
   if(x.p==='a')return 'adjective';
@@ -230,4 +231,3 @@ function bind(){$('todayBtn').addEventListener('click',function(){generate(false
 function init(){if(!STREAK||!WORDS.length){toast('アプリデータを読み込めませんでした');return}load();applyTheme();bind();window.addEventListener('resize',syncCardHeight);setupPwa();generate(false)}
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
-
