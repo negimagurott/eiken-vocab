@@ -1,28 +1,15 @@
-const assert=require('assert');
-const fs=require('fs');
-const vm=require('vm');
-
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const app=fs.readFileSync('app.js','utf8');
-const source=(app.match(/function addWrongChoicesToDailyReview\(words\)\{[^\n]+\}/)||[])[0];
-assert(source,'wrong-choice review helper should exist');
-
-const context={
-  state:{
-    answers:{target1:'wrong1',target2:'wrong1',target3:'target3',target4:'unknown'},
-    dailyReviewByDate:{'2026-08-25':['alpha','beta']}
-  },
-  today:'2026-08-25',
-  WORDS:[{w:'alpha'},{w:'beta'},{w:'wrong1'},{w:'target1'},{w:'target2'},{w:'target3'},{w:'target4'}],
-  ensureDailyReview(){}
-};
-vm.runInNewContext(source,context);
-
-const questions=[{w:'target1'},{w:'target2'},{w:'target3'},{w:'target4'}];
-assert.strictEqual(context.addWrongChoicesToDailyReview(questions),1,'only one unique valid wrong choice should be added');
-assert.deepStrictEqual(Array.from(context.state.dailyReviewByDate[context.today]),['alpha','beta','wrong1']);
-assert.strictEqual(context.addWrongChoicesToDailyReview(questions),0,'regrading logic must not duplicate a card');
-assert(app.includes("var added=addWrongChoicesToDailyReview(words)"),'grading should add selected mistakes to cards');
-assert(app.includes("cardTarget=reviewWords().length||REVIEW_LIMIT"),'mission completion should include added cards');
-assert(app.includes("$('cardsTotal').textContent=reviewTotal"),'the displayed card total should include added cards');
-
-console.log('quiz mistake card tests passed');
+const source=app.slice(app.indexOf('function ensureDailyReview()'),app.indexOf('function pickQuestions'));
+const words=['a','b','c','d','e','f','g','h','presumptuous'].map(w=>({w}));
+const ctx={WORDS:words,today:'2026-10-07',state:{date:'2026-10-07',graded:true,answers:{a:'b',e:'e'},stats:{h:{lastCardDate:'2026-10-06',lastCardResult:'hard'},presumptuous:{lastCardDate:'2026-10-06',lastCardResult:'good'},g:{lastCardDate:'2026-10-05',lastCardResult:'hard'}},dailyReviewByDate:{'2026-10-07':['presumptuous']}},addDays:()=> '2026-10-06',currentWords:()=>[{w:'a'},{w:'e'}],createChoices:x=>x.w==='a'?['a','b','c','d']:['e','f','g','h']};
+vm.runInNewContext(source,ctx);const review=()=>Array.from(ctx.state.dailyReviewByDate[ctx.today]);
+ctx.ensureDailyReview();assert.deepEqual(review(),['a','b','c','d','h']);
+ctx.state.stats.h={lastCardDate:ctx.today,lastCardResult:'good'};ctx.ensureDailyReview();assert.deepEqual(review(),['a','b','c','d','h'],'same-day reload preserves carry snapshot');
+ctx.state.answers.e='f';ctx.ensureDailyReview();assert.deepEqual(review(),['a','b','c','d','e','f','g','h'],'all four choices and deduplication');
+ctx.state.answers.a='a';ctx.state.answers.e='e';ctx.ensureDailyReview();assert.deepEqual(review(),['h'],'perfect score retains yesterday hard only');
+ctx.state.graded=false;ctx.ensureDailyReview();assert.deepEqual(review(),['h'],'ungraded guesses excluded');
+ctx.state.date='2026-10-06';ctx.state.graded=true;ctx.ensureDailyReview();assert.deepEqual(review(),['h'],'yesterday quiz excluded');
+ctx.state.cardCarryByDate[ctx.today]=[];ctx.ensureDailyReview();assert.deepEqual(review(),[],'no arbitrary fallback');
+assert(app.includes('QUIZ_LIMIT=10'));assert(!app.includes('addWrongChoicesToDailyReview'));
+console.log('flashcard ordering, carry, migration, deduplication and empty-state tests passed');
