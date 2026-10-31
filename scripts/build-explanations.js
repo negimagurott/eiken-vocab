@@ -50,7 +50,7 @@ for(const item of items){
   const other=words.find(x=>x.w===option),usage=(other.collocations||[]).slice(0,2).join(' / ');
   // Each comparison contains the actual selected sense/usage and the question-specific
   // semantic requirement. Do not infer a grammar error from a meaning mismatch.
-  contrasts[option]={kind:'意味・用法の比較',text:explicit[item.word+':'+option]||`「${option}」は「${other.m}」を表し、用例は「${usage}」です。一方、この文の「${clues.join(' / ')}」が示すのは、${r.reason} ここで必要な「${word.m}」と、選んだ語の「${other.m}」を区別します。`};
+  contrasts[option]={kind:'意味・用法の比較',text:explicit[item.word+':'+option]||`「${option}」は「${other.m}」を表し、用例は「${usage}」です。一方、この文の「${clues.join(' / ')}」に注目してください。${r.reason} ここで必要な「${word.m}」と、選んだ語の「${other.m}」を区別します。`};
  }
  entries[item.word]={sentence:item.sentence,choices:item.choices.slice(),clues,reason:r.reason,contrasts};
 }
