@@ -1,3 +1,12 @@
+# 英検1級 Companion v2.8.1
+
+- Countdown targets January 24, 2027; calendar-day differences are calculated in UTC from the existing JST day key.
+- Reference the booklet's Times New Roman for English and Gothic BBB for Japanese, with local installed-font fallbacks.
+- No commercial font files are bundled. Installed fonts determine availability on each device.
+- Regular-weight English text in questions, options, flashcard headwords and writing drafts.
+
+Release: v2.8.1 / 20261031-exam-date-fonts
+
 # 英検1級 Companion v2.8.0
 
 ## v2.8.0 全768問の文脈解説
