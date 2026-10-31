@@ -1,6 +1,6 @@
 (function(){
 'use strict';
-var VERSION='2.7.1',RELEASE='20261031-focused-vocab',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'],QUIZ_LIMIT=10,SRS_GAPS=[1,3,7,14,30],STREAK=window.EIKEN_STREAK,GRAMMAR=window.EIKEN_GRAMMAR,CELEBRATION=window.EIKEN_CELEBRATION;
+var VERSION='2.8.0',RELEASE='20261031-contextual-explanations',KEY='eiken1_vocab_app_v20',OLD_KEYS=['eiken1_vocab_app_v13','eiken1_vocab_app_v12','eiken1_vocab_app_v11','eiken1_vocab_app_v5'],QUIZ_LIMIT=10,SRS_GAPS=[1,3,7,14,30],STREAK=window.EIKEN_STREAK,GRAMMAR=window.EIKEN_GRAMMAR,CELEBRATION=window.EIKEN_CELEBRATION;
 var MOTIVATION_MESSAGES=['今日の10分が、本番で迷わない一問をつくる。','完璧より継続。まずは今日の一問から。','覚えた単語の数だけ、英語で見える世界が広がる。','「まだ」は失敗ではなく、記憶を強くする合図。','思い出そうとした回数が、使える語彙を育てる。','一語ずつでいい。積み重ねは必ず点数になる。','昨日より一語多く分かれば、今日は前進。','忘れるのは自然。復習するたび記憶は強くなる。','難しいと感じる問題ほど、伸びしろが大きい。','小さな学習を止めない人が、最後に強い。','今日覚えた一語が、本番の選択肢を変える。','迷った単語こそ、次に正解できるチャンス。','続けた日数は、自分を裏切らない。','集中するのは10分だけ。その10分を積み上げよう。','できなかった問題は、成長する場所を教えてくれる。','語彙力は一日では増えない。でも毎日なら増えていく。','今日の復習は、未来の自分への先回り。','一問に向き合う。その繰り返しが合格を近づける。','昨日の苦手を、今日の得意に変えていこう。','ここまで続けた自分なら、今日も一歩進める。'];
 var WORDS=(window.EIKEN_WORDS||[]),EXAMPLE_LIBRARY=(window.EIKEN_EXAMPLE_LIBRARY||[]),QUESTION_BANK=(EXAMPLE_LIBRARY.length?EXAMPLE_LIBRARY:(window.EIKEN_QUIZ_ITEMS||[])),QUIZ_TRANSLATIONS=(window.EIKEN_QUIZ_TRANSLATIONS||{}),QUESTION_WORDS=QUESTION_BANK.map(function(item){return WORDS.find(function(word){return word.w===item.word})}).filter(Boolean),WRITING_TOPICS=(window.EIKEN_WRITING_TOPICS||[]),today=localDate(),calendarMonth=today.slice(0,7),deferredInstallPrompt=null,state={date:'',questions:[],answers:{},graded:false,explanationsVisible:false,score:0,stats:{},days:{},history:{},missions:{},writingByDate:{},dailyReviewByDate:{},card:0,reveal:false,theme:'auto',regenByDate:{}};
 function $(id){return document.getElementById(id)}
@@ -175,12 +175,18 @@ function grammarResult(x){return GRAMMAR&&GRAMMAR.completeSentence(x.s,x.w,x.pos
 function choiceDisplay(x,word){var item=WORDS.find(function(candidate){return candidate.w===word}),pos=item&&(item.pos||item.p||guessPos(item)),form=GRAMMAR&&GRAMMAR.inferForm(x.s,x.pos||x.p||guessPos(x));return form==='past-participle'&&pos&&(pos==='v'||pos==='verb')?GRAMMAR.inflect(word,form):word}
 function completedSentence(x){var result=grammarResult(x);if(!result||!result.valid){if(window.console&&console.warn)console.warn('Grammar validation failed for '+x.w,result&&result.errors);return x.s}return result.text}
 function contextFrame(x){var result=grammarResult(x),answer=result&&result.valid?result.answer:x.w,parts=String(x.s||'').split('____'),left=(parts[0]||'').trim().split(/\s+/).slice(-4).join(' '),right=(parts[1]||'').trim().split(/\s+/).slice(0,4).join(' ');return(left+' '+answer+' '+right).trim()}
+function findExplanation(x,opts){
+  var entry=(window.EIKEN_QUESTION_EXPLANATIONS||{})[x.w];
+  if(!entry||entry.sentence!==x.s||entry.choices.slice().sort().join('\n')!==opts.slice().sort().join('\n'))return null;
+  return entry;
+}
 function answerReason(x,opts){
-  var translation=x.translation||'和訳未登録',frame=contextFrame(x),collocations=(x.collocations||[]).filter(function(value){return String(value).toLowerCase().indexOf(x.w.toLowerCase())>=0&&String(value).split(/\s+/).length<=7}).slice(0,2),wrong=opts.filter(function(option){return option!==x.w}).map(function(option){return WORDS.find(function(word){return word.w===option})}).filter(Boolean),selected=state.answers[x.w],selectedWord=selected&&selected!==x.w?WORDS.find(function(word){return word.w===selected}):null;
-  var html='<div class="reasoning"><p><b>決め手：</b>和訳の「'+esc(translation)+'」から、空欄には「'+esc(x.m)+'」を表す'+esc(posLabel(x))+'が必要です。</p><p><b>文中での結びつき：</b><span class="context-frame">'+esc(frame)+'</span> とすると、文が伝えたい意味と語法が一致します。</p>';
-  if(collocations.length)html+='<p><b>関連する自然な表現：</b>'+esc(collocations.join(' / '))+'</p>';
-  if(selectedWord)html+='<p class="selected-miss"><b>選んだ語との違い：</b>「'+esc(selectedWord.w)+'」は「'+esc(selectedWord.m)+'」なので、この文が必要とする「'+esc(x.m)+'」とは意味の方向が異なります。</p>';
-  if(wrong.length)html+='<p><b>ほかの選択肢：</b>'+wrong.map(function(word){return esc(word.w)+'（'+esc(word.m)+'）'}).join('、')+'。品詞は同じでも、文脈が要求する意味や語の結びつきに合いません。</p>';
+  var entry=findExplanation(x,opts);
+  if(!entry)return '<div class="reasoning"><p>この問題の解説データを確認できません。ページを更新して最新版を読み込んでください。</p></div>';
+  var selected=state.answers[x.w],wrong=opts.filter(function(option){return option!==x.w}),html='<div class="reasoning"><p><b>文脈の手掛かり：</b>'+entry.clues.map(function(clue){return '<span class="context-frame">'+esc(clue)+'</span>'}).join(' / ')+'</p><p><b>なぜこの答え？</b>'+esc(entry.reason)+'</p>';
+  if(selected&&selected!==x.w&&entry.contrasts[selected])html+='<p class="selected-miss"><b>選んだ語との違い（'+esc(selected)+'）：</b>'+esc(entry.contrasts[selected].text)+'</p>';
+  var others=wrong.filter(function(word){return word!==selected});
+  if(others.length)html+='<details class="choice-comparisons"><summary>ほかの選択肢との違い（'+others.length+'語）</summary>'+others.map(function(word){return '<p><b>'+esc(word)+'：</b>'+esc(entry.contrasts[word].text)+'</p>'}).join('')+'</details>';
   return html+'</div>';
 }
 function syncCardHeight(){var flash=$('flash'),front=flash&&flash.querySelector('.front'),back=flash&&flash.querySelector('.back');if(!flash||!front||!back)return;flash.style.height='';var minimum=window.innerWidth<=620?480:390;flash.style.height=Math.max(minimum,front.scrollHeight,back.scrollHeight)+'px'}
