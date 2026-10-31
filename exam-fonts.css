@@ -1,0 +1,17 @@
+/* Main text faces identified in the official Eiken Grade 1 booklet.
+   Commercial fonts are referenced only as locally installed families.
+   No embedded PDF font data is extracted or redistributed. */
+:root {
+  --exam-font: "Times New Roman", "TimesNewRomanPSMT", "Times",
+    "Gothic BBB Pr6", "Gothic BBB Pro", "GothicBBBPr6-Medium",
+    "Hiragino Kaku Gothic ProN", "Yu Gothic", "Meiryo", serif;
+}
+body, button, input, textarea, select {
+  font-family: var(--exam-font);
+  letter-spacing: normal;
+}
+/* Use the regular booklet face for the English learning material. */
+.sentence, .choice, .flash h2, .word > b, .context-frame, #cardSentence, #writingDraft {
+  font-family: var(--exam-font);
+  font-weight: 400;
+}
